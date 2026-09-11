@@ -1,0 +1,2390 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/chapters/28-quickstart-consistency/">
+      
+      
+        <link rel="prev" href="../27-quickstart-event/">
+      
+      
+        <link rel="next" href="../29-quickstart-market-making/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>28. Scan for inconsistent contract prices - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#28-scan-for-inconsistent-contract-prices" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              28. Scan for inconsistent contract prices
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-probability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-market-microstructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-statistical-baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-trees-and-ensembles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-evolving-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-evidence-after-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../22-bankroll-and-portfolios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../23-learning-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../25-research-hypotheses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#281-a-concrete-goal-scanning-one-exhaustive-mutually-exclusive-partition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28.1 A concrete goal: scanning one exhaustive, mutually exclusive partition
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#282-reading-the-actual-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28.2 Reading the actual output
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#283-the-loss-when-only-one-leg-fills-only_first_leg_fills_then_loses_profit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28.3 The loss when only one leg fills: only_first_leg_fills_then_loses_profit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#284-what-makes-a-partition-candidate-and-why-that-check-cannot-be-automatic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28.4 What makes a partition candidate, and why that check cannot be automatic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#285-a-concrete-illustration-of-why-titles-are-not-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28.5 A concrete illustration of why titles are not rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#286-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28.6 Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#287-exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28.7 Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="28.7 Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-recomputing-the-basket-at-a-different-quantity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: recomputing the basket at a different quantity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-why-a-two-state-partition-is-not-automatically-the-same-as-a-two-outcome-market" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: why a two-state partition is not automatically the same as a two-outcome market
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-pricing-the-effect-of-a-fee-change" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: pricing the effect of a fee change
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-a-different-single-filled-leg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: a different single filled leg
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-a-boundary-convention-mismatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: a boundary-convention mismatch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-6-why-required_cash-can-exceed-total_cost" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 6: why required_cash can exceed total_cost
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../30-first-live-trade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../companion/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#281-a-concrete-goal-scanning-one-exhaustive-mutually-exclusive-partition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28.1 A concrete goal: scanning one exhaustive, mutually exclusive partition
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#282-reading-the-actual-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28.2 Reading the actual output
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#283-the-loss-when-only-one-leg-fills-only_first_leg_fills_then_loses_profit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28.3 The loss when only one leg fills: only_first_leg_fills_then_loses_profit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#284-what-makes-a-partition-candidate-and-why-that-check-cannot-be-automatic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28.4 What makes a partition candidate, and why that check cannot be automatic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#285-a-concrete-illustration-of-why-titles-are-not-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28.5 A concrete illustration of why titles are not rules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#286-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28.6 Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#287-exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        28.7 Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="28.7 Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-recomputing-the-basket-at-a-different-quantity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: recomputing the basket at a different quantity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-why-a-two-state-partition-is-not-automatically-the-same-as-a-two-outcome-market" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: why a two-state partition is not automatically the same as a two-outcome market
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-pricing-the-effect-of-a-fee-change" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: pricing the effect of a fee change
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-a-different-single-filled-leg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: a different single filled leg
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-a-boundary-convention-mismatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: a boundary-convention mismatch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-6-why-required_cash-can-exceed-total_cost" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 6: why required_cash can exceed total_cost
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="28-scan-for-inconsistent-contract-prices">28. Scan for inconsistent contract prices<a class="headerlink" href="#28-scan-for-inconsistent-contract-prices" title="Permanent link">&para;</a></h1>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>You should be comfortable with the cross-market and no-arbitrage-constraint reasoning of Chapter 20, the rules-and-settlement discussion of Chapter 6, and the paper-broker accounting from Chapter 24. You need to know what <code>sweep_cost</code>, <code>FeeSchedule</code>, and executable depth mean from Chapter 5's market-microstructure material, and you should already understand why a paper fill is not a live fill.</p>
+<h2 id="learning-objectives">Learning objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">&para;</a></h2>
+<p>By the end of this chapter you should be able to run the consistency-scanning quickstart, explain exactly what manual verification step makes a basket a candidate rather than an automatic trade, distinguish a depth failure from a compatibility failure, and compute by hand the loss that results when only one leg of a multi-leg basket fills before the position is settled against you. You should also be able to state precisely why this scan cannot be, and is not, driven by matching contract titles or natural-language similarity.</p>
+<h2 id="281-a-concrete-goal-scanning-one-exhaustive-mutually-exclusive-partition">28.1 A concrete goal: scanning one exhaustive, mutually exclusive partition<a class="headerlink" href="#281-a-concrete-goal-scanning-one-exhaustive-mutually-exclusive-partition" title="Permanent link">&para;</a></h2>
+<p>The idea behind this quickstart is old and simple: if a set of contracts covers every possible outcome of one event, exactly once each, then buying one YES unit in every contract in the set guarantees exactly one of them pays out, so the position's minimum possible payout is fixed and known in advance. If the total cost of buying all legs is less than that guaranteed minimum payout, the position has a positive payoff floor before any model or forecast is involved at all. This is a classical no-arbitrage-style construction, not a forecasting technique, and its entire value depends on the partition genuinely being complete, mutually exclusive, and governed by one resolution process.</p>
+<p>Run the script from the companion project root (<code>book\companion</code>):</p>
+<p><strong>Command working directory:</strong> run this chapter's Python commands from <code>book\companion</code>. From the trading repository root, run <code>Set-Location book\companion</code> once first. The <code>.venv</code> belongs to that companion project; see <a href="../../companion/">companion setup</a>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">examples</span><span class="p">\</span><span class="n">quickstart_consistency</span><span class="p">.</span><span class="n">py</span>
+</code></pre></div>
+<p>Open <a href="../../companion/examples/quickstart_consistency.py"><code>examples/quickstart_consistency.py</code></a> while reading. It defines three invented contracts over the states <code>"low"</code>, <code>"middle"</code>, and <code>"high"</code>, each paying USD 1 exactly when its own state is realized and zero otherwise, an explicit, hand-constructed complete partition. Each leg's order book quotes bid 0.25 and ask 0.30, with only four units of executable ask depth per leg (<code>ask_size=4</code>).</p>
+<h2 id="282-reading-the-actual-output">28.2 Reading the actual output<a class="headerlink" href="#282-reading-the-actual-output" title="Permanent link">&para;</a></h2>
+<p>The observed run includes the following excerpt (some wrapper and explanatory fields are omitted):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">"verified_partition_candidate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PAPER_CANDIDATE_ONLY"</span><span class="p">,</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="nt">"quantity_each"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="nt">"total_cost"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.72"</span><span class="p">,</span><span class="w"> </span><span class="nt">"required_cash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.72"</span><span class="p">,</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="nt">"minimum_payout"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4.00"</span><span class="p">,</span><span class="w"> </span><span class="nt">"minimum_net_profit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.28"</span><span class="p">,</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="nt">"reason"</span><span class="p">:</span><span class="w"> </span><span class="s2">"conditional on complete verified payout states and all legs filling"</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="nt">"depth_failure"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"NO_TRADE"</span><span class="p">,</span><span class="w"> </span><span class="nt">"quantity_each"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">      </span><span class="nt">"total_cost"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nt">"required_cash"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nt">"minimum_payout"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="nt">"minimum_net_profit"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">      </span><span class="nt">"reason"</span><span class="p">:</span><span class="w"> </span><span class="s2">"insufficient executable depth for the requested full size"</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="nt">"only_first_leg_fills_then_loses_profit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-1.24"</span><span class="p">,</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="nt">"required_manual_checks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">      </span><span class="s2">"same event and resolution source"</span><span class="p">,</span><span class="w"> </span><span class="s2">"complete exceptional payout state space"</span><span class="p">,</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">      </span><span class="s2">"fresh executable depth"</span><span class="p">,</span><span class="w"> </span><span class="s2">"fees"</span><span class="p">,</span><span class="w"> </span><span class="s2">"funded capital"</span><span class="p">,</span><span class="w"> </span><span class="s2">"non-atomic leg failure"</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="p">]</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="p">}</span>
+</code></pre></div>
+<p>At quantity 4, each of the three legs costs <span class="arithmatex">\(4 \times (0.30 + 0.01) = 1.24\)</span> to buy at the ask with the fixture's flat USD 0.01 fee, for a total cost across all three legs of <span class="arithmatex">\(3 \times 1.24 = 3.72\)</span>, matching <code>total_cost</code>. Because exactly one state resolves YES, the guaranteed minimum payout is <span class="arithmatex">\(4 \times \text{USD }1.00 = 4.00\)</span> regardless of which of the three states occurs, since whichever leg wins pays exactly <span class="arithmatex">\(4 \times 1\)</span> and the other two pay zero. The minimum net profit is <span class="arithmatex">\(4.00 - 3.72 = 0.28\)</span>, conditional on every leg actually filling at the quoted price and the partition genuinely being complete. <code>scan_basket</code> reports this as <code>PAPER_CANDIDATE_ONLY</code>, not as an executed trade or a certain profit; the <code>leg_risk</code> field attached to every <code>BasketResult</code>, <code>"non-atomic legs can fail; quoted basket is not guaranteed execution"</code>, is repeated for exactly this reason.</p>
+<p><code>required_cash</code> is separate from <code>total_cost</code>. They equal USD 3.72 here because each leg has one cent-aligned price and a cent-aligned flat fee, so fragmented reservation rounding adds nothing. The field is the larger of modeled full-fill cost and summed reservations under the <strong>teaching broker's</strong> conservative rules, not an implementation of real venue collateral requirements. Differences can arise from deeper executable limits and per-fill rounding even when a snapshot has only one price level. Check both cost and required cash before treating the requested size as funded.</p>
+<p>At quantity 5, the same three legs each have only 4 units of executable ask depth, so <code>scan_basket</code> correctly reports <code>NO_TRADE</code> with reason <code>"insufficient executable depth for the requested full size"</code>, and every numeric field, including <code>required_cash</code>, is <code>null</code> rather than a fabricated partial-fill estimate. The script does not attempt to silently fill 4 of the requested 5 units and report a scaled-down profit; an unmet request is reported as a clean rejection with an explicit reason, which is the same fail-closed discipline used throughout the companion's risk and operations modules.</p>
+<h2 id="283-the-loss-when-only-one-leg-fills-only_first_leg_fills_then_loses_profit">28.3 The loss when only one leg fills: <code>only_first_leg_fills_then_loses_profit</code><a class="headerlink" href="#283-the-loss-when-only-one-leg-fills-only_first_leg_fills_then_loses_profit" title="Permanent link">&para;</a></h2>
+<p>The most important number in this script is <code>-1.24</code>, and it is worth tracing through completely, because it is the concrete answer to the question "what happens if I attempt this basket and only some of it actually executes." The script submits and fills only the <code>"low"</code> leg: 4 units bought at the 0.30 ask with the same USD 0.01 fee, for a cost of <span class="arithmatex">\(4 \times (0.30+0.01) = 1.24\)</span>, exactly matching the single-leg cost computed above. It then settles that one contract at a payout of zero, with the settlement comment <code>"invented middle state; other legs never filled"</code>. Because only the <code>"low"</code> leg was ever submitted, and its state did not occur, the broker's realized profit is <span class="arithmatex">\(0 - 1.24 = -1.24\)</span>.</p>
+<p>This is not a contrived worst case invented to scare the reader. It is the literal, arithmetic consequence of a basket strategy's central operational risk: the legs are separate contracts on separate order books, executed as separate orders, and nothing in the system guarantees they fill together, at the same moment, at the quoted prices, or at all. If a trader submits all three legs of this basket and only one fills, perhaps because the other two books moved, emptied, or were cancelled before the trader's orders reached them, the trader is left holding a single directional bet with none of the completing legs that made the original arithmetic attractive. The 0.28 minimum profit computed in Section 28.2 was conditional on every leg filling; a partial fill removes that conditioning entirely and can leave a straightforward loss, exactly the -1.24 shown here.</p>
+<h2 id="284-what-makes-a-partition-candidate-and-why-that-check-cannot-be-automatic">28.4 What makes a partition candidate, and why that check cannot be automatic<a class="headerlink" href="#284-what-makes-a-partition-candidate-and-why-that-check-cannot-be-automatic" title="Permanent link">&para;</a></h2>
+<p><code>scan_basket</code> accepts a <code>compatibility_verified</code> flag, and in this script it is passed as the literal <code>True</code>, supplied by the person writing the script, not computed by any code in the package. Read <code>_compatible</code> in <code>prediction_market_lab.constraints</code>: it checks that <code>compatibility_verified</code> is exactly <code>True</code>, and that all legs share the same <code>event_id</code>, <code>rules_id</code>, currency, and set of declared payout states. None of this is derived from comparing contract titles, descriptions, or any natural-language similarity between the three contracts' names. Two contracts whose short titles look related, for example two headlines both mentioning the same underlying quantity, are not thereby verified to share one resolution process, one exceptional-settlement rule, or one complete state space; that verification is a human responsibility, informed by actually reading both contracts' rules, not a property any string-matching or embedding-similarity check could establish.</p>
+<p>The <code>required_manual_checks</code> list printed by the script names exactly what that human responsibility covers, and each item deserves its own explanation rather than a bare repetition of the label:</p>
+<ul>
+<li><strong>Same event and resolution source.</strong> Two contracts can describe superficially similar questions while resolving from different official sources, different observation windows, or different underlying definitions. A partition is only exhaustive and mutually exclusive with respect to one shared resolution process; if the three legs here actually resolved from different sources, "exactly one of them pays" is no longer guaranteed.</li>
+<li><strong>Complete exceptional payout state space.</strong> This script's legs pay one dollar or zero. The inspected Polymarket resolution page documents an exceptional 50/50 payout; it does not establish a generic void or refund convention. <a href="../../references/#polymarket_resolution">POLYMARKET_RESOLUTION</a> Check any tie, cancellation, refund, or other exceptional rule in the specific contracts. A genuinely possible omitted state invalidates a claimed complete payout floor, while a 0.50/0.50 pair can still retain a constant combined payout.</li>
+<li><strong>Fresh executable depth.</strong> The quoted ask and its size must reflect a currently valid, unexpired snapshot, not a stale quote from moments or minutes earlier; <code>validate_at</code> enforces a maximum quote age precisely because a basket built from mismatched-in-time snapshots is not describing one coherent market moment.</li>
+<li><strong>Fees.</strong> This script's flat USD 0.01 per unit is an invented teaching cost. Real fee schedules can be price- and size-dependent, as the inspected Kalshi and Polymarket documentation both describe; <a href="../../references/#kalshi_rounding">KALSHI_ROUNDING</a> <a href="../../references/#polymarket_fees">POLYMARKET_FEES</a> a basket margin computed with the wrong fee model can turn an apparent profit floor into a loss floor.</li>
+<li><strong>Funded capital.</strong> <code>scan_basket</code> compares <code>required_cash</code>, the larger of the total fill cost and the summed worst-case per-leg reservation at each leg's executable limit price, against a stated <code>capital</code> argument, and rejects the basket outright, with reason <code>"funded capital cannot reserve all basket orders before execution"</code>, if that larger figure would exceed it. Because reservation and fill cost can round differently per leg and per fill, <code>required_cash</code> is not always identical to <code>total_cost</code>, so a reader sizing a basket must check the reported <code>required_cash</code>, not just the fill-cost total, and the capital figure itself, and whether it is genuinely available and not already committed elsewhere, remains the caller's responsibility to state honestly.</li>
+<li><strong>Non-atomic leg failure.</strong> Section 28.3's -1.24 result is the concrete consequence of ignoring this check. Nothing in a typical venue guarantees that submitting three separate orders results in three simultaneous fills; a plan that only works if all legs fill together needs an explicit answer for what happens if they do not.</li>
+</ul>
+<h2 id="285-a-concrete-illustration-of-why-titles-are-not-rules">28.5 A concrete illustration of why titles are not rules<a class="headerlink" href="#285-a-concrete-illustration-of-why-titles-are-not-rules" title="Permanent link">&para;</a></h2>
+<p>Suppose one rule pays YES when an index closes strictly above 100, while another pays YES at or above 100. With the same index, time, and precision, these are nested events, not complements, and they differ exactly at 100. Buying YES on the strict-above contract and NO on the at-least contract pays zero on both at that boundary. The reverse pair pays on both there. Neither basket has the ordinary exactly-one-winner property. Check the rules' inequalities and measurement precision, not just their similar titles.</p>
+<p>The same caution applies even more strongly across two different underlying instruments that merely sound related, two different index providers measuring a similar quantity, or two contracts on the same nominal event hosted by different venues with different resolution sources and different dispute processes. <code>scan_basket</code>'s <code>_compatible</code> check only inspects <code>event_id</code>, <code>rules_id</code>, currency, and the declared set of payout-state names on <code>BasketLeg</code> objects that a human has already constructed; it has no access to, and makes no attempt to interpret, either contract's actual title text. This is a deliberate boundary, not a missing convenience feature. A short title is a marketing-quality summary; a rules document, read in full by a person who understands where its boundary conventions and exceptional-payout provisions live, is the only thing that can establish whether "same event, complete partition" is actually true, which is exactly why <code>compatibility_verified</code> must be supplied by that person and cannot be inferred by matching strings or embeddings, however similar two descriptions might look at a glance.</p>
+<h2 id="286-troubleshooting">28.6 Troubleshooting<a class="headerlink" href="#286-troubleshooting" title="Permanent link">&para;</a></h2>
+<p>Setting <code>compatibility_verified=False</code> makes <code>scan_basket</code> return <code>REJECTED</code> with unset cost fields. Nonempty but different state-key sets across legs produce the same compatibility rejection <strong>in the scan</strong>; an individual <code>BasketLeg</code> cannot compare itself with legs it has not seen. Its constructor instead raises <code>"an explicitly complete state space is required"</code> for an empty mapping or empty state name. That structural check cannot establish real-world completeness. Stale or future books are caught by <code>scan_basket</code> and returned as <code>NO_TRADE</code>, not propagated as quote-age exceptions; malformed quantities or invalid leg construction can fail earlier.</p>
+<h2 id="287-exercises-and-solution-sketches">28.7 Exercises and solution sketches<a class="headerlink" href="#287-exercises-and-solution-sketches" title="Permanent link">&para;</a></h2>
+<h3 id="exercise-1-recomputing-the-basket-at-a-different-quantity">Exercise 1: recomputing the basket at a different quantity<a class="headerlink" href="#exercise-1-recomputing-the-basket-at-a-different-quantity" title="Permanent link">&para;</a></h3>
+<p>Using the same three-leg fixture, compute the total cost, minimum payout, and minimum net profit at quantity 3 instead of 4, still within the 4-unit depth limit.</p>
+<p><strong>Solution sketch.</strong> Per-leg cost is <span class="arithmatex">\(3\times(0.30+0.01)=0.93\)</span>; across three legs, total cost is <span class="arithmatex">\(3\times0.93=2.79\)</span>. Minimum payout is <span class="arithmatex">\(3\times1.00=3.00\)</span>. Minimum net profit is <span class="arithmatex">\(3.00-2.79=0.21\)</span>, still conditional on all three legs filling and the partition remaining verified and complete.</p>
+<h3 id="exercise-2-why-a-two-state-partition-is-not-automatically-the-same-as-a-two-outcome-market">Exercise 2: why a two-state partition is not automatically the same as a two-outcome market<a class="headerlink" href="#exercise-2-why-a-two-state-partition-is-not-automatically-the-same-as-a-two-outcome-market" title="Permanent link">&para;</a></h3>
+<p>A market interface might display "low" and "not low" as if they were two contracts covering a full binary partition. Explain what would need to be true for this displayed pair to satisfy the same compatibility requirements as this chapter's three-state example.</p>
+<p><strong>Solution sketch.</strong> "Not low" would need to be an actual tradable contract, sharing the same event, resolution source, currency, and payout convention as "low," and its payout would need to be exactly the complement of "low" in every possible resolved state, including any exceptional or void outcome. A user-interface grouping of two labels is not itself evidence of this; the same manual checks from Section 28.4, particularly complete exceptional-state coverage, apply identically to a two-leg partition as to a three-leg one.</p>
+<h3 id="exercise-3-pricing-the-effect-of-a-fee-change">Exercise 3: pricing the effect of a fee change<a class="headerlink" href="#exercise-3-pricing-the-effect-of-a-fee-change" title="Permanent link">&para;</a></h3>
+<p>Suppose the flat fee in this fixture were raised from USD 0.01 to USD 0.03 per unit, with the ask still at 0.30 and quantity still 4. Recompute the total cost and minimum net profit, and state whether the basket would still be reported as a candidate.</p>
+<p><strong>Solution sketch.</strong> Per-leg cost becomes <span class="arithmatex">\(4\times(0.30+0.03)=1.32\)</span>; total cost across three legs is <span class="arithmatex">\(3.96\)</span>. Minimum payout remains <span class="arithmatex">\(4.00\)</span>, so minimum net profit falls to <span class="arithmatex">\(0.04\)</span>. The basket would still clear <code>scan_basket</code>'s strictly-positive-profit check and be reported as <code>PAPER_CANDIDATE_ONLY</code>, but with a much thinner margin, illustrating how sensitive a small guaranteed floor can be to an unverified or outdated fee assumption.</p>
+<h3 id="exercise-4-a-different-single-filled-leg">Exercise 4: a different single filled leg<a class="headerlink" href="#exercise-4-a-different-single-filled-leg" title="Permanent link">&para;</a></h3>
+<p>Suppose instead the <code>"middle"</code> leg is the one that fills, at the same 4-unit quantity and price, and the eventual state is <code>"high"</code>. Compute the realized loss using the same method as Section 28.3.</p>
+<p><strong>Solution sketch.</strong> Cost is identical, <span class="arithmatex">\(4\times(0.30+0.01)=1.24\)</span>; the payout for holding only the <code>"middle"</code> leg when <code>"high"</code> occurs is zero, since <code>"middle"</code> did not resolve. Realized profit is <span class="arithmatex">\(0-1.24=-1.24\)</span>, the same magnitude as the chapter's worked example, because the arithmetic depends only on which single leg filled and whether it happened to be the one that ultimately resolved YES, not on which specific label was involved.</p>
+<h3 id="exercise-5-a-boundary-convention-mismatch">Exercise 5: a boundary-convention mismatch<a class="headerlink" href="#exercise-5-a-boundary-convention-mismatch" title="Permanent link">&para;</a></h3>
+<p>Two contracts are titled "closes above 100" and "closes at or below 100," and a reader assumes without reading either rules document that they form a complete two-state partition. State one concrete boundary scenario under which buying one of each could leave the trader with neither leg paying out, and explain what document would have revealed this risk in advance.</p>
+<p><strong>Solution sketch.</strong> If the first contract's rules define "above" as strictly greater than 100, and the second contract's rules were independently written by a different desk to mean "at or below 99," a closing value of exactly 100 would fail both contracts' stated conditions, leaving no leg paying out despite the titles suggesting full coverage. Only each contract's own rules document, read directly rather than inferred from its title, would reveal this specific boundary gap; this is precisely why <code>compatibility_verified</code> in <code>scan_basket</code> must be a human's affirmative, informed judgment rather than a string comparison between two headlines.</p>
+<h3 id="exercise-6-why-required_cash-can-exceed-total_cost">Exercise 6: why <code>required_cash</code> can exceed <code>total_cost</code><a class="headerlink" href="#exercise-6-why-required_cash-can-exceed-total_cost" title="Permanent link">&para;</a></h3>
+<p>The companion's own regression tests verify a two-leg basket at quantity 3, with a per-unit fee of USD 0.001 and both legs' ask quoted at 0.3333: <code>total_cost</code> is <code>2.02</code> but <code>required_cash</code> is the larger <code>2.10</code>, so a capital of <code>2.02</code> is rejected while <code>2.10</code> is accepted. Reconstruct both figures by hand and explain why they differ.</p>
+<p><strong>Solution sketch.</strong> Use Chapter 17's cent-ceiling notation <span class="arithmatex">\(\lceil x\rceil_{0.01}=0.01\lceil x/0.01\rceil\)</span>, not a whole-dollar ceiling. Each leg's aggregate notional <span class="arithmatex">\(3(0.3333)=0.9999\)</span> rounds half-up to USD 1.00; its fee is <span class="arithmatex">\(\lceil0.003\rceil_{0.01}=0.01\)</span>, giving USD 1.01 per leg and USD 2.02 total. Each reserved unit instead allows <span class="arithmatex">\(\lceil0.3333\rceil_{0.01}=0.34\)</span> plus <span class="arithmatex">\(\lceil0.001\rceil_{0.01}=0.01\)</span>: USD 0.35 per unit, USD 1.05 per leg, USD 2.10 total. This is a conservative cash bound, not a change to the four-decimal quoted price grid. <code>required_cash</code> is the larger of summed reservations and modeled fill cost.</p>
+<h2 id="where-to-go-next">Where to go next<a class="headerlink" href="#where-to-go-next" title="Permanent link">&para;</a></h2>
+<p><a href="../29-quickstart-market-making/">Chapter 29</a> turns from a static multi-leg scan to a simple two-sided quoting exercise, and shows how an inventory and total-risk budget, not just a favorable-looking spread, determines whether a paper market maker keeps quoting.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../27-quickstart-event/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 27. Build an event-driven forecasting workflow">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                27. Build an event-driven forecasting workflow
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../29-quickstart-market-making/" class="md-footer__link md-footer__link--next" aria-label="Next: 29. Run a cautious market-making experiment">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                29. Run a cautious market-making experiment
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

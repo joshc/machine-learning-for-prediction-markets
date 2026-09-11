@@ -1,0 +1,2387 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/companion/data/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Data and reproducibility - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#data-and-reproducibility" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Data and reproducibility
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/02-probability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/05-market-microstructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/11-statistical-baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/12-trees-and-ensembles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/13-evolving-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/19-evidence-after-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/22-bankroll-and-portfolios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/23-learning-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/25-research-hypotheses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/28-quickstart-consistency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/30-first-live-trade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-and-is-not-included" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is and is not included
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reproduce-the-environment-and-fixture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reproduce the environment and fixture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recurring-event-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recurring-event schema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#other-deterministic-fixtures-and-economics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Other deterministic fixtures and economics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integration-contract-for-real-data-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration contract for real-data experiments
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-public-venue-snapshots" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional public venue snapshots
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optional public venue snapshots">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#supported-public-gets-and-native-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported public GETs and native fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commands
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bounds-pacing-and-failure-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bounds, pacing and failure semantics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#saved-snapshot-schema-and-archival-meaning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Saved snapshot schema and archival meaning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#official-pages-inspected-and-documentation-inconsistencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Official pages inspected and documentation inconsistencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="data-and-reproducibility">Data and reproducibility<a class="headerlink" href="#data-and-reproducibility" title="Permanent link">&para;</a></h1>
+<h2 id="what-is-and-is-not-included">What is and is not included<a class="headerlink" href="#what-is-and-is-not-included" title="Permanent link">&para;</a></h2>
+<p><code>fixtures\recurring_events.csv</code> is <strong>entirely synthetic</strong>, generated for this
+original book. It is not downloaded, anonymized exchange data, a news archive,
+or an empirical prediction-market performance sample. The neighboring
+<code>provenance.json</code> records its origin. There are 180 invented events and 360
+rows: two observations sharing each event's single binary outcome.</p>
+<p>All 17 default examples are offline, deterministic teaching demonstrations.
+Their JSON explicitly says <code>SYNTHETIC / ILLUSTRATIVE</code> and
+<code>live_edge_claim: false</code>. Scores, inferred model probabilities, paper profits,
+bandit rewards, favorable basket calculations, and losses in those examples
+have <strong>no empirical market-performance interpretation</strong>.</p>
+<p>No third-party observations, externally written bulletin, or paid-model output
+is used in these synthetic fixtures. Their calendar and contractual identifiers
+are invented. The separate <a href="real/">real NOAA extract</a> contains attributed
+government observations, and its <a href="../experiments/">completed experiment</a>
+preserves acquisition records, frozen results, and retrospective-data limitations.</p>
+<h2 id="reproduce-the-environment-and-fixture">Reproduce the environment and fixture<a class="headerlink" href="#reproduce-the-environment-and-fixture" title="Permanent link">&para;</a></h2>
+<p>Run all commands in this guide from the companion project root,
+<code>book\companion</code>, as described in the <a href="../">companion setup</a>.
+From the trading repository root, first run <code>Set-Location book\companion</code>.</p>
+<p>The initial environment was Python 3.12.6 on Windows, CPU only.
+<code>requirements.lock</code> was generated by <code>pip freeze --exclude prediction-market-lab</code>
+after installing the declared package. It contains version-pinned runtime
+dependencies, not an editable absolute local path. It is a portable version
+lock, not a wheel/hash lock: platform wheels and floating-point library builds
+can differ. The build frontend/backend is not frozen by this runtime lock.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">python</span> <span class="n">-m</span> <span class="n">venv</span> <span class="p">.</span><span class="n">venv</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">-r</span> <span class="n">requirements</span><span class="p">.</span><span class="n">lock</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">-e</span> <span class="p">.</span> <span class="p">-</span><span class="n">-no-deps</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-c</span> <span class="s2">"from pathlib import Path; from prediction_market_lab.data import write_recurring; write_recurring(Path(r'data\fixtures\recurring_events.csv'))"</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">unittest</span> <span class="n">discover</span> <span class="n">-s</span> <span class="n">tests</span> <span class="n">-p</span> <span class="s2">"test_companion_*.py"</span> <span class="n">-v</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">examples</span><span class="p">\</span><span class="n">payoffs</span><span class="p">.</span><span class="n">py</span>
+</code></pre></div>
+<p>For a simpler unpinned setup, installing <code>-e .</code> directly from this companion
+directory resolves the supported dependency ranges in <code>pyproject.toml</code>.
+Use the lock when reproducing documented numerical model results.</p>
+<p>The generator uses Python's <code>random.Random(20260910)</code>. For each event it draws
+a latent value uniformly on [-1.5, 1.5], forms a logistic probability with
+coefficient 0.9, and draws one Bernoulli outcome. Signal noise has standard
+deviation 0.8 at the 12-hour horizon and 0.4 at the 3-hour horizon. The
+invented market forecast is <code>0.5 + 0.11 * signal + Gaussian(0, 0.06)</code>, bounded
+to [0.05, 0.95]. Recorded signal and forecast values round to six decimals.
+Template text describes that noisy signal, not the realized outcome.
+The latent probability is not offered to a fitted model as a feature.</p>
+<h2 id="recurring-event-schema">Recurring-event schema<a class="headerlink" href="#recurring-event-schema" title="Permanent link">&para;</a></h2>
+<p>Every timestamp is an aware UTC ISO-8601 string. All prices in this file
+are <strong>forecast benchmarks</strong>, not executable bids or asks.</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type and meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>event_id</code></td>
+<td>Invented realized-event identifier, <code>toy-0000</code> through <code>toy-0179</code>.</td>
+</tr>
+<tr>
+<td><code>group_id</code></td>
+<td>Dependence-group identifier; equals <code>event_id</code> here. Both snapshots must stay together.</td>
+</tr>
+<tr>
+<td><code>family_id</code></td>
+<td><code>invented-recurring</code>; identifies the shared synthetic template, not an additional independent label.</td>
+</tr>
+<tr>
+<td><code>event_time</code></td>
+<td>Invented event occurrence, daily at 18:00 UTC.</td>
+</tr>
+<tr>
+<td><code>published_at</code></td>
+<td>Invented bulletin publication, ten minutes before the decision.</td>
+</tr>
+<tr>
+<td><code>observed_at</code></td>
+<td>Invented local receipt, two minutes before the decision.</td>
+</tr>
+<tr>
+<td><code>decision_at</code></td>
+<td>Invented decision, twelve or three hours before the event.</td>
+</tr>
+<tr>
+<td><code>label_available_at</code></td>
+<td>Invented outcome availability, twelve hours after the event. This is not necessarily settlement time.</td>
+</tr>
+<tr>
+<td><code>signal</code></td>
+<td>Finite noisy synthetic explanatory variable.</td>
+</tr>
+<tr>
+<td><code>horizon_hours</code></td>
+<td>12.0 or 3.0, nonnegative finite hours to the event.</td>
+</tr>
+<tr>
+<td><code>market_probability</code></td>
+<td>Invented noisy benchmark YES probability, bounded to [0.05, 0.95].</td>
+</tr>
+<tr>
+<td><code>outcome</code></td>
+<td>One integer 0/1 label per event, repeated across snapshots. Never a fractional payout.</td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td>Original invented bulletin template, derived from available signal.</td>
+</tr>
+<tr>
+<td><code>synthetic</code></td>
+<td>Literal <code>True</code>; explicit provenance flag, not inferred from filenames.</td>
+</tr>
+</tbody>
+</table>
+<p><code>EventRow.features_available()</code> requires both publication and observation at
+or before the decision. <code>grouped_chronological_split</code> purges a whole group
+if it straddles a cutoff or its labels are not available at the relevant
+cohort cutoff. The training cutoff is April 1, the calibration cutoff May 16,
+and final retrospective evaluation cutoff July 1, 2025, all at 00:00 UTC.
+The last observation of each event is the predeclared model/scoring unit.
+The early snapshot is retained for temporal-update demonstrations, not
+counted as another independent realized event.</p>
+<p>Model preprocessing and fitting use only the training cohort. Isotonic
+calibration uses only the next validation cohort; test labels are used only
+for retrospective scores. Isotonic output is bounded to its fitted range
+when inputs are out of range; evaluated probabilities are <strong>not silently
+clipped away from 0/1</strong>. Thus a wrong certain prediction has infinite natural
+log loss, rendered as the JSON string <code>"Infinity"</code>. Small validation samples
+can make this happen; it is an intended lesson, not hidden by the reporter.</p>
+<h2 id="other-deterministic-fixtures-and-economics">Other deterministic fixtures and economics<a class="headerlink" href="#other-deterministic-fixtures-and-economics" title="Permanent link">&para;</a></h2>
+<p>The small books and user-supplied fills in <code>examples\_support.py</code> and the
+execution/market-making scripts are original in-memory fixtures. Their fixed
+clock is <code>2025-07-01T12:00:00+00:00</code>; their identifiers and rule descriptions
+are not venue instruments. <code>examples\policy_learning.py</code> uses seed 11 for
+800 training rounds and seed 12 for two 800-round comparison logs.
+The shared bandit generator's default seed is 20260910.</p>
+<p>The canonical fee is an <strong>invented USD 0.01 per unit per fill</strong>, not a
+Kalshi or Polymarket schedule. <code>FeeSchedule</code> can also express an invented
+notional-rate component. Total fees round up to cents once per fill.
+Trade notional rounds half-up to cents once per fill; whole-unit quantities
+and four-decimal price/payout grids are classroom conventions. Separate
+fills can cost differently from an aggregate fill. Pending buys reserve a
+conservative one-unit-fill cash bound. Sales reserve owned units; naked
+sales, overfills and consuming another buy order's reserve are rejected.
+There is no assumed settlement fee; a real experiment must explicitly
+model any applicable one.</p>
+<p>Taker replay consumes the finite displayed depth of an identified snapshot.
+Reusing the same snapshot cannot replenish its depth. A newly identified
+snapshot is an explicit external assertion of new observed liquidity;
+callers must not rename stale data to fabricate replenishment. Instantaneous
+taker execution is a disclosed paper assumption, not historical evidence.
+Resting quote touches never cause a fill. Maker fills require an explicit
+user-supplied synthetic event and must respect the limit and remaining size.</p>
+<p>The ledger is single-process, in-memory and long-only, with FIFO cent
+cost-basis allocation. It is not a persistent production broker, concurrent
+matching engine, OMS, tax ledger, or venue-specific collateral model.
+<code>mark</code> requires fresh, sufficient remaining bid depth and subtracts
+hypothetical exit fees. A mark changes no cash, inventory, or realized profit.
+Fractional exceptional settlement is a payout record whose <code>binary_label</code>
+is <code>None</code>, not a 0.5 training target.</p>
+<h2 id="integration-contract-for-real-data-experiments">Integration contract for real-data experiments<a class="headerlink" href="#integration-contract-for-real-data-experiments" title="Permanent link">&para;</a></h2>
+<p>No default example performs network access. The separate, optional
+<code>market_data</code> module implements four allowlisted public snapshot GETs,
+described below. It preserves native fields instead of presenting changing
+fee schedules, fractional venue quantity grids or product rules as equivalent
+to the classroom broker. Additional real-data adapters require their own
+verification against current official documents. The primary indexes are
+<a href="https://docs.kalshi.com/llms.txt">https://docs.kalshi.com/llms.txt</a> and <a href="https://docs.polymarket.com/llms.txt">https://docs.polymarket.com/llms.txt</a>.
+The implemented scope is only the four snapshot endpoints below, not either
+venue's full API.</p>
+<ul>
+<li>Keep raw-response provenance, endpoint/product, request parameters, UTC
+  observation time, pagination and applicable permissions. Use public
+  read-only GETs with bounded timeouts and explicit errors if acquisition is
+  needed. Never add credential loading or funded-order capabilities here.</li>
+<li>Do not label a retrieved current snapshot as a historical vintage. Price
+  history is not a full executable order-book/fill history.</li>
+<li>Use <code>scoring.brier_score</code>, <code>scoring.log_loss</code>, and <code>scoring.calibration_bins</code>
+  for finite binary forecasts; report independent event counts and your
+  weighting scheme. <code>regression_metrics</code> is available for a separately
+  justified continuous target, not to blur fractional payout and binary label.</li>
+<li><code>EventRow</code> supports <code>synthetic=False</code> for honestly documented real rows, but
+  it represents a recurring binary-event schema with one feature-publication
+  clock. For heterogeneous sources, preserve each feature's own publication
+  and observation times before constructing a validated row. It does not
+  manufacture missing vintages or validate source claims.</li>
+<li><code>grouped_chronological_split</code> and <code>TemporalSplit</code> separate train,
+  validation and retrospective test cutoffs. Dependence groups are supplied
+  by the researcher. Broader common-shock dependence still needs an explicit
+  inference method; grouping by event alone is not a universal cure.</li>
+<li><code>fit_forecaster</code> is a small preset numerical teaching pipeline, not an
+  automated search, financial performance backtest, or guaranteed best model.</li>
+<li><code>PaperBroker</code> accepts only USD classroom contracts, whole quantities and
+  explicit fills. Do not coerce incompatible real venue quantities, payout
+  currency, fees or settlement into it without extending and testing the
+  schema and stating the assumptions.</li>
+<li><code>assess_evidence</code> rejects synthetic data and missing evidence. Even if all
+  evidence declarations are true, it returns <code>RESEARCH_REVIEW_REQUIRED</code>,
+  never a live recommendation. These declarations must be independently
+  audited; toggling booleans does not establish evidence.</li>
+</ul>
+<h2 id="optional-public-venue-snapshots">Optional public venue snapshots<a class="headerlink" href="#optional-public-venue-snapshots" title="Permanent link">&para;</a></h2>
+<p><strong>Do not acquire or share venue data before checking applicable current
+terms and permissions.</strong> Public accessibility is not a redistribution
+license. The source audit did not establish unrestricted venue-data
+redistribution rights. <code>--acknowledge-terms</code> records an explicit user
+acknowledgement, not a legal eligibility determination. Access restrictions,
+401/403/451 responses, unavailable books and changing schemas are reasons
+to stop, not to authenticate, change geographic routes or bypass controls.</p>
+<p>The collector is separate from all 17 offline examples and from the NOAA
+real-data study. Nothing calls it by default, import has no network effect,
+and running the module without a subcommand fails before any network call.
+No live venue payload is committed with this implementation. Endpoint and
+schema documents were inspected on <strong>2026-09-10</strong>; transport, pagination and
+error behavior were tested using original mocked responses, not by claiming
+successful live acquisition.</p>
+<h3 id="supported-public-gets-and-native-fields">Supported public GETs and native fields<a class="headerlink" href="#supported-public-gets-and-native-fields" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Subcommand</th>
+<th>Exact endpoint and selected query fields</th>
+<th>Preserved response and interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>kalshi-markets</code></td>
+<td><code>https://external-api.kalshi.com/trade-api/v2/markets</code>; <code>limit</code>, <code>cursor</code>, <code>status</code>, optional <code>series_ticker</code> / <code>event_ticker</code></td>
+<td>Native <code>markets</code> and <code>cursor</code> envelope, ticker/event identity, lifecycle state, market type, rules, native <code>_dollars</code>/<code>_fp</code> strings and all extra metadata. Filter status is not assumed to use the same vocabulary as returned lifecycle state.</td>
+</tr>
+<tr>
+<td><code>kalshi-book</code></td>
+<td><code>https://external-api.kalshi.com/trade-api/v2/markets/{ticker}/orderbook?depth=20</code></td>
+<td><code>orderbook_fp.yes_dollars</code> and <code>.no_dollars</code>, each containing <code>[price_dollars, count_fp]</code> string pairs. Both sides are bids; quantities remain fractional strings. No synthetic asks, fills or integer-unit coercions are inserted.</td>
+</tr>
+<tr>
+<td><code>polymarket-markets</code></td>
+<td><code>https://gamma-api.polymarket.com/markets</code>; <code>limit</code>, <code>offset</code>, <code>closed</code>, fixed <code>order=id&amp;ascending=true</code></td>
+<td>Native array of Gamma market objects; IDs, questions, condition/rule metadata, collateral hints, all extra fields. <code>clobTokenIds</code>, <code>outcomes</code> and <code>outcomePrices</code> remain JSON-encoded strings, not reordered or silently translated into the SDK's different envelope.</td>
+</tr>
+<tr>
+<td><code>polymarket-book</code></td>
+<td><code>https://clob.polymarket.com/book?token_id={token_id}</code></td>
+<td>Native <code>market</code>, <code>asset_id</code>, <code>timestamp</code>, <code>hash</code>, <code>bids</code>/<code>asks</code> with string <code>price</code>/<code>size</code>, <code>min_order_size</code>, <code>tick_size</code>, <code>neg_risk</code>, <code>last_trade_price</code>, and extra fields. Returned <code>asset_id</code> must equal the requested token. Timestamp remains its native digit string.</td>
+</tr>
+</tbody>
+</table>
+<p>Discovery validation checks the consumed envelope and market identity;
+book validation checks the consumed native decimal-string shapes and
+required fields. Unknown fields are preserved, not discarded. This is a
+small subset validator, not a claim of complete OpenAPI conformance or
+verification of contractual correctness. A scalar Kalshi market in metadata
+is retained as scalar, never turned into a binary training label.</p>
+<p>The Polymarket endpoints are the <strong>Predictions Gamma/CLOB product</strong>, not
+Polymarket US, Perps, or a guarantee that a native collateral token equals
+cash USD. Neither collector infers fees, rounding, settlement rules,
+eligibility, fills or historical availability. No returned native record
+is converted into <code>PaperBroker</code>, its fee schedule, or its quantity grid.</p>
+<h3 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h3>
+<p>Offline inspection and focused tests:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">prediction_market_lab</span><span class="p">.</span><span class="n">market_data</span> <span class="p">-</span><span class="n">-help</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">prediction_market_lab</span><span class="p">.</span><span class="n">market_data</span> <span class="n">polymarket-book</span> <span class="p">-</span><span class="n">-help</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">unittest</span> <span class="n">discover</span> <span class="n">-s</span> <span class="n">tests</span> <span class="n">-p</span> <span class="s2">"test_companion_market_data.py"</span> <span class="n">-v</span>
+</code></pre></div>
+<p>Optional acquisitions, <strong>only after your independent permission checks</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">prediction_market_lab</span><span class="p">.</span><span class="n">market_data</span> <span class="n">kalshi-markets</span> <span class="p">-</span><span class="n">-acknowledge-terms</span> <span class="p">-</span><span class="n">-page-size</span> <span class="n">5</span> <span class="p">-</span><span class="n">-max-pages</span> <span class="n">1</span> <span class="p">-</span><span class="n">-output</span> <span class="n">data</span><span class="p">\</span><span class="n">local-snapshots</span><span class="p">\</span><span class="n">kalshi-markets</span><span class="p">.</span><span class="n">snapshot</span><span class="p">.</span><span class="n">json</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">prediction_market_lab</span><span class="p">.</span><span class="n">market_data</span> <span class="n">polymarket-markets</span> <span class="p">-</span><span class="n">-acknowledge-terms</span> <span class="p">-</span><span class="n">-page-size</span> <span class="n">5</span> <span class="p">-</span><span class="n">-max-pages</span> <span class="n">1</span> <span class="p">-</span><span class="n">-output</span> <span class="n">data</span><span class="p">\</span><span class="n">local-snapshots</span><span class="p">\</span><span class="n">gamma-markets</span><span class="p">.</span><span class="n">snapshot</span><span class="p">.</span><span class="n">json</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nv">$Ticker</span> <span class="p">=</span> <span class="s2">"REPLACE-WITH-A-VERIFIED-DISCOVERED-TICKER"</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">prediction_market_lab</span><span class="p">.</span><span class="n">market_data</span> <span class="n">kalshi-book</span> <span class="p">-</span><span class="n">-ticker</span> <span class="nv">$Ticker</span> <span class="p">-</span><span class="n">-depth</span> <span class="n">20</span> <span class="p">-</span><span class="n">-acknowledge-terms</span> <span class="p">-</span><span class="n">-output</span> <span class="n">data</span><span class="p">\</span><span class="n">local-snapshots</span><span class="p">\</span><span class="n">kalshi-book</span><span class="p">.</span><span class="n">snapshot</span><span class="p">.</span><span class="n">json</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="nv">$TokenId</span> <span class="p">=</span> <span class="s2">"REPLACE_WITH_A_VERIFIED_OUTCOME_TOKEN_ID"</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">prediction_market_lab</span><span class="p">.</span><span class="n">market_data</span> <span class="n">polymarket-book</span> <span class="p">-</span><span class="n">-token-id</span> <span class="nv">$TokenId</span> <span class="p">-</span><span class="n">-acknowledge-terms</span> <span class="p">-</span><span class="n">-output</span> <span class="n">data</span><span class="p">\</span><span class="n">local-snapshots</span><span class="p">\</span><span class="n">clob-book</span><span class="p">.</span><span class="n">snapshot</span><span class="p">.</span><span class="n">json</span>
+</code></pre></div>
+<p>The placeholders are <strong>not real instrument identifiers</strong> and must be
+replaced; the token placeholder is intentionally rejected by input
+validation. Discovery does not automatically select a supposedly compatible
+contract or outcome. A selected Gamma token must be interpreted with its
+market's outcome list, rules and product context.</p>
+<p>Optional common flags: <code>--timeout 10</code>, <code>--max-bytes 2097152</code>, <code>--retries 1</code>.
+Kalshi discovery supports <code>--status open|unopened|closed|settled</code>,
+<code>--series-ticker</code> and <code>--event-ticker</code>. Polymarket discovery uses
+<code>closed=false</code> by default; <code>--closed</code> selects closed records. These are
+current responses even when the records describe settled events.</p>
+<p>Programmatic equivalent:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prediction_market_lab.market_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">RequestPolicy</span><span class="p">,</span> <span class="n">SnapshotClient</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="c1"># Only run after independently checking applicable permissions.</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">client</span> <span class="o">=</span> <span class="n">SnapshotClient</span><span class="p">(</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">acknowledge_terms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">policy</span><span class="o">=</span><span class="n">RequestPolicy</span><span class="p">(</span><span class="n">timeout_seconds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">retries</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">)</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">snapshot</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">kalshi_markets</span><span class="p">(</span><span class="n">page_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_pages</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div>
+<p>Construction without explicit <code>acknowledge_terms=True</code> fails. Even the
+standalone HTTP transport requires explicit acknowledgement. No method
+accepts credentials, custom headers, arbitrary endpoint roots or arbitrary
+HTTP methods.</p>
+<h3 id="bounds-pacing-and-failure-semantics">Bounds, pacing and failure semantics<a class="headerlink" href="#bounds-pacing-and-failure-semantics" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Defaults: 20 metadata records per page, <strong>one page</strong>, 20 Kalshi levels
+  per side, 2 MiB per response, 10-second socket timeout, one additional
+  attempt after a retryable failure. No polling loop or automatic
+  book acquisition follows discovery.</li>
+<li>Hard local caps: 100 records per page, 10 pages, 100 Kalshi levels per
+  side, 4 MiB per response, 30-second socket timeout and two retries.
+  Depth zero/unbounded Kalshi requests are refused. CLOB <code>/book</code> does
+  not expose this depth parameter; its full returned body must fit the
+  byte cap or acquisition fails rather than truncating the JSON.</li>
+<li>Requests within one client are spaced at least one second apart.
+  Retryable statuses are 429, 500, 502, 503 and 504; bounded network/socket
+  failures can also retry. Backoff is at least one second, then two
+  seconds. A valid <code>Retry-After</code> seconds value or HTTP date is honored.
+  A malformed value, or a requested delay exceeding the default 30-second
+  wait budget, aborts rather than retrying prematurely.</li>
+<li>Timeout is applied to socket operations, with a deadline checked
+  between bounded body chunks. It is <strong>not an OS-level hard DNS deadline</strong>.
+  Content-Length and streamed bytes are both bounded. Compressed
+  responses are refused after requesting identity encoding.</li>
+<li>Only exact HTTPS hosts, routes and supported query parameters are
+  accepted. All redirects are refused before a second request, including
+  redirects to another allowed host. No cookies, authentication handler,
+  environment proxy credentials or user-supplied headers are loaded.
+  Direct verified-TLS connections only; networks requiring proxy
+  configuration are unsupported, not worked around.</li>
+<li>HTTP failures propagate. There is no synthetic fallback. CLI acquisition
+  failure exits nonzero and writes no success snapshot. Library
+  <code>SnapshotError</code> retains completed pages and attempt metadata in memory
+  for inspection if a later page fails.</li>
+<li>Kalshi cursors are treated as opaque query values, never URLs. Repeated
+  cursors cause an error. Gamma uses the documented offset <code>/markets</code>
+  endpoint, not the newer keyset endpoint. Full final pages at the local
+  limit are marked possibly truncated; a short Gamma page or terminal
+  Kalshi cursor marks that response sequence exhausted.</li>
+<li>Mutable pagination is not a transactionally consistent universe.
+  Duplicate IDs are preserved and reported; gaps remain possible.
+  Even an exhausted traversal does not establish a complete historical
+  dataset. A finite-depth Kalshi book separately flags omitted levels as
+  possible.</li>
+</ul>
+<h3 id="saved-snapshot-schema-and-archival-meaning">Saved snapshot schema and archival meaning<a class="headerlink" href="#saved-snapshot-schema-and-archival-meaning" title="Permanent link">&para;</a></h3>
+<p>Each output is a <strong>new file</strong> ending in <code>.snapshot.json</code>, inside the current
+working directory. Existing files are not overwritten. The companion's <code>.gitignore</code>
+excludes that suffix everywhere and <code>data\local-snapshots\</code> entirely.
+Do not force-add or redistribute snapshots without applicable permission.</p>
+<p>The bundle contains:</p>
+<ul>
+<li><code>format</code>, <code>classification</code>, <code>venue</code>, <code>product</code>, <code>endpoint</code>,
+  <code>snapshot_scope: CURRENT_ONLY</code>, <code>historical_point_in_time: false</code>,
+  <code>publication_history: UNKNOWN</code>, and <code>live_edge_claim: false</code>.</li>
+<li>Explicit acknowledgement plus
+  <code>eligibility_or_redistribution_rights_verified: false</code>.</li>
+<li><code>schema_reference</code>: documented API version, official documentation
+  URLs, inspection date and deliberately limited schema-validation scope.</li>
+<li><code>started_at_utc</code>, <code>completed_at_utc</code>, configured <code>request_policy</code>, and
+  <code>attempts</code> recording requested URL, fixed GET method, local times,
+  HTTP/error status and retry delay where applicable.</li>
+<li><code>pages</code>: exact requested URL; UTC <strong>receive</strong> time; unknown publication
+  time; safe response metadata such as Content-Type, Date, ETag and
+  Last-Modified; byte count; original response bytes encoded as Base64;
+  SHA-256 of those exact bytes; parsed native <code>payload</code>; and a distinct
+  SHA-256 of the sorted, compact, UTF-8 parsed JSON representation.
+  Raw bytes are authoritative for original JSON numeric spelling.
+  The canonical payload hash does not imply a venue signature.</li>
+<li><code>pagination</code>: page and record counts, configured cap, explicit
+  <code>truncated</code>/<code>more_records_possible</code>, completion reason, continuation
+  cursor or offset, and duplicate IDs preserved.</li>
+<li>Requested Kalshi book depth, depth-truncation warning, and the explicit
+  absence of complete book history.</li>
+</ul>
+<p>Keep a source's native timestamp, local receive time, HTTP Date,
+Last-Modified and any metadata <code>updatedAt</code> separate. None automatically
+supplies the historical publication time of every returned field. A stored
+current snapshot can support a future prospective record; it does not
+retroactively become a historical vintage or an executable-profit record.</p>
+<h3 id="official-pages-inspected-and-documentation-inconsistencies">Official pages inspected and documentation inconsistencies<a class="headerlink" href="#official-pages-inspected-and-documentation-inconsistencies" title="Permanent link">&para;</a></h3>
+<p>Entry indexes: <a href="https://docs.kalshi.com/llms.txt">https://docs.kalshi.com/llms.txt</a> and
+<a href="https://docs.polymarket.com/llms.txt">https://docs.polymarket.com/llms.txt</a>. Endpoint/schema pages inspected
+2026-09-10:</p>
+<ul>
+<li><a href="https://docs.kalshi.com/api-reference/market/get-markets.md">https://docs.kalshi.com/api-reference/market/get-markets.md</a></li>
+<li><a href="https://docs.kalshi.com/api-reference/market/get-market-orderbook.md">https://docs.kalshi.com/api-reference/market/get-market-orderbook.md</a></li>
+<li><a href="https://docs.kalshi.com/getting_started/quick_start_market_data.md">https://docs.kalshi.com/getting_started/quick_start_market_data.md</a></li>
+<li><a href="https://docs.kalshi.com/getting_started/orderbook_responses.md">https://docs.kalshi.com/getting_started/orderbook_responses.md</a></li>
+<li><a href="https://docs.kalshi.com/getting_started/fixed_point_migration.md">https://docs.kalshi.com/getting_started/fixed_point_migration.md</a></li>
+<li><a href="https://docs.kalshi.com/getting_started/pagination.md">https://docs.kalshi.com/getting_started/pagination.md</a></li>
+<li><a href="https://docs.polymarket.com/api-reference/markets/list-markets.md">https://docs.polymarket.com/api-reference/markets/list-markets.md</a></li>
+<li><a href="https://docs.polymarket.com/api-reference/market-data/get-order-book.md">https://docs.polymarket.com/api-reference/market-data/get-order-book.md</a></li>
+<li><a href="https://docs.polymarket.com/market-data/discover-markets.md">https://docs.polymarket.com/market-data/discover-markets.md</a></li>
+<li><a href="https://docs.polymarket.com/market-data/prices-order-books.md">https://docs.polymarket.com/market-data/prices-order-books.md</a></li>
+<li><a href="https://docs.polymarket.com/api-reference/rate-limits.md">https://docs.polymarket.com/api-reference/rate-limits.md</a></li>
+</ul>
+<p>The Kalshi book guide explicitly describes unauthenticated public access,
+but the embedded endpoint OpenAPI also displayed authentication fields.
+The collector follows the public-GET guide without credentials and simply
+fails if the deployed endpoint refuses access. It never escalates to auth.
+The guide's array-order descriptions differ from some endpoint prose.
+Polymarket's narrative guide and OpenAPI examples also disagree on book
+array order. Therefore this collector <strong>preserves returned order and does
+not assume that index zero or the last index is the best executable level</strong>.
+These inconsistencies are disclosed rather than silently resolved into
+venue-trading behavior.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

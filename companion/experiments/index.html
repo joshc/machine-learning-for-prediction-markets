@@ -1,0 +1,2285 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/companion/experiments/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Real NOAA data: a frozen probability-forecasting study - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#real-noaa-data-a-frozen-probability-forecasting-study" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Real NOAA data: a frozen probability-forecasting study
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/02-probability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/05-market-microstructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/11-statistical-baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/12-trees-and-ensembles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/13-evolving-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/19-evidence-after-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/22-bankroll-and-portfolios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/23-learning-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/25-research-hypotheses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/28-quickstart-consistency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/30-first-live-trade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#reproduce-offline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reproduce offline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Reproduce offline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#acquisition-and-first-freeze-commands-actually-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Acquisition and first freeze: commands actually used
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#predeclared-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Predeclared protocol
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#actual-exclusions-and-counts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actual exclusions and counts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#frozen-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Frozen results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#files-row-schema-and-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Files, row schema, and verification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-this-study-cannot-establish" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What this study cannot establish
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="real-noaa-data-a-frozen-probability-forecasting-study">Real NOAA data: a frozen probability-forecasting study<a class="headerlink" href="#real-noaa-data-a-frozen-probability-forecasting-study" title="Permanent link">&para;</a></h1>
+<p><strong>Retrospective FINAL-VINTAGE teaching exercise, not a prediction-market
+backtest, an issued-forecast archive, or profitability evidence.</strong></p>
+<p>The question is whether a target-calendar-month event rate improves on an
+expanding overall rate when forecasting whether the recorded monthly CO2 mean
+is strictly greater than the immediately preceding calendar month's mean.
+Ties are NO. Both means are needed to define the eventual outcome; neither mean
+is used as a predictor. Models use only calendar information and labels already
+admitted under the hypothetical clock below.</p>
+<p>The real data are attributed NOAA GML measurements. See the
+<a href="../data/real/">data attribution and schema</a>,
+<a href="../data/real/provenance.json">provenance</a>, and
+<a href="../../research/data-feasibility/">research feasibility assessment</a>.
+No source-book code or text is used.</p>
+<h2 id="reproduce-offline">Reproduce offline<a class="headerlink" href="#reproduce-offline" title="Permanent link">&para;</a></h2>
+<p>Run these PowerShell commands from the companion project root,
+<code>book\companion</code>, after the <a href="../">documented installation</a>. The study reuses
+<code>prediction_market_lab.scoring.brier_score</code>, <code>log_loss</code>, and <code>calibration_bins</code>.
+It adds no dependencies or environment changes.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">experiments</span><span class="p">\</span><span class="n">noaa_study</span><span class="p">.</span><span class="n">py</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">unittest</span> <span class="n">tests</span><span class="p">.</span><span class="n">test_noaa_study</span> <span class="n">-v</span>
+</code></pre></div>
+<p>The default study command makes <strong>no network request and no file writes</strong>. It
+validates the CSV and provenance, verifies frozen data/protocol/implementation/
+shared-scoring hashes, recomputes predictions and summaries, and compares the
+exact bytes with the existing outputs. Missing data, changed inputs/results,
+schema errors, or insufficient training history fail explicitly. There is no
+synthetic fallback.</p>
+<p>The script's public CLI is deliberately small:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">experiments</span><span class="p">\</span><span class="n">noaa_study</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-help</span>
+</code></pre></div>
+<h3 id="acquisition-and-first-freeze-commands-actually-used">Acquisition and first freeze: commands actually used<a class="headerlink" href="#acquisition-and-first-freeze-commands-actually-used" title="Permanent link">&para;</a></h3>
+<p>The protocol was written <strong>before acquisition or inspecting either model's
+scores</strong>, at <code>2026-09-10T21:45:25Z</code>. This is a local predeclaration, not an
+external preregistration. The first acquisition and first evaluation used:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">experiments</span><span class="p">\</span><span class="n">noaa_study</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-refresh-data</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">unittest</span> <span class="n">tests</span><span class="p">.</span><span class="n">test_noaa_study</span><span class="p">.</span><span class="n">NOAAParserTests</span> <span class="n">tests</span><span class="p">.</span><span class="n">test_noaa_study</span><span class="p">.</span><span class="n">NOAAClockTests</span> <span class="n">tests</span><span class="p">.</span><span class="n">test_noaa_study</span><span class="p">.</span><span class="n">NOAAAcquisitionTests</span> <span class="n">-v</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">experiments</span><span class="p">\</span><span class="n">noaa_study</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-freeze-results</span>
+</code></pre></div>
+<p>The explicit acquisition contacts only the fixed public NOAA HTTPS URL. It
+rejects redirects, non-200 responses, malformed content, and responses over
+2,000,000 bytes; network operations use a 30-second socket timeout. It hashes the
+raw response in memory and writes only the selected 1975-2025 observations and
+provenance. It does not evaluate scores or replace frozen results.</p>
+<p>Acquisition completed at <strong><code>2026-09-10T21:48:07Z</code></strong>. The source's exact original
+creation string was <strong><code>Sat Sep  5 03:55:38 2026</code></strong>, with no specified timezone.
+The first and single frozen evaluation was persisted at
+<strong><code>2026-09-10T21:49:19Z</code></strong>.</p>
+<p>On this shipped checkout, acquisition or freezing without replacement flags
+refuses to overwrite existing artifacts. To deliberately replace a dataset
+or reviewed evaluation, the distinct explicit opt-ins are:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c"># Maintenance only: these are NOT the reproduction commands.</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">experiments</span><span class="p">\</span><span class="n">noaa_study</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-refresh-data</span> <span class="p">-</span><span class="o">-replace</span><span class="n">-data</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">experiments</span><span class="p">\</span><span class="n">noaa_study</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-freeze-results</span> <span class="p">-</span><span class="o">-replace</span><span class="n">-results</span>
+</code></pre></div>
+<p>These flags do not alter <code>protocol.json</code>. A refreshed source may have revisions;
+existing frozen results will then fail verification until explicitly replaced.
+Do not use replacement to select favorable results. Preserve the prior tracked
+artifacts in version history before intentional maintenance. The shipped
+frozen-data regression test pins the original extract hash; replacing a
+changed extract intentionally requires reviewing that test and all quoted
+book results. Parameter changes require a new reviewed protocol/implementation,
+not silently editing version 1. Exact-byte verification is intentionally strict:
+even a reviewed scoring implementation change requires inspecting and explicitly
+accepting a replacement run.</p>
+<p>Scoped <code>.gitattributes</code> rules disable Git line-ending normalization for hashed
+study/data artifacts and the shared <code>scoring.py</code>. The initial source files
+include CRLF endings while generated data use LF; forcing all files to LF would
+change the frozen hashes on a new checkout. Preserving the original bytes avoids
+that change without rewriting the protocol or rerunning a selected evaluation.
+A formatting-only change still trips the explicit implementation-review gate.
+The Git-filter regression locates the actual Git checkout root independently
+of this nested Python project, so it checks the same byte-preserving attributes
+whether the companion is nested or checked out on its own.</p>
+<h2 id="predeclared-protocol">Predeclared protocol<a class="headerlink" href="#predeclared-protocol" title="Permanent link">&para;</a></h2>
+<p><a href="protocol.json"><code>protocol.json</code></a> is the authoritative design. Its SHA-256 is
+<code>3ce89596a3bfa3fa12a2b30f116f473fc000a827623b4011839fd3d33f5f5e71</code>.</p>
+<ul>
+<li><strong>Source window:</strong> January 1975-December 2025, 612 calendar records.</li>
+<li><strong>Evaluation:</strong> January 2015-December 2025, fixed before scores; expanding
+  training rather than a model fitted once and left unchanged.</li>
+<li><strong>Valid event:</strong> two truly consecutive, valid calendar-month observations.
+  No shifting across deleted rows; no interpolation.</li>
+<li><strong>Clock:</strong> the label for target month <code>s</code> is admitted at 00:00 UTC on the first
+  day of month <code>s+2</code>. A forecast at the start of target month <code>t</code> uses target
+  labels no later than <code>t-2</code>. Thus the January 2015 forecast can use labels
+  through November 2014; December 2014 is not yet admitted.</li>
+<li><strong>Initial history:</strong> 1975-2014 records provide 475 pre-evaluation events,
+  of which <strong>474</strong> are admitted for January 2015. At least 36 admitted labels
+  are required for every forecast; failure is an error, not silently dropping
+  an evaluation month. Later evaluation labels enter training only after
+  their hypothetical admission dates.</li>
+<li><strong>Overall baseline:</strong> add one to the admitted YES count and divide by the
+  admitted count plus two, the Beta(1,1) posterior predictive mean.</li>
+<li><strong>Seasonal model:</strong> use the same smoothing but only admitted labels with
+  the target's calendar month. The month is the target month, not the prior
+  observation's month. No pooling or tuning.</li>
+<li><strong>Forbidden inputs:</strong> contemporaneous/target CO2 levels, deseasonalized
+  values, labels not yet admitted, and transformations fitted after cutoff.</li>
+<li><strong>Scoring:</strong> one equally weighted squared YES-probability error per event
+  for Brier score; natural-log loss. No endpoint clipping. Wrong zero-probability
+  forecasts have infinite log loss in the core; Beta smoothing keeps these
+  particular forecasts strictly inside zero and one.</li>
+<li><strong>Difference:</strong> seasonal score minus overall score; negative favors seasonal.</li>
+<li><strong>Inference:</strong> descriptive scores and fixed five-bin calibration summaries,
+  no p-values or confidence intervals. Eleven years of dependent monthly
+  events do not justify an independent-row uncertainty claim.</li>
+</ul>
+<p>The clock is an explicitly <strong>hypothetical retrospective index convention</strong>,
+not evidence of actual historical publication or local observation times.
+The final-vintage data limitation is not fixed by lagging labels.</p>
+<h2 id="actual-exclusions-and-counts">Actual exclusions and counts<a class="headerlink" href="#actual-exclusions-and-counts" title="Permanent link">&para;</a></h2>
+<p>The extract has 612 calendar rows, 610 valid source records, and <strong>607</strong> usable
+target events across all years. Five calendar targets are excluded:</p>
+<table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>January 1975</td>
+<td>No December 1974 predecessor in the conservative extract</td>
+</tr>
+<tr>
+<td>December 1975</td>
+<td>Target source record: nonpositive days and negative standard deviation</td>
+</tr>
+<tr>
+<td>January 1976</td>
+<td>Previous source record has those flags</td>
+</tr>
+<tr>
+<td>April 1984</td>
+<td>Target source record: negative standard deviation</td>
+</tr>
+<tr>
+<td>May 1984</td>
+<td>Previous source record has that flag</td>
+</tr>
+</tbody>
+</table>
+<p>None of these exclusions falls in the primary evaluation. It contains <strong>132
+monthly events</strong>, twelve in each of eleven years, with <strong>85 YES outcomes</strong>
+(rate <strong>0.643939394</strong>). The overall admitted-label count ranges from 474 to 605;
+the seasonal model has 38-50 same-calendar-month admitted labels per forecast.</p>
+<p>The sensitivity conservatively excludes full December 2022-July 2023 source
+months affected by alternate measurement location. Every event depending on an
+affected target <strong>or predecessor</strong> is removed from both training and evaluation.
+This excludes <strong>December 2022-August 2023 targets</strong>, nine events, leaving <strong>123</strong>
+evaluation events with <strong>79 YES outcomes</strong> (rate <strong>0.642276423</strong>). August is
+excluded because its July predecessor is affected; September remains eligible.
+The reduced cohort has eleven 2022 events and four 2023 events, with twelve in
+each other evaluation year. Both models are refitted using the same remaining
+admitted labels and scored on this same reduced cohort.</p>
+<h2 id="frozen-results">Frozen results<a class="headerlink" href="#frozen-results" title="Permanent link">&para;</a></h2>
+<p>Lower is better for both scores. All numbers below are descriptive and rounded
+for display; the report and prediction files retain full floating-point values.</p>
+<table>
+<thead>
+<tr>
+<th>Cohort</th>
+<th>Model</th>
+<th style="text-align: right;">Events</th>
+<th style="text-align: right;">Single-YES Brier</th>
+<th style="text-align: right;">Natural-log loss</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary</td>
+<td>Overall Beta(1,1)</td>
+<td style="text-align: right;">132</td>
+<td style="text-align: right;">0.230313524</td>
+<td style="text-align: right;">0.653345440</td>
+</tr>
+<tr>
+<td>Primary</td>
+<td>Target-month Beta(1,1)</td>
+<td style="text-align: right;">132</td>
+<td style="text-align: right;">0.032459388</td>
+<td style="text-align: right;">0.130672065</td>
+</tr>
+<tr>
+<td>Primary</td>
+<td>Paired seasonal minus overall</td>
+<td style="text-align: right;">132</td>
+<td style="text-align: right;"><strong>-0.197854136</strong></td>
+<td style="text-align: right;"><strong>-0.522673376</strong></td>
+</tr>
+<tr>
+<td>Sensitivity, refitted</td>
+<td>Overall Beta(1,1)</td>
+<td style="text-align: right;">123</td>
+<td style="text-align: right;">0.230757404</td>
+<td style="text-align: right;">0.654255460</td>
+</tr>
+<tr>
+<td>Sensitivity, refitted</td>
+<td>Target-month Beta(1,1)</td>
+<td style="text-align: right;">123</td>
+<td style="text-align: right;">0.034708546</td>
+<td style="text-align: right;">0.137639909</td>
+</tr>
+<tr>
+<td>Sensitivity, refitted</td>
+<td>Paired seasonal minus overall</td>
+<td style="text-align: right;">123</td>
+<td style="text-align: right;"><strong>-0.196048858</strong></td>
+<td style="text-align: right;"><strong>-0.516615551</strong></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Cohort</th>
+<th>Overall probability range</th>
+<th>Seasonal probability range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primary</td>
+<td>0.630472855-0.639622642</td>
+<td>0.019230769-0.980769231</td>
+</tr>
+<tr>
+<td>Sensitivity, refitted</td>
+<td>0.630017452-0.639622642</td>
+<td>0.019230769-0.980769231</td>
+</tr>
+</tbody>
+</table>
+<p>To separate removal of events from refitting effects, the predeclared report
+also scores the <strong>original primary forecasts on the same 123-event sensitivity
+cohort</strong>. On that matched cohort, without refitting, overall/seasonal Brier scores
+are 0.230747205 / 0.034717811, and log losses are 0.654233669 / 0.137703440.
+Those are a cohort diagnostic, not an additional model selected after evaluation.</p>
+<p><img alt="Original NOAA final-vintage calibration and Brier-score figure" src="assets/noaa_calibration_scores.svg" /></p>
+<p>The original SVG uses the verified report, not a second fit or evaluation
+selection. Nonempty calibration bins show their monthly event counts.
+It can be regenerated offline with the standard library; no plotting dependency
+was added:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">experiments</span><span class="p">\</span><span class="n">render_noaa_figure</span><span class="p">.</span><span class="n">py</span>
+</code></pre></div>
+<p>This separate rendering command writes the SVG asset; the default study command
+continues to write nothing. The figure is descriptive and has no uncertainty
+bands. Source data, modeling transformations, and the no-endorsement boundary
+remain labeled.</p>
+<p>The simple seasonal model has lower scores in this frozen descriptive comparison.
+Recurring seasonality is useful for this particular recorded-rise target.
+That observation does not show that either probability is calibrated in another
+domain, beats market prices, or can support a profitable trade.</p>
+<h2 id="files-row-schema-and-verification">Files, row schema, and verification<a class="headerlink" href="#files-row-schema-and-verification" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="noaa_study.py"><code>noaa_study.py</code></a></td>
+<td>Explicit acquisition; parsing/validation; hypothetical clock; shared-core scoring; frozen verification</td>
+</tr>
+<tr>
+<td><a href="protocol.json"><code>protocol.json</code></a></td>
+<td>Versioned predeclaration, never rewritten by the CLI</td>
+</tr>
+<tr>
+<td><a href="../data/real/noaa_co2_monthly_1975_2025.csv"><code>../data/real/noaa_co2_monthly_1975_2025.csv</code></a></td>
+<td>Filtered, attributed real observations including flags</td>
+</tr>
+<tr>
+<td><a href="../data/real/provenance.json"><code>../data/real/provenance.json</code></a></td>
+<td>Actual retrieval and source metadata, schema, hashes, counts</td>
+</tr>
+<tr>
+<td><a href="results/predictions.csv"><code>results/predictions.csv</code></a></td>
+<td>Exactly one primary forecast row per usable evaluation month</td>
+</tr>
+<tr>
+<td><a href="results/sensitivity_predictions.csv"><code>results/sensitivity_predictions.csv</code></a></td>
+<td>Exactly one refitted sensitivity row per comparable month</td>
+</tr>
+<tr>
+<td><a href="results/report.json"><code>results/report.json</code></a></td>
+<td>Counts, exclusions, model definitions, scores, probability ranges, fixed-bin calibration, matched-cohort diagnostic, limitations</td>
+</tr>
+<tr>
+<td><a href="results/frozen_run.json"><code>results/frozen_run.json</code></a></td>
+<td>Actual freeze time and input/output hash bindings</td>
+</tr>
+<tr>
+<td><a href="render_noaa_figure.py"><code>render_noaa_figure.py</code></a></td>
+<td>Standard-library rendering of a verified report; no additional fitting</td>
+</tr>
+<tr>
+<td><a href="assets/noaa_calibration_scores.svg"><code>assets/noaa_calibration_scores.svg</code></a></td>
+<td>Original accessible SVG, not a NOAA-produced or endorsed figure</td>
+</tr>
+<tr>
+<td><a href="../tests/test_noaa_study.py"><code>../tests/test_noaa_study.py</code></a></td>
+<td>Stdlib unittest checks, including a real offline subprocess invocation</td>
+</tr>
+</tbody>
+</table>
+<p>Prediction CSV columns identify target/previous months, UTC hypothetical
+forecast/label-admission timestamps, eventual binary label, training cutoff,
+latest admitted target, overall and seasonal training/YES counts, both
+probabilities, both per-event Brier/log losses, and per-event paired differences.
+Each event is present once within its cohort; repeated monthly snapshots are
+not counted as independent observations.</p>
+<p>Tests verify gaps and ties, flags independently, invalid dates, duplicates and
+ordering, exact eight-field schemas, finite values, response limits/errors,
+admission at <code>s+2</code>, invariance to changing unadmitted/future labels, explicit
+insufficient-history errors, frozen hashes/counts, shared score agreement,
+replacement gates, tampered inputs/results, and actual offline reproduction
+without network or writes. The small hand-constructed records in unit tests
+test edge cases; they are not used in the empirical results.</p>
+<h2 id="what-this-study-cannot-establish">What this study cannot establish<a class="headerlink" href="#what-this-study-cannot-establish" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Point-in-time validity:</strong> the source is a mutable current/final-vintage
+   series, not a historical release archive. Revisions and provider processing
+   can affect threshold labels. Even the <code>average</code> column includes center-of-
+   month correction; avoiding the deseasonalized column is necessary but not
+   sufficient to reconstruct historical knowledge.</li>
+<li><strong>Historical availability:</strong> the study has no verified original publication
+   timestamps. The hypothetical lag teaches an admission discipline rather
+   than proving data were available at a past decision time.</li>
+<li><strong>Market forecast quality:</strong> there are no historical event contracts or
+   market prices to compare with either model.</li>
+<li><strong>Profitability or execution:</strong> there are no spreads, fees, collateral,
+   orders, fills, latency, queues, or settlement rules. No P&amp;L is computed.</li>
+<li><strong>Generalization or certainty:</strong> observed seasonality and eleven evaluation
+   years cannot establish an edge in unrelated event markets. There is no
+   independent-month significance claim and no guaranteed future performance.</li>
+<li><strong>A live-trade permission gate:</strong> this experiment is <strong>not passing evidence
+   for the first-live-trade guide</strong>. Real money, eligibility, and operational
+   verification remain separate questions.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

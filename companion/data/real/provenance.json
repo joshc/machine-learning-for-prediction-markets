@@ -1,0 +1,71 @@
+{
+  "acquired_at_utc": "2026-09-10T21:48:07Z",
+  "attribution": "NOAA Global Monitoring Laboratory, Carbon Cycle and Greenhouse Gases group",
+  "citation_ids": [
+    "NOAA_CO2",
+    "NOAA_DATA",
+    "NOAA_POLICY"
+  ],
+  "csv_columns_in_order": [
+    "year",
+    "month",
+    "decimal_date",
+    "average",
+    "deseasonalized",
+    "ndays",
+    "sdev",
+    "uncertainty"
+  ],
+  "csv_encoding": "ASCII",
+  "csv_line_endings": "LF",
+  "csv_schema": {
+    "average": "finite monthly mean CO2 ppm; nonpositive is unusable",
+    "decimal_date": "finite source decimal year, not availability time",
+    "deseasonalized": "finite source adjusted CO2 ppm; retained, never a feature",
+    "month": "integer calendar month 1-12",
+    "ndays": "integer contributing days; <=0 unusable, cannot exceed calendar length",
+    "sdev": "finite daily standard deviation ppm; negative is a source flag",
+    "uncertainty": "finite monthly-mean uncertainty ppm; negative is a source flag",
+    "year": "integer observation year"
+  },
+  "documentation_url": "https://gml.noaa.gov/ccgg/trends/data.html",
+  "excluded_after_selection": 8,
+  "excluded_before_selection": 202,
+  "frozen_csv_sha256": "e3f26607a312e892d4a835d88db37d57c168039f048d2987a638b717c8ef51a4",
+  "location_discontinuity": "December 2022-July 4, 2023 measurements at Maunakea; sensitivity excludes full December 2022-July 2023 source months and dependent target pairs.",
+  "protocol_id": "noaa-monthly-increase-v1",
+  "protocol_sha256": "3ce89596a3bfa3fa12a2b30f116f473fc000a827623b4011839fd3d33f5f5e71",
+  "raw_calendar_rows": 822,
+  "raw_first_month": "1958-03",
+  "raw_last_month": "2026-08",
+  "raw_response_bytes": 59608,
+  "raw_response_persisted": false,
+  "raw_response_sha256": "c9a91a170d09d16afaaad56c4f383ed4fcb7fa0da967998694842d5c8168bcf3",
+  "rights": "NOAA government data under stated public-domain policy, subject to attribution, no endorsement, and labeling transformations. Third-party exceptions are not generalized away.",
+  "rights_boundary": "Exclude early Scripps records (March 1958-April 1974) rather than assume NOAA government-work policy licenses third-party data. Conservative extract begins January 1975.",
+  "schema_version": 1,
+  "selected_calendar_rows": 612,
+  "selected_flagged_records": [
+    {
+      "month": "1975-12",
+      "reasons": [
+        "flagged_or_zero_ndays",
+        "negative_sdev"
+      ]
+    },
+    {
+      "month": "1984-04",
+      "reasons": [
+        "negative_sdev"
+      ]
+    }
+  ],
+  "selected_valid_records": 610,
+  "selection": "Keep January 1975 through December 2025 inclusive; preserve original field tokens, including flagged records. No entire raw response persisted.",
+  "source_creation_string": "Sat Sep  5 03:55:38 2026",
+  "source_creation_timezone": "Not specified by source; not converted or inferred",
+  "source_url": "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
+  "transformation_notice": "Whitespace-to-CSV normalization and derived study outputs are original transformations, not official NOAA products.",
+  "use_policy_url": "https://gml.noaa.gov/about/disclaimer.html",
+  "vintage_caution": "Mutable current/final-vintage extract, including revisions, interpolation flags and center-of-month correction. No historical release archive."
+}

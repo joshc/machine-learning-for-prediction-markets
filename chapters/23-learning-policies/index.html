@@ -1,0 +1,2450 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/chapters/23-learning-policies/">
+      
+      
+        <link rel="prev" href="../22-bankroll-and-portfolios/">
+      
+      
+        <link rel="next" href="../24-paper-operations/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>23. Learning execution policies in simulation - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#23-learning-execution-policies-in-simulation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              23. Learning execution policies in simulation
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-probability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-market-microstructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-statistical-baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-trees-and-ensembles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-evolving-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-evidence-after-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../22-bankroll-and-portfolios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#231-state-action-and-reward-for-a-wait-or-buy-decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.1 State, action, and reward for a wait-or-buy decision
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#232-learning-a-tabular-policy-from-a-behavior-policy-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.2 Learning a tabular policy from a behavior-policy log
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#233-evaluating-a-policy-without-deploying-it-the-importance-sampling-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.3 Evaluating a policy without deploying it: the importance-sampling identity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#234-effective-sample-size-a-variance-diagnostic-not-a-bias-fix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.4 Effective sample size: a variance diagnostic, not a bias fix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#235-same-regime-versus-a-shifted-regime-two-different-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.5 Same regime versus a shifted regime: two different questions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#236-reward-arrival-timing-no-lookahead-ever" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.6 Reward-arrival timing: no lookahead, ever
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#237-missing-support-must-be-rejected-not-extrapolated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.7 Missing support must be rejected, not extrapolated
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#238-why-a-simulators-ips-reward-is-not-real-profit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.8 Why a simulator's IPS reward is not real profit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#239-assumptions-and-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.9 Assumptions and failure modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2310-companion-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.10 Companion example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-a-third-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: a third context
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-unbiasedness-with-three-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: unbiasedness with three actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-computing-an-effective-sample-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: computing an effective sample size
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-why-missing-support-cannot-be-patched-with-an-average" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: why missing support cannot be patched with an average
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-why-a-positive-shifted-regime-ips-number-still-would-not-license-live-trading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: why a positive shifted-regime IPS number still would not license live trading
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../25-research-hypotheses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../28-quickstart-consistency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../30-first-live-trade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../companion/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#231-state-action-and-reward-for-a-wait-or-buy-decision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.1 State, action, and reward for a wait-or-buy decision
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#232-learning-a-tabular-policy-from-a-behavior-policy-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.2 Learning a tabular policy from a behavior-policy log
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#233-evaluating-a-policy-without-deploying-it-the-importance-sampling-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.3 Evaluating a policy without deploying it: the importance-sampling identity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#234-effective-sample-size-a-variance-diagnostic-not-a-bias-fix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.4 Effective sample size: a variance diagnostic, not a bias fix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#235-same-regime-versus-a-shifted-regime-two-different-questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.5 Same regime versus a shifted regime: two different questions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#236-reward-arrival-timing-no-lookahead-ever" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.6 Reward-arrival timing: no lookahead, ever
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#237-missing-support-must-be-rejected-not-extrapolated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.7 Missing support must be rejected, not extrapolated
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#238-why-a-simulators-ips-reward-is-not-real-profit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.8 Why a simulator's IPS reward is not real profit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#239-assumptions-and-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.9 Assumptions and failure modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2310-companion-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        23.10 Companion example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-a-third-context" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: a third context
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-unbiasedness-with-three-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: unbiasedness with three actions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-computing-an-effective-sample-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: computing an effective sample size
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-why-missing-support-cannot-be-patched-with-an-average" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: why missing support cannot be patched with an average
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-why-a-positive-shifted-regime-ips-number-still-would-not-license-live-trading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: why a positive shifted-regime IPS number still would not license live trading
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="23-learning-execution-policies-in-simulation">23. Learning execution policies in simulation<a class="headerlink" href="#23-learning-execution-policies-in-simulation" title="Permanent link">&para;</a></h1>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>Read <a href="../17-forecast-to-order/">the forecast-to-order decision</a>, <a href="../18-execution-aware-backtests/">a backtest that respects execution</a>, <a href="../19-evidence-after-search/">evidence after strategy search</a>, and Chapters 21-22 before this chapter. You should be comfortable with conditional expectation, the notion of a decision cutoff and label availability from the <a href="../../notation/">notation registry</a>, and the glossary entries for <strong>leakage</strong>, <strong>selection bias</strong>, and <strong>untouched evaluation</strong>.</p>
+<h2 id="learning-objectives">Learning objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">&para;</a></h2>
+<p>By the end of this chapter, you should be able to: formalize state, action, and reward for a simple one-step wait-or-buy decision; derive the tabular greedy learning rule and explain why it needs full context-action support; derive the inverse-propensity-scoring (IPS) estimator from an importance-sampling identity and explain what it requires to be valid; compute and interpret an effective sample size as a variance diagnostic; explain why evaluating a learned policy under a shifted regime is a genuinely different test from evaluating it on more data from the same regime; state precisely why reward timing rules out any lookahead; and explain, with a concrete numeric contrast, why a simulator's reward estimate is not evidence of real trading profit.</p>
+<h2 id="231-state-action-and-reward-for-a-wait-or-buy-decision">23.1 State, action, and reward for a wait-or-buy decision<a class="headerlink" href="#231-state-action-and-reward-for-a-wait-or-buy-decision" title="Permanent link">&para;</a></h2>
+<p>A <strong>contextual bandit</strong> observes a context, chooses an action, and receives a reward. Here <span class="arithmatex">\(S\in\{0,1\}\)</span> is an invented feature bucket and <span class="arithmatex">\(A\in\{\text{wait},\text{buy}\}\)</span>. To match conventional bandit notation, this chapter uses <span class="arithmatex">\(R\)</span> locally for <strong>net reward</strong>, not the notation registry's terminal contract payout; the settlement outcome is <span class="arithmatex">\(Y\)</span>, and buying earns <span class="arithmatex">\(R=Y-0.51\)</span>. Likewise <span class="arithmatex">\(b(a\mid s)\)</span> below denotes the behavior-policy probability, not an executable bid.</p>
+<p>Define the reward explicitly. Waiting always yields <span class="arithmatex">\(R=0\)</span>: no cash is committed, and (for now) no opportunity cost is charged for having declined an available trade — a simplification flagged in Section 23.6. Buying commits to an all-in invented cost of USD 0.51 per unit for this chapter's own simulator (a distinct, explicitly labeled convention, not to be confused with the book's shared canonical USD 0.41 accounting example used in Chapters 21-22); the reward is <span class="arithmatex">\(R = Y - 0.51\)</span> if the underlying binary settlement is <span class="arithmatex">\(Y\)</span>, and <span class="arithmatex">\(0\)</span> if the action was wait. This is a one-step episode: one context, one action, one reward, with no sequence of states evolving afterward. That simplicity is deliberate and is itself a limitation, addressed in Section 23.6.</p>
+<p>Given a context-conditional probability <span class="arithmatex">\(p_s = P(Y=1\mid S=s)\)</span>, the expected reward of each action is immediate:</p>
+<div class="arithmatex">\[
+\mathbb{E}[R\mid S=s, A=\text{buy}] = p_s - 0.51, \qquad \mathbb{E}[R\mid S=s, A=\text{wait}] = 0.
+\]</div>
+<p>Suppose <span class="arithmatex">\(p_0=0.35\)</span> and <span class="arithmatex">\(p_1=0.65\)</span> (two invented, distinct context-conditional success rates). Then <span class="arithmatex">\(\mathbb{E}[R\mid S{=}0,\text{buy}] = 0.35-0.51 = -0.16\)</span>, so waiting (reward 0) dominates buying in context 0. In context 1, <span class="arithmatex">\(\mathbb{E}[R\mid S{=}1,\text{buy}] = 0.65-0.51 = 0.14 &gt; 0\)</span>, so buying dominates waiting. The optimal deterministic policy is therefore <span class="arithmatex">\(\pi^{*}(0)=\text{wait}\)</span>, <span class="arithmatex">\(\pi^{*}(1)=\text{buy}\)</span> — a policy this chapter's companion example actually recovers from logged data, as Section 23.8 shows.</p>
+<h2 id="232-learning-a-tabular-policy-from-a-behavior-policy-log">23.2 Learning a tabular policy from a behavior-policy log<a class="headerlink" href="#232-learning-a-tabular-policy-from-a-behavior-policy-log" title="Permanent link">&para;</a></h2>
+<p>A real decision-maker does not know <span class="arithmatex">\(p_s\)</span> directly; it must be estimated from a log of past decisions and their observed rewards. The log is generated by a <strong>behavior policy</strong>: whatever process (a fixed rule, a human, or a randomizer) actually chose the logged actions. A simple and instructive behavior policy logs actions uniformly at random with a known <strong>propensity</strong> — the probability the behavior policy assigned to the action it happened to take, for example <span class="arithmatex">\(b(a\mid s)=0.5\)</span> for either action in either context, exactly the policy used to generate this chapter's simulated log.</p>
+<p>Given such a log, a <strong>tabular</strong> learning rule estimates <span class="arithmatex">\(\mathbb{E}[R\mid S{=}s,A{=}a]\)</span> by the empirical mean reward among logged rows sharing that exact context and action, then picks the action with the higher empirical mean in each context. This rule requires <strong>full support</strong>: every one of the four (context, action) combinations must actually appear in the log, or there is no data to estimate one of the means from, and the honest response is to refuse to produce a policy for that context rather than silently guessing. A behavior policy that never tries a particular action in a particular context makes that action's value permanently unlearnable from this log, no matter how large the log otherwise is — a first, simple instance of the <strong>off-policy support</strong> requirement developed further below.</p>
+<h2 id="233-evaluating-a-policy-without-deploying-it-the-importance-sampling-identity">23.3 Evaluating a policy without deploying it: the importance-sampling identity<a class="headerlink" href="#233-evaluating-a-policy-without-deploying-it-the-importance-sampling-identity" title="Permanent link">&para;</a></h2>
+<p>Suppose a policy <span class="arithmatex">\(\pi\)</span> has been learned (Section 23.2), and the question is how well it would have performed, without actually running it live. If the log was generated by a <em>different</em> policy — the behavior policy <span class="arithmatex">\(b\)</span> — a naive average of logged rewards answers the wrong question, because it reflects <span class="arithmatex">\(b\)</span>'s action choices, not <span class="arithmatex">\(\pi\)</span>'s. <strong>Inverse propensity scoring (IPS)</strong> corrects for this with an importance-sampling reweighting. Define, for each logged row <span class="arithmatex">\(i\)</span> with context <span class="arithmatex">\(S_i\)</span>, action <span class="arithmatex">\(A_i\)</span>, reward <span class="arithmatex">\(R_i\)</span>, and known propensity <span class="arithmatex">\(b(A_i\mid S_i)\)</span>, the estimator</p>
+<div class="arithmatex">\[
+\hat V(\pi) = \frac{1}{n}\sum_{i=1}^{n} \frac{\mathbf 1\{A_i=\pi(S_i)\}}{b(A_i\mid S_i)}\,R_i.
+\]</div>
+<p>To see why this targets <span class="arithmatex">\(\mathbb{E}[R\mid S,\pi(S)]\)</span>, condition on a fixed context <span class="arithmatex">\(s\)</span> and take the expectation of one term over the behavior policy's own action distribution:</p>
+<div class="arithmatex">\[
+\mathbb{E}_b\!\left[\frac{\mathbf 1\{A=\pi(s)\}}{b(A\mid s)}R \,\middle|\, S=s\right]
+= \sum_{a} b(a\mid s)\cdot\frac{\mathbf 1\{a=\pi(s)\}}{b(a\mid s)}\cdot \mathbb{E}[R\mid S=s, A=a]
+= \mathbb{E}[R\mid S=s, A=\pi(s)],
+\]</div>
+<p>because only the target-action term survives. Averaging over contexts targets the policy's reward in the logging population. For the causal "what if we used this action" interpretation, the logged reward distribution must also match the reward that action would produce under the target policy: no hidden action-selection confounding after conditioning on the recorded context, and no unmodeled interference or policy-induced change in the reward mechanism. Randomized actions in this simulator satisfy that requirement by construction. A human log with a recorded propensity field does not establish it automatically.</p>
+<p>Unbiasedness here treats <span class="arithmatex">\(\pi\)</span> as fixed independently of the evaluation outcomes and requires positive behavior probability for every target action. Evaluating a policy on the same rewards used to select it reintroduces selection bias. Doubly robust methods combine reward and behavior-policy models under their own assumptions; they are related work, not implemented here and not a remedy for missing support. <a href="../../references/#dudik2011">DUDIK2011</a></p>
+<h2 id="234-effective-sample-size-a-variance-diagnostic-not-a-bias-fix">23.4 Effective sample size: a variance diagnostic, not a bias fix<a class="headerlink" href="#234-effective-sample-size-a-variance-diagnostic-not-a-bias-fix" title="Permanent link">&para;</a></h2>
+<p>The IPS estimator's variance depends on how uneven the importance weights <span class="arithmatex">\(1/b(A_i\mid S_i)\)</span> are; if many logged rows receive weight zero (because their action differs from what the target policy would choose) and the rest carry a large uniform weight, the <em>effective</em> number of independent observations behind the estimate is smaller than the raw row count <span class="arithmatex">\(n\)</span>. A standard diagnostic is the <strong>effective sample size</strong>,</p>
+<div class="arithmatex">\[
+\mathrm{ESS} = \frac{\left(\sum_i w_i\right)^2}{\sum_i w_i^2}, \qquad w_i = \frac{\mathbf 1\{A_i=\pi(S_i)\}}{b(A_i\mid S_i)}.
+\]</div>
+<p>If nonzero weights are equal, this ESS equals their count; unequal weights reduce it. With uniform two-action logging, 409 matching rows out of 800 give ESS 409. This is a <strong>weight-concentration diagnostic</strong>, not an exact effective sample size for every reward distribution and not a correction for event dependence. Reward variance, dependence, and the relationship between reward and weight also affect the estimator's uncertainty. A healthy ESS does not prove unbiasedness, adequate support in every region, or simulator realism.</p>
+<h2 id="235-same-regime-versus-a-shifted-regime-two-different-questions">23.5 Same regime versus a shifted regime: two different questions<a class="headerlink" href="#235-same-regime-versus-a-shifted-regime-two-different-questions" title="Permanent link">&para;</a></h2>
+<p>Holding out a fresh batch of logged rounds generated by the <em>same</em> simulator settings tests whether the learned policy generalizes within the regime it was trained on. Holding out a batch generated under a deliberately shifted regime — for instance, subtracting a fixed amount from every context's success probability, representing a stylized "conditions got worse" scenario — tests something categorically different: whether a policy learned under one regime remains sensible under another. Because <span class="arithmatex">\(\pi^{*}\)</span> was derived in Section 23.1 from <span class="arithmatex">\(p_0=0.35, p_1=0.65\)</span>, and the shifted regime moves both down by 0.30 to <span class="arithmatex">\(0.05\)</span> and <span class="arithmatex">\(0.35\)</span>, the previously profitable context-1 buy action now has expected reward <span class="arithmatex">\(0.35-0.51=-0.16\)</span>, no longer positive; the <em>fixed</em> action mapping learned under the old regime is not the optimal mapping under the new one, yet the policy still executes the old mapping because nothing in this one-step setup detects the shift. A same-simulator held-out evaluation and a shifted-regime held-out evaluation must be reported separately and neither substitutes for the other: a policy that looks robust only because it was re-tested on more of the <em>same</em> conditions has not been tested against a <strong>train/test market regime</strong> change at all, and a change in market regime (a shift in liquidity, information flow, or participant composition) is exactly the kind of real-world discontinuity a fixed historical evaluation window cannot promise to represent.</p>
+<p>Reusing one learned policy, one simulator, and one train/test split repeatedly while quietly trying several regime definitions until a favorable-looking comparison appears is a form of the selection problem examined in backtest-overfitting research; recording every regime and split actually tried, not only the reported one, is necessary before treating any single comparison as informative. <a href="../../references/#bailey2017">BAILEY2017</a></p>
+<h2 id="236-reward-arrival-timing-no-lookahead-ever">23.6 Reward-arrival timing: no lookahead, ever<a class="headerlink" href="#236-reward-arrival-timing-no-lookahead-ever" title="Permanent link">&para;</a></h2>
+<p>The one-step simulator generates the settlement and reward within the same loop iteration. Real rewards may become known long after an action. A reward may enter fitting only when its <strong>availability time is no later than that fitting cutoff</strong>; it need not be known at its own earlier action time. Later evaluation of a frozen action against its eventual reward is legitimate. Using that reward to alter the earlier action, its features, or the policy that supposedly chose it is not.</p>
+<p>A policy retrained during a log must therefore wait for each training reward's actual availability. Repeatedly improving a policy in the same simulator is a separate risk: it can optimize simulator quirks. Use a held-out evaluation log and prespecified stress regimes rather than reporting only rewards that helped choose the policy.</p>
+<h2 id="237-missing-support-must-be-rejected-not-extrapolated">23.7 Missing support must be rejected, not extrapolated<a class="headerlink" href="#237-missing-support-must-be-rejected-not-extrapolated" title="Permanent link">&para;</a></h2>
+<p>Distinguish two failures. If the behavior policy gives a target action <strong>zero probability</strong> in a relevant context, population support fails and the IPS identity cannot identify that action's value. If the probability is positive but the finite sample happens to contain no matching action, the observed weights are zero, not undefined; ordinary IPS remains mathematically defined, but that sample contains no direct reward evidence for the missing pair.</p>
+<p>The companion adopts a stricter finite-sample gate: <code>ips_value</code> refuses to report a value unless every target context-action pair appears at least once. This is an explicit teaching safeguard, not a theorem that IPS weights become undefined whenever a random sample misses a pair. One occurrence also does not ensure adequate precision. Fixed-batch RL literature motivates avoiding unsupported extrapolation but supplies no market-execution guarantee. <a href="../../references/#fujimoto2019">FUJIMOTO2019</a></p>
+<h2 id="238-why-a-simulators-ips-reward-is-not-real-profit">23.8 Why a simulator's IPS reward is not real profit<a class="headerlink" href="#238-why-a-simulators-ips-reward-is-not-real-profit" title="Permanent link">&para;</a></h2>
+<p>Even a fully correct IPS estimate, computed on a log with adequate support and a healthy effective sample size, only answers "what would this target policy have earned under exactly this simulator's assumptions." Several of those assumptions are chosen for teaching clarity and do not describe a real market. Rewards here are independent across rounds, with no shared-event dependence, no fees beyond the flat invented USD 0.51 cost, no order depth, no partial fills, no latency, and no queue competition. Contexts are two artificial buckets rather than a genuine, high-dimensional feature vector. Propensities are known exactly by construction, because the behavior policy was built to log them; a real historical decision log rarely comes with exact, verified logging probabilities attached, and estimating them introduces its own error that plain IPS does not account for. None of the diagnostics in this chapter — support checks, effective sample size, or a shifted-regime comparison — can certify that the simulator itself resembles any actual venue's mechanics; they only certify that the <em>estimator</em> is behaving correctly given the simulator it was handed. A favorable IPS number is evidence about a specific labeled simulation, not about a tradable real-world edge.</p>
+<h2 id="239-assumptions-and-failure-modes">23.9 Assumptions and failure modes<a class="headerlink" href="#239-assumptions-and-failure-modes" title="Permanent link">&para;</a></h2>
+<p>This chapter's derivations assume a single decision round with an immediately resolved reward, a known and strictly positive logging propensity for every action a target policy would ever choose, independent rounds with no shared-outcome dependence, and a policy space restricted to deterministic, per-context action choices. Violating the positive-propensity assumption breaks the importance-sampling identity outright, not merely its accuracy. Violating round independence (for instance, if several logged rounds actually referenced the same underlying real-world event) would make the effective sample size calculation overstate genuine informational content, similar to the event-grouping cautions from earlier chapters. Extending this framework to a genuine multi-step reinforcement-learning setting, with fills, latency, and queueing folded into a state that evolves over time, requires substantially more machinery than the tabular one-step case shown here and is not attempted in this chapter.</p>
+<h2 id="2310-companion-example">23.10 Companion example<a class="headerlink" href="#2310-companion-example" title="Permanent link">&para;</a></h2>
+<p>The companion script <a href="../../companion/examples/policy_learning.py"><code>policy_learning.py</code></a> builds an 800-round logged bandit under the Section 23.1 context-success probabilities, learns a tabular policy, and evaluates it two ways: on a fresh same-simulator held-out log, and on a log generated under the Section 23.5 adverse-selection-shifted regime. The learned policy is wait in context 0 and buy in context 1, exactly matching Section 23.1's derivation. The same-simulator held-out evaluation reports an IPS reward per round of approximately 0.091175 with an effective sample size of about 409 out of 800 logged rounds; the shifted-regime evaluation reports approximately minus 0.088825 at the same effective sample size, concretely illustrating Section 23.5's point that the same fixed policy performs oppositely once the underlying regime changes. A separate call demonstrates the missing-support rejection from Section 23.7 using a two-row log that never tries the buy action in either context. Run it with:</p>
+<p><strong>Command working directory:</strong> run this chapter's Python commands from <code>book\companion</code>. From the trading repository root, run <code>Set-Location book\companion</code> once first. The <code>.venv</code> belongs to that companion project; see <a href="../../companion/">companion setup</a>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">examples</span><span class="p">\</span><span class="n">policy_learning</span><span class="p">.</span><span class="n">py</span>
+</code></pre></div>
+<p>The companion's own output explicitly labels its rewards synthetic and notes that IPS needs known propensities and support, not merely logged prices; nothing in this example is presented as measured trading performance.</p>
+<h2 id="exercises-and-solution-sketches">Exercises and solution sketches<a class="headerlink" href="#exercises-and-solution-sketches" title="Permanent link">&para;</a></h2>
+<h3 id="exercise-1-a-third-context">Exercise 1: a third context<a class="headerlink" href="#exercise-1-a-third-context" title="Permanent link">&para;</a></h3>
+<p>Add a third context with <span class="arithmatex">\(p_2 = 0.20\)</span> to Section 23.1's setup, using the same USD 0.51 all-in cost. What is the optimal action in this context, and why?</p>
+<p><strong>Solution sketch.</strong> <span class="arithmatex">\(\mathbb{E}[R\mid S{=}2,\text{buy}] = 0.20-0.51=-0.31 &lt; 0 = \mathbb{E}[R\mid S{=}2,\text{wait}]\)</span>, so waiting is optimal, by an even larger margin than in context 0.</p>
+<h3 id="exercise-2-unbiasedness-with-three-actions">Exercise 2: unbiasedness with three actions<a class="headerlink" href="#exercise-2-unbiasedness-with-three-actions" title="Permanent link">&para;</a></h3>
+<p>Sketch, without full algebra, why the importance-sampling identity in Section 23.3 still holds if there are three possible actions per context instead of two, provided the target policy still chooses one deterministic action per context.</p>
+<p><strong>Solution sketch.</strong> The sum in the derivation ranges over however many actions the behavior policy can choose; the indicator still zeroes out every term except <span class="arithmatex">\(a=\pi(s)\)</span>, and the <span class="arithmatex">\(b(a\mid s)\)</span> factors still cancel for that surviving term. The number of actions does not affect the cancellation, only how many terms exist before it.</p>
+<h3 id="exercise-3-computing-an-effective-sample-size">Exercise 3: computing an effective sample size<a class="headerlink" href="#exercise-3-computing-an-effective-sample-size" title="Permanent link">&para;</a></h3>
+<p>A held-out log of 4 rows has importance weights <span class="arithmatex">\((2, 2, 0, 0)\)</span> for a given policy. Compute the effective sample size and compare it to the raw row count.</p>
+<p><strong>Solution sketch.</strong> <span class="arithmatex">\(\mathrm{ESS} = (2+2+0+0)^2/(2^2+2^2+0+0) = 16/8 = 2\)</span>. The effective sample size equals the count of nonzero, equal-weight rows (2), well below the raw count of 4, because the two zero-weight rows contribute nothing.</p>
+<h3 id="exercise-4-why-missing-support-cannot-be-patched-with-an-average">Exercise 4: why missing support cannot be patched with an average<a class="headerlink" href="#exercise-4-why-missing-support-cannot-be-patched-with-an-average" title="Permanent link">&para;</a></h3>
+<p>A held-out log never tries the buy action in context 1, but the target policy chooses buy there. Explain why substituting the overall average reward from other contexts is not an acceptable fix.</p>
+<p><strong>Solution sketch.</strong> The importance-sampling identity relies on reweighting <em>actual</em> observations of the action in question in that specific context; an average reward from unrelated context-action pairs answers a different conditional expectation entirely and provides no evidence, unbiased or otherwise, about <span class="arithmatex">\(\mathbb{E}[R\mid S{=}1,\text{buy}]\)</span>. The honest response is to report that this context-action pair is unsupported, not to substitute an unrelated number.</p>
+<h3 id="exercise-5-why-a-positive-shifted-regime-ips-number-still-would-not-license-live-trading">Exercise 5: why a positive shifted-regime IPS number still would not license live trading<a class="headerlink" href="#exercise-5-why-a-positive-shifted-regime-ips-number-still-would-not-license-live-trading" title="Permanent link">&para;</a></h3>
+<p>Suppose a modified policy is learned that shows a positive IPS reward on the shifted-regime held-out log as well as the original one. Give two specific reasons this result alone would not justify moving to real trading.</p>
+<p><strong>Solution sketch.</strong> The reward function still assumes one flat invented cost with no depth, latency, fees, or queueing, so it does not represent an executable price path; and the shifted regime is a single, hand-chosen perturbation, not a demonstrated model of real regime change, so success against it does not establish robustness to whatever an actual future regime shift would look like.</p>
+<h2 id="where-to-go-next">Where to go next<a class="headerlink" href="#where-to-go-next" title="Permanent link">&para;</a></h2>
+<p><a href="../24-paper-operations/">Chapter 24</a> turns to running a paper-trading system under explicit operational discipline: read-only feeds, versioned rules, fail-closed gates, and an honest boundary between rehearsal and a live trade.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../22-bankroll-and-portfolios/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 22. Bankroll, portfolios, and survival">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                22. Bankroll, portfolios, and survival
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../24-paper-operations/" class="md-footer__link md-footer__link--next" aria-label="Next: 24. Operating a paper-trading system">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                24. Operating a paper-trading system
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

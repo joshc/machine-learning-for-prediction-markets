@@ -1,0 +1,2488 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/chapters/22-bankroll-and-portfolios/">
+      
+      
+        <link rel="prev" href="../21-market-making/">
+      
+      
+        <link rel="next" href="../23-learning-policies/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>22. Bankroll, portfolios, and survival - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#22-bankroll-portfolios-and-survival" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              22. Bankroll, portfolios, and survival
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-probability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-market-microstructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-statistical-baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-trees-and-ensembles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-evolving-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-evidence-after-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#221-why-expected-value-alone-is-not-a-sizing-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.1 Why expected value alone is not a sizing rule
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#222-deriving-the-sizing-fraction-for-a-fully-collateralized-binary-bet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.2 Deriving the sizing fraction for a fully collateralized binary bet
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#223-two-fractions-that-happen-to-coincide-here" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.3 Two fractions that happen to coincide here
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#224-fractional-kelly-under-parameter-uncertainty" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.4 Fractional Kelly under parameter uncertainty
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#225-correlated-positions-and-joint-scenario-matrices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.5 Correlated positions and joint scenario matrices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#226-a-cash-risk-budget-as-a-hard-ceiling-on-committed-collateral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.6 A cash risk budget as a hard ceiling on committed collateral
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#227-affordability-drawdown-and-capital-lockup-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.7 Affordability, drawdown, and capital lockup together
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#228-constant-fees-versus-real-price-dependent-fee-schedules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.8 Constant fees versus real, price-dependent fee schedules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#229-no-risk-free-leverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.9 No risk-free leverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2210-assumptions-and-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.10 Assumptions and failure modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2211-companion-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.11 Companion example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-the-sizing-fraction-at-a-different-edge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: the sizing fraction at a different edge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-two-loss-drawdown-at-full-kelly-versus-an-eighth-kelly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: two-loss drawdown at full Kelly versus an eighth Kelly
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-a-third-correlated-scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: a third correlated scenario
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-when-the-constant-cost-formula-stops-applying" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: when the constant-cost formula stops applying
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-leverage-intuition-that-does-not-transfer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: leverage intuition that does not transfer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../23-learning-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../25-research-hypotheses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../28-quickstart-consistency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../30-first-live-trade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../companion/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#221-why-expected-value-alone-is-not-a-sizing-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.1 Why expected value alone is not a sizing rule
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#222-deriving-the-sizing-fraction-for-a-fully-collateralized-binary-bet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.2 Deriving the sizing fraction for a fully collateralized binary bet
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#223-two-fractions-that-happen-to-coincide-here" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.3 Two fractions that happen to coincide here
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#224-fractional-kelly-under-parameter-uncertainty" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.4 Fractional Kelly under parameter uncertainty
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#225-correlated-positions-and-joint-scenario-matrices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.5 Correlated positions and joint scenario matrices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#226-a-cash-risk-budget-as-a-hard-ceiling-on-committed-collateral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.6 A cash risk budget as a hard ceiling on committed collateral
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#227-affordability-drawdown-and-capital-lockup-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.7 Affordability, drawdown, and capital lockup together
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#228-constant-fees-versus-real-price-dependent-fee-schedules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.8 Constant fees versus real, price-dependent fee schedules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#229-no-risk-free-leverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.9 No risk-free leverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2210-assumptions-and-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.10 Assumptions and failure modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2211-companion-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.11 Companion example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-the-sizing-fraction-at-a-different-edge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: the sizing fraction at a different edge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-two-loss-drawdown-at-full-kelly-versus-an-eighth-kelly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: two-loss drawdown at full Kelly versus an eighth Kelly
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-a-third-correlated-scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: a third correlated scenario
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-when-the-constant-cost-formula-stops-applying" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: when the constant-cost formula stops applying
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-leverage-intuition-that-does-not-transfer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: leverage intuition that does not transfer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="22-bankroll-portfolios-and-survival">22. Bankroll, portfolios, and survival<a class="headerlink" href="#22-bankroll-portfolios-and-survival" title="Permanent link">&para;</a></h1>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>Read <a href="../03-decisions-and-costs/">from beliefs to decisions</a>, <a href="../17-forecast-to-order/">the forecast-to-order decision</a>, and <a href="../21-market-making/">Chapter 21</a> before this chapter. You should be comfortable with expected value under a stated model, the canonical accounting example in the <a href="../../notation/">notation registry</a>, and the glossary entries for <strong>bankroll</strong>, <strong>collateral</strong>, <strong>capital lockup</strong>, <strong>drawdown</strong>, and <strong>Kelly criterion</strong>.</p>
+<h2 id="learning-objectives">Learning objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">&para;</a></h2>
+<p>By the end of this chapter you should be able to derive a constant-cost binary log-wealth sizing fraction, distinguish cash spent from payout notional, explain the limits of fractional Kelly, and build joint scenario stress tests. You should also distinguish an outstanding-commitment cap from a drawdown limit and recognize when depth or fee rounding invalidates a constant-unit-cost sizing formula.</p>
+<h2 id="221-why-expected-value-alone-is-not-a-sizing-rule">22.1 Why expected value alone is not a sizing rule<a class="headerlink" href="#221-why-expected-value-alone-is-not-a-sizing-rule" title="Permanent link">&para;</a></h2>
+<p>Chapters 3 and 17 computed positive modeled expected profit at <span class="arithmatex">\(\hat p=0.55\)</span> and USD 0.41 all-in cost. That does not determine size. For independent repeated binary bets with constant success probability <span class="arithmatex">\(0&lt;p&lt;1\)</span>, betting the entire bankroll survives <span class="arithmatex">\(n\)</span> rounds with probability <span class="arithmatex">\(p^n\)</span>, which tends to zero. One loss ends the sequence even when each bet has positive expected value.</p>
+<p>Expected log wealth is one risk-sensitive sizing objective, not the only possible objective. Kelly's inspected example contrasts log growth with expected capital; his conclusion limits its comparison to fixed allocations per received symbol and requires reinvestment and stake control. His track-take treatment permits leaving capital unbet. The source's independent-symbol communication model is not an estimated event-market forecast. The derivation below is independent classroom algebra; changing Kelly's base-two log to natural log rescales growth without changing its maximizing fraction. <a href="../../references/#kelly1956">KELLY1956</a></p>
+<h2 id="222-deriving-the-sizing-fraction-for-a-fully-collateralized-binary-bet">22.2 Deriving the sizing fraction for a fully collateralized binary bet<a class="headerlink" href="#222-deriving-the-sizing-fraction-for-a-fully-collateralized-binary-bet" title="Permanent link">&para;</a></h2>
+<p>Consider a bankroll <span class="arithmatex">\(W\)</span> held as available cash, with no other positions. Spend a fraction <span class="arithmatex">\(\phi\in[0,1]\)</span> buying YES at constant all-in unit cost <span class="arithmatex">\(c\in(0,1)\)</span>, normalized to a USD 1 payout. We use <span class="arithmatex">\(\phi\)</span>, not the notation registry's fee symbol <span class="arithmatex">\(f\)</span>, for the bankroll fraction. Treating units as divisible gives quantity <span class="arithmatex">\(\phi W/c\)</span>. In this hold-to-settlement calculation, the entire <span class="arithmatex">\(\phi W\)</span> is paid up front, there is no borrowing, and an ordinary NO pays nothing. Early resale is a different decision.</p>
+<p>If the contract settles YES, the units bought pay USD 1 each, so terminal wealth is the untouched remainder plus the payout:</p>
+<div class="arithmatex">\[
+W_{\text{YES}} = W(1-\phi) + \frac{\phi W}{c}\cdot 1 = W\left[1 + \phi\,\frac{1-c}{c}\right].
+\]</div>
+<p>If it settles NO, the spent fraction is lost entirely:</p>
+<div class="arithmatex">\[
+W_{\text{NO}} = W(1-\phi).
+\]</div>
+<p>Expected log growth per bet, as a function of the spent fraction <span class="arithmatex">\(\phi\)</span>, is</p>
+<div class="arithmatex">\[
+G(\phi) = p\,\ln\!\left(1+\phi\,\frac{1-c}{c}\right) + (1-p)\,\ln(1-\phi),
+\]</div>
+<p>where <span class="arithmatex">\(p\)</span> is the trader's model probability of YES. Differentiating and setting the derivative to zero (writing <span class="arithmatex">\(k=(1-c)/c\)</span> for brevity):</p>
+<div class="arithmatex">\[
+\frac{dG}{d\phi} = \frac{pk}{1+\phi k} - \frac{1-p}{1-\phi} = 0
+\;\;\Longrightarrow\;\;
+pk(1-\phi) = (1-p)(1+\phi k).
+\]</div>
+<p>Expanding and collecting terms in <span class="arithmatex">\(\phi\)</span>:</p>
+<div class="arithmatex">\[
+pk - pk\phi = (1-p) + (1-p)k\phi
+\;\;\Longrightarrow\;\;
+pk-(1-p) = \phi k\big[(1-p)+p\big] = \phi k.
+\]</div>
+<p>So <span class="arithmatex">\(\phi=p-(1-p)/k=p-(1-p)c/(1-c)\)</span>, giving the interior solution:</p>
+<div class="arithmatex">\[
+\phi^{*} = \frac{p-c}{1-c}.
+\]</div>
+<p>For <span class="arithmatex">\(0&lt;p&lt;1\)</span> and <span class="arithmatex">\(\phi&lt;1\)</span>, the second derivative is <span class="arithmatex">\(-pk^2/(1+\phi k)^2-(1-p)/(1-\phi)^2&lt;0\)</span>, proving strict concavity and that the feasible stationary point is a maximum. Spending all cash gives minus-infinite expected log growth when NO has positive probability. At <span class="arithmatex">\(p=0.55,c=0.41\)</span>, <span class="arithmatex">\(\phi^*=0.14/0.59\approx0.2373\)</span>: about 23.7 percent of bankroll. At <span class="arithmatex">\(p=0.39\)</span>, the unconstrained fraction is negative, so the long-only optimum is zero. Including the boundary beliefs gives <span class="arithmatex">\(\phi^*=\max(0,\min(1,(p-c)/(1-c)))\)</span>, with the endpoint limits interpreted under the stated belief. This is conditional optimization, not permission to treat an estimated probability as certain.</p>
+<h2 id="223-two-fractions-that-happen-to-coincide-here">22.3 Two fractions that happen to coincide here<a class="headerlink" href="#223-two-fractions-that-happen-to-coincide-here" title="Permanent link">&para;</a></h2>
+<p>The fraction of bankroll <strong>spent</strong>, <span class="arithmatex">\(\phi\)</span>, equals the fraction lost on an ordinary NO under these assumptions. It is not the same as face-value payout exposure: <span class="arithmatex">\(\phi W/c\)</span> units can have a USD 1 payout notional larger than the amount spent when <span class="arithmatex">\(c&lt;1\)</span>. Full funding removes borrowing from this classroom position, not its potentially large percentage price sensitivity. Keep cash spent, maximum loss, and payout notional separate. A statement such as "I risk 5 percent" is meaningful only after specifying that the whole spent 5 percent can be lost; calling it small does not establish affordability.</p>
+<h2 id="224-fractional-kelly-under-parameter-uncertainty">22.4 Fractional Kelly under parameter uncertainty<a class="headerlink" href="#224-fractional-kelly-under-parameter-uncertainty" title="Permanent link">&para;</a></h2>
+<p>The single-bet derivation assumes a specified <span class="arithmatex">\(p\)</span>; interpreting repeated use as a long-run growth result needs additional repeated-opportunity and reinvestment assumptions. In practice <span class="arithmatex">\(p\)</span> has estimation and specification error, and opportunities can be dependent and nonstationary. Locally around the interior maximum, a small reduction in <span class="arithmatex">\(\phi\)</span> has a second-order effect on modeled expected growth, while reducing cash lost in a NO outcome. This motivates <strong>fractional Kelly</strong>: use <span class="arithmatex">\(\kappa\phi^*\)</span> for a chosen <span class="arithmatex">\(\kappa\in(0,1]\)</span>. It does not derive a universally safe <span class="arithmatex">\(\kappa\)</span> or guarantee a drawdown limit.</p>
+<p>At <span class="arithmatex">\(\kappa = 0.25\)</span> (quarter Kelly) with <span class="arithmatex">\(p=0.55\)</span>, <span class="arithmatex">\(c=0.41\)</span>: spend <span class="arithmatex">\(0.25 \times 0.2373 \approx 0.0593\)</span>, or about 5.93 percent of bankroll. This number is not arbitrary caution for its own sake; it is a deliberate trade of some expected growth for materially lower variance under the acknowledged possibility that the modeled 0.55 is wrong. A useful way to see the cost of two consecutive losing outcomes at this fraction: wealth after two independent NO settlements shrinks to <span class="arithmatex">\((1-0.0593)^2 \approx 0.8849\)</span> of its starting value — an 11.5 percent drawdown from just two losing bets, even at a sizing fraction chosen specifically to be conservative. Full Kelly at the same <span class="arithmatex">\(p,c\)</span> would produce a much larger two-loss drawdown of <span class="arithmatex">\((1-0.2373)^2 \approx 0.582\)</span>, a 41.8 percent decline. <strong>Aggressive sizing amplifies the ordinary cost of being wrong, not just the reward for being right.</strong></p>
+<h2 id="225-correlated-positions-and-joint-scenario-matrices">22.5 Correlated positions and joint scenario matrices<a class="headerlink" href="#225-correlated-positions-and-joint-scenario-matrices" title="Permanent link">&para;</a></h2>
+<p>A trader rarely holds an isolated position. Two contracts can share an election, release, or disputed source, making independence implausible. Correlation is one summary of dependence, not an assumption of a particular distribution shape. For a transparent loss check, enumerate plausible <strong>joint scenarios</strong> and compute portfolio payoff in each without first estimating their probabilities. If probabilities are later attached, they must form a coherent joint model rather than independent marginals chosen for convenience.</p>
+<p>Consider two positions, each 10 units bought at an all-in cost of USD 0.41 per unit (total cost USD 4.10 apiece, USD 8.20 combined), on two contracts labeled event-a and event-b. Three joint scenarios: both settle NO (perhaps a shared adverse driver), both settle YES, or they diverge (one YES, one NO). Under the shared-bad-news scenario, receipts are zero on both, so portfolio profit is <span class="arithmatex">\(0 - 8.20 = -\text{USD }8.20\)</span>: the entire combined cost basis is lost at once, even though a naive independence assumption might have priced the chance of <em>both</em> failing as small. Under both-YES, receipts are <span class="arithmatex">\(10+10=20\)</span>, so profit is <span class="arithmatex">\(20-8.20=\text{USD }11.80\)</span>. Under divergence, receipts are 10, so profit is <span class="arithmatex">\(10-8.20=\text{USD }1.80\)</span>. Writing down these three numbers directly, rather than multiplying two marginal probabilities as if the positions were independent, is what actually protects a sizing decision from an unstated dependence assumption: the worst case (minus USD 8.20) is visible in the matrix regardless of how the two events are correlated, because it does not depend on estimating that correlation at all.</p>
+<h2 id="226-a-cash-risk-budget-as-a-hard-ceiling-on-committed-collateral">22.6 A cash risk budget as a hard ceiling on committed collateral<a class="headerlink" href="#226-a-cash-risk-budget-as-a-hard-ceiling-on-committed-collateral" title="Permanent link">&para;</a></h2>
+<p>The isolated sizing fraction does not prevent excessive aggregate commitments. A cash budget therefore caps both single-order cost and total open cost basis plus reservations. Start with USD 10.00 cash, no commitments, and USD 5.00 caps on each. A USD 4.10 position passes, leaving USD 5.90 cash and USD 4.10 open cost basis. A second USD 4.10 candidate fits the remaining cash but would bring commitments to USD 8.20, exceeding the cap. The companion's <code>risk.py</code> illustrates that second-position check. Per-order affordability and portfolio commitment are separate requirements; the existence of sufficient cash alone does not satisfy both.</p>
+<h2 id="227-affordability-drawdown-and-capital-lockup-together">22.7 Affordability, drawdown, and capital lockup together<a class="headerlink" href="#227-affordability-drawdown-and-capital-lockup-together" title="Permanent link">&para;</a></h2>
+<p>Three constraints interact and are easy to conflate. <strong>Affordability</strong> asks whether the trader can absorb the maximum possible loss on a position or portfolio without disrupting other obligations; it is a precondition, not a growth-rate optimization, and no Kelly fraction or confidence level removes the requirement to check it directly. <strong>Drawdown</strong> is the realized decline from a prior peak in bankroll; Section 22.4 already showed that even a deliberately conservative fractional-Kelly size produces a double-digit-percentage drawdown from just two losing outcomes, so a sizing rule's "on average" property is compatible with periods of substantial, real decline. <strong>Capital lockup</strong> is the duration for which spent cash is unavailable for anything else, from order submission until settlement (which official documentation shows can take a variable amount of time depending on the specific market and clearing process, not a single fixed interval). <a href="../../references/#kalshi_settlement">KALSHI_SETTLEMENT</a> A trader who reports an attractive annualized return by dividing a single trade's percentage profit by a short assumed holding period, while the actual funds were locked for a much longer resolution window, has silently swapped capital lockup for an optimistic assumption; the same nominal edge looks very different once the true lockup period is used as the denominator of any per-period return calculation.</p>
+<h2 id="228-constant-fees-versus-real-price-dependent-fee-schedules">22.8 Constant fees versus real, price-dependent fee schedules<a class="headerlink" href="#228-constant-fees-versus-real-price-dependent-fee-schedules" title="Permanent link">&para;</a></h2>
+<p>The closed form assumes that total cost is <span class="arithmatex">\(C(Q)=cQ\)</span> throughout the quantities under consideration. A notional-rate fee at one fixed executable price can still satisfy this assumption if rounding is absent. Depth, fixed charges, and fill-dependent rounding can instead make cost nonlinear or discontinuous in quantity. Actual venue fee and accumulator documentation motivates checking that structure, not simply inserting a current average fee into a timeless formula. <a href="../../references/#polymarket_fees">POLYMARKET_FEES</a> <a href="../../references/#kalshi_rounding">KALSHI_ROUNDING</a></p>
+<p>If cost depends on size, recomputing <span class="arithmatex">\(c=C(Q)/Q\)</span> and plugging it into the constant-cost optimum is generally <strong>not</strong> an optimization solution. Increasing <span class="arithmatex">\(Q\)</span> changes the cost of the next units, so the marginal tradeoff differs from the average cost. With no other positions, the correct quantity objective under the same binary model is</p>
+<div class="arithmatex">\[
+G_Q(Q)=p\log\frac{W-C(Q)+Q}{W}
+ +(1-p)\log\frac{W-C(Q)}{W}.
+\]</div>
+<p>For whole-unit teaching orders, compare this objective over feasible quantities, including zero, using the actual sweep cost at each size and the conservative reservation and risk-budget limits. Keep positive wealth in every state with positive model probability. This handles stepped depth and rounding without pretending a derivative exists at every quantity. The companion's <code>fractional_kelly</code> deliberately implements only the constant-cost divisible-unit formula; this generalized optimization is a derivation, not a shipped sizing engine.</p>
+<p>Separately, collateral itself is not always plain cash. Some venues describe a wrapped token representing an underlying stable-asset claim, with its own wrapping, unwrapping, and pause mechanics documented by the operator. <a href="../../references/#polymarket_collateral">POLYMARKET_COLLATERAL</a> A sizing calculation denominated in "dollars of bankroll" implicitly assumes that collateral converts to and from cash without friction or delay; that assumption should be checked against the actual collateral instrument in use, not treated as automatically true.</p>
+<h2 id="229-no-risk-free-leverage">22.9 No risk-free leverage<a class="headerlink" href="#229-no-risk-free-leverage" title="Permanent link">&para;</a></h2>
+<p>This classroom ledger has no borrowing: cash and reservations bound feasible purchases. At constant unit cost, spending fraction <span class="arithmatex">\(\phi\)</span> buys <span class="arithmatex">\(\phi W/c\)</span> units. Those units' face payout can exceed the cash spent, but no lender finances the position and no loan is implied by that ratio. Full funding is not risk-free exposure, and it is not a claim that every real venue or trader has the same financing arrangement. Neither borrowing nor its absence makes a positive expected-value calculation a guarantee.</p>
+<h2 id="2210-assumptions-and-failure-modes">22.10 Assumptions and failure modes<a class="headerlink" href="#2210-assumptions-and-failure-modes" title="Permanent link">&para;</a></h2>
+<p>The helper assumes a specified <span class="arithmatex">\(p\)</span>, binary USD 1 payout, constant unit cost in <span class="arithmatex">\((0,1)\)</span>, divisible units, no extra exit or settlement fees, and no other holdings. Existing positions require joint terminal-wealth analysis; adding isolated Kelly fractions is not a general portfolio solution, even for independent simultaneous bets. A scenario table exposes possible losses without estimating their probabilities, but optimizing expected log wealth across scenarios additionally needs a joint probability model. Whole-unit grids and nonlinear costs require feasible-quantity checks rather than mechanically rounding <span class="arithmatex">\(\phi W/c\)</span> upward. None of this chapter's arithmetic establishes that an estimated <span class="arithmatex">\(p\)</span> is correct.</p>
+<h2 id="2211-companion-example">22.11 Companion example<a class="headerlink" href="#2211-companion-example" title="Permanent link">&para;</a></h2>
+<p>The companion script <a href="../../companion/examples/risk.py"><code>risk.py</code></a> implements exactly the fractional-sizing formula and the joint-scenario matrix derived above, plus the cash-budget check. Running it reports a quarter-Kelly fraction of cash spent of 0.059322 at the stated <span class="arithmatex">\(p=0.55\)</span>, <span class="arithmatex">\(c=0.41\)</span> assumptions (matching Section 22.4), a zero fraction when the belief is below cost, joint scenario profits of minus USD 8.20 (shared bad news), USD 11.80 (both YES), and USD 1.80 (divergent) exactly as derived in Section 22.5, and a rejected second position against a USD 5.00 total commitment cap exactly as derived in Section 22.6. It also rejects an invalid binary cost outside <span class="arithmatex">\((0,1)\)</span>, since the closed form is undefined there. Run it with:</p>
+<p><strong>Command working directory:</strong> run this chapter's Python commands from <code>book\companion</code>. From the trading repository root, run <code>Set-Location book\companion</code> once first. The <code>.venv</code> belongs to that companion project; see <a href="../../companion/">companion setup</a>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">examples</span><span class="p">\</span><span class="n">risk</span><span class="p">.</span><span class="n">py</span>
+</code></pre></div>
+<p>Every number above is deterministic arithmetic under explicitly stated assumptions; none of it is an empirical measurement of a real trading account's growth or drawdown.</p>
+<h2 id="exercises-and-solution-sketches">Exercises and solution sketches<a class="headerlink" href="#exercises-and-solution-sketches" title="Permanent link">&para;</a></h2>
+<h3 id="exercise-1-the-sizing-fraction-at-a-different-edge">Exercise 1: the sizing fraction at a different edge<a class="headerlink" href="#exercise-1-the-sizing-fraction-at-a-different-edge" title="Permanent link">&para;</a></h3>
+<p>Compute <span class="arithmatex">\(\phi^{*}\)</span> for <span class="arithmatex">\(p=0.60\)</span> and <span class="arithmatex">\(c=0.45\)</span>, then the quarter-Kelly spend fraction.</p>
+<p><strong>Solution sketch.</strong> <span class="arithmatex">\(\phi^{*} = (0.60-0.45)/(1-0.45) = 0.15/0.55 \approx 0.2727\)</span>. Quarter Kelly: <span class="arithmatex">\(0.25 \times 0.2727 \approx 0.0682\)</span>, about 6.8 percent of bankroll.</p>
+<h3 id="exercise-2-two-loss-drawdown-at-full-kelly-versus-an-eighth-kelly">Exercise 2: two-loss drawdown at full Kelly versus an eighth Kelly<a class="headerlink" href="#exercise-2-two-loss-drawdown-at-full-kelly-versus-an-eighth-kelly" title="Permanent link">&para;</a></h3>
+<p>Using <span class="arithmatex">\(p=0.55, c=0.41\)</span> (full Kelly <span class="arithmatex">\(\phi^{*}\approx0.2373\)</span>), compute the wealth remaining after two consecutive NO outcomes at full Kelly and at an eighth-Kelly fraction (<span class="arithmatex">\(\kappa=0.125\)</span>), and comment on the trade-off.</p>
+<p><strong>Solution sketch.</strong> Full Kelly: <span class="arithmatex">\((1-0.2373)^2 \approx 0.582\)</span>, a 41.8 percent drawdown. Eighth Kelly: spend fraction <span class="arithmatex">\(0.125\times0.2373\approx0.0297\)</span>; <span class="arithmatex">\((1-0.0297)^2\approx0.9414\)</span>, a 5.9 percent drawdown. The smaller fraction trades away growth rate for a much smaller realized decline from the same two adverse outcomes.</p>
+<h3 id="exercise-3-a-third-correlated-scenario">Exercise 3: a third correlated scenario<a class="headerlink" href="#exercise-3-a-third-correlated-scenario" title="Permanent link">&para;</a></h3>
+<p>Expand Section 22.5's combined "divergent" row into the specific state "event-a YES, event-b NO," and compute portfolio profit.</p>
+<p><strong>Solution sketch.</strong> Receipts: <span class="arithmatex">\(10(1) + 10(0) = 10\)</span>. Profit: <span class="arithmatex">\(10 - 8.20 = \text{USD }1.80\)</span>, identical to the "divergent" scenario already listed, since the payoff only depends on which single leg wins, not which specific leg it is, given identical costs and quantities on each side.</p>
+<h3 id="exercise-4-when-the-constant-cost-formula-stops-applying">Exercise 4: when the constant-cost formula stops applying<a class="headerlink" href="#exercise-4-when-the-constant-cost-formula-stops-applying" title="Permanent link">&para;</a></h3>
+<p>A fee is 2 percent of notional plus a flat per-unit component. Explain when the constant-<span class="arithmatex">\(c\)</span> formula still applies and why depth or fill-dependent rounding can require a different quantity optimization.</p>
+<p><strong>Solution sketch.</strong> At a fixed executable price with no rounding or other size effects, this fee remains linear in quantity and gives a constant all-in <span class="arithmatex">\(c\)</span>. If larger quantities sweep worse prices or split into differently rounded fills, <span class="arithmatex">\(C(Q)\)</span> is no longer <span class="arithmatex">\(cQ\)</span>. Evaluate Section 22.8's quantity-level log-wealth objective under actual cost and reservation limits; substituting <span class="arithmatex">\(C(Q)/Q\)</span> into the constant-cost optimum ignores the changed marginal cost and need not maximize growth.</p>
+<h3 id="exercise-5-leverage-intuition-that-does-not-transfer">Exercise 5: leverage intuition that does not transfer<a class="headerlink" href="#exercise-5-leverage-intuition-that-does-not-transfer" title="Permanent link">&para;</a></h3>
+<p>A trader argues, "I'm only risking 10 percent of my account on this position, so it's low-risk even if I'm wrong." Using Section 22.3, identify the hidden assumption in this statement as applied to a fully collateralized binary contract.</p>
+<p><strong>Solution sketch.</strong> It assumes that calling a possible loss "10 percent" makes it affordable or unlikely. Here all of the spent 10 percent can be lost on NO; the position's payout notional can be larger than that cash amount without borrowing. Check the full loss against obligations and other commitments, rather than inferring safety from the percentage or from full funding alone.</p>
+<h2 id="where-to-go-next">Where to go next<a class="headerlink" href="#where-to-go-next" title="Permanent link">&para;</a></h2>
+<p><a href="../23-learning-policies/">Chapter 23</a> moves from static sizing rules to policies that are learned from logged decisions and rewards, and to the specific care required before treating a simulator's reward as evidence about real trading.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../21-market-making/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 21. Market making and adverse selection">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                21. Market making and adverse selection
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../23-learning-policies/" class="md-footer__link md-footer__link--next" aria-label="Next: 23. Learning execution policies in simulation">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                23. Learning execution policies in simulation
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

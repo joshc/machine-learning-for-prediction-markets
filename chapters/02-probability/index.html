@@ -1,0 +1,2311 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/chapters/02-probability/">
+      
+      
+        <link rel="prev" href="../01-event-contracts/">
+      
+      
+        <link rel="next" href="../03-decisions-and-costs/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>2. Probability as disciplined uncertainty - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#2-probability-as-disciplined-uncertainty" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              2. Probability as disciplined uncertainty
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#21-probability-is-a-commitment-not-a-vibe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Probability is a commitment, not a vibe
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#22-bayes-rule-derived-not-quoted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Bayes' rule, derived, not quoted
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#23-odds-and-why-traders-often-think-in-them" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Odds, and why traders often think in them
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#24-base-rates-need-a-stated-population" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Base rates need a stated population
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#25-independence-and-dependence-with-an-event-contract-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 Independence and dependence, with an event-contract example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#26-quantifying-probability-uncertainty-proper-scores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 Quantifying probability uncertainty: proper scores
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#27-assumptions-counterexamples-and-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 Assumptions, counterexamples, and failure modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#28-companion-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.8 Companion example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sources-and-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sources and further reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-market-microstructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-statistical-baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-trees-and-ensembles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-evolving-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-evidence-after-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../22-bankroll-and-portfolios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../23-learning-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../25-research-hypotheses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../28-quickstart-consistency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../30-first-live-trade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../companion/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#21-probability-is-a-commitment-not-a-vibe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Probability is a commitment, not a vibe
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#22-bayes-rule-derived-not-quoted" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Bayes' rule, derived, not quoted
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#23-odds-and-why-traders-often-think-in-them" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Odds, and why traders often think in them
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#24-base-rates-need-a-stated-population" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Base rates need a stated population
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#25-independence-and-dependence-with-an-event-contract-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 Independence and dependence, with an event-contract example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#26-quantifying-probability-uncertainty-proper-scores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 Quantifying probability uncertainty: proper scores
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#27-assumptions-counterexamples-and-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 Assumptions, counterexamples, and failure modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#28-companion-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.8 Companion example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sources-and-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sources and further reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="2-probability-as-disciplined-uncertainty">2. Probability as disciplined uncertainty<a class="headerlink" href="#2-probability-as-disciplined-uncertainty" title="Permanent link">&para;</a></h1>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>Chapter 1 (event contracts, categorical/threshold/complement shapes, and the <span class="arithmatex">\(Z\)</span>/<span class="arithmatex">\(Y\)</span>/<span class="arithmatex">\(R\)</span> distinction). Comfort with basic set notation and simple algebra. No prior statistics course is assumed; the chapter derives what it needs.</p>
+<h2 id="learning-objectives">Learning objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">&para;</a></h2>
+<p>By the end of this chapter you should be able to: state the probability axioms and derive Bayes' rule from the definition of conditional probability; convert between probability and odds; explain what a base rate is and why it requires a stated reference population; distinguish independent from dependent events with a concrete event-contract example; and compute the single-YES Brier score and natural-log loss for a small set of forecasts exactly as this book defines them.</p>
+<h2 id="21-probability-is-a-commitment-not-a-vibe">2.1 Probability is a commitment, not a vibe<a class="headerlink" href="#21-probability-is-a-commitment-not-a-vibe" title="Permanent link">&para;</a></h2>
+<p>"I think it's likely" is not a probability. A probability is a number in <span class="arithmatex">\([0,1]\)</span> attached to a precisely specified event, under a precisely specified information set, that obeys a small set of consistency rules. The rules matter more than they might seem to at first, because they are what make a probability <em>combinable</em>: they let you take two forecasts and merge them, compare a forecast to a price, or later score a forecast against what actually happened.</p>
+<p>The axioms this book relies on are the ordinary Kolmogorov ones, stated for a discrete or countable outcome space (continuous cases replace sums with integrals, but nothing in this book's contract-pricing content requires that generality): every event <span class="arithmatex">\(A\)</span> has <span class="arithmatex">\(P(A)\geq 0\)</span>; the certain event has <span class="arithmatex">\(P(\Omega)=1\)</span>; and for mutually exclusive events, probabilities add, <span class="arithmatex">\(P(A\cup B)=P(A)+P(B)\)</span> when <span class="arithmatex">\(A\cap B=\emptyset\)</span>. From these three rules, the complement rule <span class="arithmatex">\(P(A^c)=1-P(A)\)</span> follows immediately by taking <span class="arithmatex">\(B=A^c\)</span> in the additivity axiom. This is exactly why, in Chapter 1's complement contracts, YES and NO probabilities must sum to one <strong>when no third exceptional state is contractually possible</strong> — the axiom requires exhaustiveness and mutual exclusivity, and a documented "Unknown/50-50" settlement state is precisely a violation of exhaustiveness over the two-outcome frame, not a mathematical paradox.</p>
+<p>Conditional probability is defined, not derived, as</p>
+<div class="arithmatex">\[
+P(A\mid B)=\frac{P(A\cap B)}{P(B)},\qquad P(B)&gt;0.
+\]</div>
+<p>Everything else in this chapter is algebra performed on that one definition.</p>
+<h2 id="22-bayes-rule-derived-not-quoted">2.2 Bayes' rule, derived, not quoted<a class="headerlink" href="#22-bayes-rule-derived-not-quoted" title="Permanent link">&para;</a></h2>
+<p>Bayes' rule is often presented as a black box. It is worth deriving it once, slowly, because the derivation is what tells you exactly which quantities you need and what happens when one of them is zero.</p>
+<p>Start from the definition of conditional probability applied twice, once for <span class="arithmatex">\(P(A\mid B)\)</span> and once for <span class="arithmatex">\(P(B\mid A)\)</span>:</p>
+<div class="arithmatex">\[
+P(A\mid B)=\frac{P(A\cap B)}{P(B)},\qquad P(B\mid A)=\frac{P(A\cap B)}{P(A)}.
+\]</div>
+<p>Both expressions share the same numerator, <span class="arithmatex">\(P(A\cap B)\)</span>. Solve the second equation for that shared numerator: <span class="arithmatex">\(P(A\cap B)=P(B\mid A)P(A)\)</span>. Substitute this into the first equation:</p>
+<div class="arithmatex">\[
+P(A\mid B)=\frac{P(B\mid A)\,P(A)}{P(B)}.
+\]</div>
+<p>That is Bayes' rule. Nothing was assumed beyond the definition of conditional probability applied in two directions. The denominator <span class="arithmatex">\(P(B)\)</span> is usually not known directly and must be expanded using the law of total probability. If <span class="arithmatex">\(A\)</span> has a binary complement <span class="arithmatex">\(A^c\)</span>,</p>
+<div class="arithmatex">\[
+P(B)=P(B\mid A)P(A)+P(B\mid A^c)P(A^c).
+\]</div>
+<p>Putting the two together gives the working form used throughout this book:</p>
+<div class="arithmatex">\[
+P(A\mid B)=\frac{P(B\mid A)\,P(A)}{P(B\mid A)P(A)+P(B\mid A^c)P(A^c)}.
+\]</div>
+<p>Read this equation as a recipe with three ingredients: a <strong>prior</strong> <span class="arithmatex">\(P(A)\)</span> (what you believed before seeing evidence <span class="arithmatex">\(B\)</span>), a <strong>likelihood ratio</strong> implicit in <span class="arithmatex">\(P(B\mid A)\)</span> versus <span class="arithmatex">\(P(B\mid A^c)\)</span> (how much more or less likely the evidence is under each hypothesis), and the <strong>posterior</strong> <span class="arithmatex">\(P(A\mid B)\)</span> (what you believe after). If <span class="arithmatex">\(P(B\mid A)=P(B\mid A^c)\)</span>, the evidence is equally likely regardless of <span class="arithmatex">\(A\)</span>, and the posterior equals the prior exactly: evidence that does not discriminate between hypotheses cannot move your belief, no matter how dramatic it feels.</p>
+<p><strong>Worked case.</strong> Take a prior <span class="arithmatex">\(P(A)=0.20\)</span> that some event contract's underlying proposition is true. Suppose a piece of evidence <span class="arithmatex">\(B\)</span> (say, a leaked internal report) has <span class="arithmatex">\(P(B\mid A)=0.80\)</span> — quite likely if the proposition is true — and <span class="arithmatex">\(P(B\mid A^c)=0.10\)</span> — fairly unlikely if it is false. The marginal probability of observing this evidence at all is</p>
+<div class="arithmatex">\[
+P(B)=0.20\times0.80+0.80\times0.10=0.16+0.08=0.24.
+\]</div>
+<p>The posterior is</p>
+<div class="arithmatex">\[
+P(A\mid B)=\frac{0.16}{0.24}=0.6\overline{6}\approx0.667.
+\]</div>
+<p>A prior of 0.20 moved to roughly 0.667 after one piece of evidence that was eight times more likely under the true hypothesis than under its complement. This is an invented classroom scenario matching the companion script's demonstration inputs; it is not a claim about any real contract, and the numbers 0.20, 0.80, and 0.10 were chosen for illustration, not estimated from data. Notice also what happens at a boundary: if <span class="arithmatex">\(P(B\mid A)=0\)</span> and <span class="arithmatex">\(P(B\mid A^c)=0\)</span>, the evidence has zero probability under every hypothesis in the model, and the update is undefined (division by zero) rather than silently returning the prior — this is a modeling failure to flag, not a case to paper over with an arbitrary convention.</p>
+<h2 id="23-odds-and-why-traders-often-think-in-them">2.3 Odds, and why traders often think in them<a class="headerlink" href="#23-odds-and-why-traders-often-think-in-them" title="Permanent link">&para;</a></h2>
+<p>The odds of an event are <span class="arithmatex">\(o=p/(1-p)\)</span>, with inverse <span class="arithmatex">\(p=o/(1+o)\)</span>. Odds are algebraically equivalent to probability but multiply nicely under Bayesian updating: dividing the two branches of Bayes' rule by each other, the posterior odds equal the prior odds times the likelihood ratio,</p>
+<div class="arithmatex">\[
+\frac{P(A\mid B)}{P(A^c\mid B)}=\frac{P(A)}{P(A^c)}\times\frac{P(B\mid A)}{P(B\mid A^c)}.
+\]</div>
+<p>For the worked case above, prior odds are <span class="arithmatex">\(0.20/0.80=0.25\)</span>, the likelihood ratio is <span class="arithmatex">\(0.80/0.10=8\)</span>, and posterior odds are <span class="arithmatex">\(0.25\times8=2.0\)</span>, which converts back to <span class="arithmatex">\(p=2/(1+2)=0.667\)</span> — matching the direct calculation and providing a useful arithmetic cross-check. A probability of 0.40 has odds <strong>in favor</strong> of <span class="arithmatex">\(0.40/0.60=2/3\)</span>, or "2-to-3 in favor"; equivalently, the odds <strong>against</strong> are <span class="arithmatex">\(0.60/0.40=3/2\)</span>, or "3-to-2 against." Reading a USD 0.40 contract price as that probability requires the additional price-interpretation assumptions of Chapter 4. Converting a stated probability to odds is algebra; interpreting a price as a probability is not.</p>
+<h2 id="24-base-rates-need-a-stated-population">2.4 Base rates need a stated population<a class="headerlink" href="#24-base-rates-need-a-stated-population" title="Permanent link">&para;</a></h2>
+<p>A base rate is the prevalence of an outcome in an explicitly defined reference population; it is meaningless without saying what that population is. "Incumbents usually win" is not a base rate until you specify: which office, which country, which time period, and which subset of incumbents (all who sought re-election, or only those who survived a primary). Changing any of those changes the number, sometimes substantially, and changing the reference population <strong>after</strong> looking at a specific race you are trying to forecast is a form of selection that can silently manufacture whatever base rate is convenient.</p>
+<p>Base rates interact with Bayes' rule in a way that is easy to state and easy to forget under pressure: a base rate is the prior, and it should be updated by genuinely new, discriminating evidence — not by evidence that merely restates the base rate in different words. A forecaster who reads five news articles that all report the same underlying poll and updates five times because there were "five pieces of evidence" is double-, triple-, and quadruple-counting a single observation. This is the same dependence problem raised again more forcefully in Section 2.5 and in Chapter 4's discussion of aggregating many correlated poll readings into a single forecast.</p>
+<h2 id="25-independence-and-dependence-with-an-event-contract-example">2.5 Independence and dependence, with an event-contract example<a class="headerlink" href="#25-independence-and-dependence-with-an-event-contract-example" title="Permanent link">&para;</a></h2>
+<p>Two events <span class="arithmatex">\(A\)</span> and <span class="arithmatex">\(B\)</span> are independent exactly when <span class="arithmatex">\(P(A\cap B)=P(A)P(B)\)</span>, equivalently <span class="arithmatex">\(P(A\mid B)=P(A)\)</span>: learning <span class="arithmatex">\(B\)</span> tells you nothing new about <span class="arithmatex">\(A\)</span>. This is a strong, specific, checkable condition, not a default assumption to reach for out of convenience.</p>
+<p>Event contracts frequently violate independence in ways that are easy to miss because the contracts look unrelated on the surface. Consider two contracts: "does the incumbent party win the presidency" and "does the incumbent party retain control of the legislature," observed in the same election cycle. Both outcomes are driven substantially by shared factors — the state of the economy, the incumbent's approval rating, national mood — so learning that one resolved YES makes the other's YES resolution more likely than its unconditional probability alone would suggest. Treating these two contracts as independent when sizing a combined position understates the true joint risk: both can go wrong, or right, together far more often than the product of their individual probabilities implies. The glossary's "dependence group" concept flags sets of observations or contracts that share this kind of common exposure, so a downstream calculation does not treat them as independent draws.</p>
+<p>A related and even more common failure is treating repeated snapshots of the <em>same</em> contract, taken minutes or hours apart, as independent observations. They share the same eventual settlement; a sequence of ten price quotes leading up to one binary outcome is not ten independent bets on that outcome, no matter how many rows it occupies in a spreadsheet. This exact issue, applied to poll readings rather than price quotes, is the central empirical caution in Chapter 4's discussion of comparing prediction-market forecasts against many correlated polls from a small number of elections.</p>
+<h2 id="26-quantifying-probability-uncertainty-proper-scores">2.6 Quantifying probability uncertainty: proper scores<a class="headerlink" href="#26-quantifying-probability-uncertainty-proper-scores" title="Permanent link">&para;</a></h2>
+<p>A probability forecast is only useful if there is a disciplined way to say whether it was good. This book uses two scoring rules for a binary outcome, both defined precisely so every chapter uses the same convention.</p>
+<p>The general concept behind both is a <strong>proper scoring rule</strong>: a rule for scoring a probability forecast against a realized outcome such that, in expectation, a forecaster who reports their true believed distribution cannot do better by reporting anything else. Gneiting and Raftery's inspected treatment states this as a theorem — reporting the generating distribution optimizes the expected score, with <strong>strict</strong> propriety making that optimum unique relative to the stated class of forecasts — and confirms that both the categorical quadratic (Brier) score and the logarithmic score are strictly proper. <a href="../../references/#gneiting2007">GNEITING2007</a> This is a statement about the scoring objective's incentive properties, not a claim about trading profit; a strictly proper score rewards honesty about probability, it does not reward a correct guess about a single coin flip.</p>
+<p>For one YES-probability forecast <span class="arithmatex">\(\hat p_i\)</span> per binary observation <span class="arithmatex">\(y_i\in\{0,1\}\)</span>, the <strong>Brier score</strong> is the mean squared error of the YES probability against the realized binary label:</p>
+<div class="arithmatex">\[
+\operatorname{BS}=\frac{1}{n}\sum_{i=1}^n(\hat p_i-y_i)^2.
+\]</div>
+<p>This is the single-YES convention. Gneiting and Raftery's inspected categorical treatment sums the squared error over both outcomes, which is exactly twice this book's single-YES value once the reward-versus-loss sign convention is reversed; a Brier score quoted elsewhere is not automatically comparable to this book's numbers without checking which convention was used. <a href="../../references/#gneiting2007">GNEITING2007</a></p>
+<p><strong>Log loss</strong> uses the natural logarithm of the probability the forecast assigned to whatever actually happened:</p>
+<div class="arithmatex">\[
+\operatorname{LL}=-\frac{1}{n}\sum_{i=1}^n\Big[y_i\log\hat p_i+(1-y_i)\log(1-\hat p_i)\Big].
+\]</div>
+<p>A forecast of exactly zero on an outcome that occurs contributes an infinite loss; this is an intended property of the scoring rule, not a numerical bug to be quietly clipped away. A forecast that is exactly correct with full confidence contributes zero, using the limiting convention that <span class="arithmatex">\(0\log 0=0\)</span>.</p>
+<p><strong>Worked case.</strong> Take four invented binary observations with labels <span class="arithmatex">\(y=(0,1,0,1)\)</span> and forecasts <span class="arithmatex">\(\hat p=(0.1,0.7,0.4,0.8)\)</span> — the same small example used by the companion script, so its printed output can be checked directly against this arithmetic. The squared errors are <span class="arithmatex">\((0.1-0)^2=0.01\)</span>, <span class="arithmatex">\((0.7-1)^2=0.09\)</span>, <span class="arithmatex">\((0.4-0)^2=0.16\)</span>, and <span class="arithmatex">\((0.8-1)^2=0.04\)</span>; their mean is</p>
+<div class="arithmatex">\[
+\operatorname{BS}=\frac{0.01+0.09+0.16+0.04}{4}=\frac{0.30}{4}=0.075.
+\]</div>
+<p>For log loss, the probability assigned to the realized outcome in each row is <span class="arithmatex">\(0.9,\,0.7,\,0.6,\,0.8\)</span> respectively (using <span class="arithmatex">\(1-\hat p\)</span> where <span class="arithmatex">\(y=0\)</span>). Their natural logs are approximately <span class="arithmatex">\(-0.1054,\,-0.3567,\,-0.5108,\,-0.2231\)</span>, summing to about <span class="arithmatex">\(-1.1960\)</span>; dividing by <span class="arithmatex">\(n=4\)</span> and negating gives</p>
+<div class="arithmatex">\[
+\operatorname{LL}\approx0.2990.
+\]</div>
+<p>Two comparison cases sharpen the infinite-loss boundary: a forecaster who is correctly certain, with <span class="arithmatex">\(y=(0,1)\)</span> and <span class="arithmatex">\(\hat p=(0,1)\)</span>, incurs log loss exactly <span class="arithmatex">\(0\)</span>; a forecaster who is confidently <em>wrong</em>, with <span class="arithmatex">\(y=(1)\)</span> and <span class="arithmatex">\(\hat p=(0)\)</span>, incurs log loss of <span class="arithmatex">\(+\infty\)</span>. Log loss is far harsher on confident wrongness than the Brier score, whose worst case for a single observation is bounded at <span class="arithmatex">\(1\)</span>. Choosing between the two, or reporting both, is developed further in Chapter 10.</p>
+<h2 id="27-assumptions-counterexamples-and-failure-modes">2.7 Assumptions, counterexamples, and failure modes<a class="headerlink" href="#27-assumptions-counterexamples-and-failure-modes" title="Permanent link">&para;</a></h2>
+<p><em>Assumption: the information set is stated.</em> Every probability in this book is conditional on some stated information set <span class="arithmatex">\(\mathcal I\)</span>; "the true probability" without reference to an information set is not a meaningful object. Two honest forecasters with different information can correctly hold different probabilities for the same event.</p>
+<p><em>Assumption: likelihoods are known or estimable.</em> Bayes' rule is only as good as <span class="arithmatex">\(P(B\mid A)\)</span> and <span class="arithmatex">\(P(B\mid A^c)\)</span>. In practice these are themselves estimates with their own uncertainty; treating a posterior as exact when its inputs were rough guesses overstates how much you actually know. The registry's <span class="arithmatex">\(p_L\)</span> symbol — a deliberately conservative probability bound, whose inference method must be stated — keeps this humility explicit.</p>
+<p><em>Counterexample to naive independence.</em> Two contracts on the same underlying race, phrased with different wording ("candidate wins the popular vote" and "candidate wins the electoral college"), are correlated through shared information, not independent just because they are formally different contracts with different titles.</p>
+<p><em>Failure mode: treating price movement as new evidence when it reflects old evidence being repeated.</em> If ten outlets all cover the same single poll release, a Bayesian updater that treats each article as independent confirming evidence will overshoot its posterior. The base-rate discipline of Section 2.4 and the dependence discussion of Section 2.5 are the guardrails against exactly this.</p>
+<p><em>Failure mode: silently clipping probabilities to avoid infinite log loss.</em> If a fitting procedure needs numerical stabilization (for example, nudging a predicted 0 to <span class="arithmatex">\(10^{-6}\)</span> to avoid a crash), that stabilization must be disclosed as part of the model, not retroactively applied to change how an already-issued forecast is scored.</p>
+<h2 id="28-companion-example">2.8 Companion example<a class="headerlink" href="#28-companion-example" title="Permanent link">&para;</a></h2>
+<p>The companion script <a href="../../companion/examples/bayes_scoring.py"><code>bayes_scoring.py</code></a> runs the Bayes update and the scoring computations worked through above, using the same numbers (prior 0.2, likelihood-if-yes 0.8, likelihood-if-no 0.1; labels <span class="arithmatex">\((0,1,0,1)\)</span> against forecasts <span class="arithmatex">\((0.1,0.7,0.4,0.8)\)</span>), and demonstrates the rejected-update case when the observed evidence has zero probability under the stated model. It also reports calibration bins, grouping forecasts into equal-width probability ranges and comparing each bin's mean forecast to its observed outcome rate — a first step toward the fuller calibration treatment in Chapter 10. Run it after installing the package:</p>
+<p><strong>Command working directory:</strong> run this chapter's Python commands from <code>book\companion</code>. From the trading repository root, run <code>Set-Location book\companion</code> once first. The <code>.venv</code> belongs to that companion project; see <a href="../../companion/">companion setup</a>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">examples</span><span class="p">\</span><span class="n">bayes_scoring</span><span class="p">.</span><span class="n">py</span>
+</code></pre></div>
+<p>Compare its printed posterior, Brier score, and log loss against Sections 2.2 and 2.6 above; they are the same worked numbers by construction, which is a useful way to build trust in both the hand derivation and the code.</p>
+<h2 id="exercises">Exercises<a class="headerlink" href="#exercises" title="Permanent link">&para;</a></h2>
+<p><strong>Exercise 2.1.</strong> Derive the posterior odds form of Bayes' rule directly from the two conditional-probability definitions used in Section 2.2, without going through the total-probability expansion. Then use it to recompute the worked case's posterior from prior odds and a likelihood ratio, and convert the result back to a probability.</p>
+<p><em>Solution sketch.</em> Divide <span class="arithmatex">\(P(A\mid B)=P(B\mid A)P(A)/P(B)\)</span> by the analogous expression for <span class="arithmatex">\(P(A^c\mid B)=P(B\mid A^c)P(A^c)/P(B)\)</span>; the shared denominator <span class="arithmatex">\(P(B)\)</span> cancels, giving posterior odds equal to prior odds times the likelihood ratio. With prior odds <span class="arithmatex">\(0.20/0.80=0.25\)</span> and likelihood ratio <span class="arithmatex">\(0.80/0.10=8\)</span>, posterior odds are <span class="arithmatex">\(2.0\)</span>, giving <span class="arithmatex">\(p=2/(1+2)\approx0.667\)</span>, matching Section 2.2's direct computation.</p>
+<p><strong>Exercise 2.2.</strong> A base rate is quoted as "70% of contracts of this type resolve YES," drawn from a reference population of 40 historical contracts. You are told, after the fact, that 15 of those 40 came from a single recurring weekly series sharing one underlying process. Explain why this base rate may overstate the effective evidence behind it, using the dependence-group concept from Section 2.5.</p>
+<p><em>Solution sketch.</em> If 15 of the 40 observations are draws from one recurring, correlated process rather than 15 independent trials, the true number of effectively independent data points is smaller than 40; a base rate computed by simple counting treats all 40 as equally informative, overstating precision and potentially anchoring on whatever idiosyncratic run of outcomes that one series happened to produce. A defensible estimate would either model the within-series correlation explicitly or report the base rate separately by series alongside an honest, smaller effective sample size.</p>
+<p><strong>Exercise 2.3.</strong> Using the four-observation example from Section 2.6, suppose a fifth forecast is added: <span class="arithmatex">\(\hat p_5=0.0\)</span> for an observation where <span class="arithmatex">\(y_5=1\)</span>. Recompute the Brier score and explain what happens to the log loss, without performing a numerical clipping workaround.</p>
+<p><em>Solution sketch.</em> The Brier score becomes <span class="arithmatex">\(\frac{0.01+0.09+0.16+0.04+1.00}{5}=\frac{1.30}{5}=0.26\)</span>: a finite, if much larger, number, because the squared error contribution from a maximally wrong confident forecast is bounded at 1. Log loss, by contrast, becomes <span class="arithmatex">\(+\infty\)</span>, because the fifth term is <span class="arithmatex">\(-\log(0)\)</span>, which diverges; the correct response is to report and investigate this infinite loss (it flags a forecaster who was certain and wrong), not to substitute a small nonzero probability after the fact to make the number finite.</p>
+<p><strong>Exercise 2.4.</strong> Explain, using the odds form of Bayes' rule, why evidence that is equally likely under a hypothesis and its complement cannot move a Bayesian forecaster's probability, however emotionally compelling that evidence feels.</p>
+<p><em>Solution sketch.</em> If <span class="arithmatex">\(P(B\mid A)=P(B\mid A^c)\)</span>, the likelihood ratio is exactly 1, so posterior odds equal prior odds, and therefore posterior probability equals prior probability; the evidence carries zero Bayesian information regardless of how vivid or persuasive it seems, because "informativeness" here is defined strictly by how differently the evidence's probability depends on the hypothesis, not by its emotional salience.</p>
+<h2 id="sources-and-further-reading">Sources and further reading<a class="headerlink" href="#sources-and-further-reading" title="Permanent link">&para;</a></h2>
+<p>The Brier score and log loss conventions in this chapter are the book's own explicit definitions, chosen for consistency with the notation registry. Gneiting and Raftery's proper-scoring-rules paper has been directly inspected for this book (its abstract, Section 1, the Section 2.1 definitions, Section 2.3, and Sections 3.1-3.2 including Theorem 2 and the categorical Brier/log-score examples), and is the source substantively supporting Section 2.6's propriety claims and the single-YES-versus-doubled-categorical-sum comparison above; its remaining unread pages and proofs were not inspected, so treat any claim beyond the cited sections as unverified. <a href="../../references/#gneiting2007">GNEITING2007</a> Brier's original verification paper and Murphy's score-decomposition paper remain qualified bibliographic pointers in the source ledger — their original text was not accessible during this book's research audit — so they are recorded here as further reading rather than as verification of any specific historical formula or decomposition. <a href="../../references/#brier1950">BRIER1950</a> <a href="../../references/#murphy1973">MURPHY1973</a> Chapter 10 returns to proper scoring in more depth, including calibration and discrimination, once forecast-evaluation infrastructure has been introduced in Part II.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../01-event-contracts/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 1. Event contracts are not stocks">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                1. Event contracts are not stocks
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../03-decisions-and-costs/" class="md-footer__link md-footer__link--next" aria-label="Next: 3. From beliefs to decisions">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                3. From beliefs to decisions
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

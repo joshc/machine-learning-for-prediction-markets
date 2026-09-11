@@ -1,0 +1,3327 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/references/">
+      
+      
+        <link rel="prev" href="../glossary/">
+      
+      
+        <link rel="next" href="../solutions/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>References - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#references-and-evidence-boundaries" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              References
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/02-probability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/05-market-microstructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/11-statistical-baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/12-trees-and-ensembles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/13-evolving-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/19-evidence-after-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/22-bankroll-and-portfolios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/23-learning-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/25-research-hypotheses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/28-quickstart-consistency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapters/30-first-live-trade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../companion/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#wz2006" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WZ2006
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manski2004" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MANSKI2004
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wz2004" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WZ2004
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#berg2008" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BERG2008
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hanson2007" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HANSON2007
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gneiting2007" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GNEITING2007
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brier1950" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BRIER1950
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#murphy1973" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MURPHY1973
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#guo2017" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GUO2017
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#niculescu2005" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NICULESCU2005
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kull2017" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KULL2017
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#friedman2010" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FRIEDMAN2010
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tibshirani1996" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TIBSHIRANI1996
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gelman2008" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GELMAN2008
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#breiman2001" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BREIMAN2001
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#friedman2001" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FRIEDMAN2001
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chen2016" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CHEN2016
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cox1972" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        COX1972
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kalman1960" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KALMAN1960
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adams2007" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADAMS2007
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manning2008" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MANNING2008
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rumelhart1986" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RUMELHART1986
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hochreiter1997" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HOCHREITER1997
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#attention2017" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ATTENTION2017
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#devlin2019" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DEVLIN2019
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ganin2016" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GANIN2016
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bates1969" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BATES1969
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gneiting2013" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GNEITING2013
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#yao2018" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YAO2018
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bailey2017" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BAILEY2017
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#white2000" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WHITE2000
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benjamini1995" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BENJAMINI1995
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#politis1994" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POLITIS1994
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#howard2021" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HOWARD2021
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kelly1956" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KELLY1956
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glosten1985" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GLOSTEN1985
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kyle1985" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KYLE1985
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#avellaneda2008" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AVELLANEDA2008
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#abernethy2013" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ABERNETHY2013
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dudik2011" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DUDIK2011
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fujimoto2019" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FUJIMOTO2019
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kalshi_demo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KALSHI_DEMO
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kalshi_history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KALSHI_HISTORY
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kalshi_book" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KALSHI_BOOK
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kalshi_rounding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KALSHI_ROUNDING
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polymarket_fees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POLYMARKET_FEES
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polymarket_resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POLYMARKET_RESOLUTION
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polymarket_collateral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POLYMARKET_COLLATERAL
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polymarket_book" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POLYMARKET_BOOK
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polymarket_terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POLYMARKET_TERMS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kalshi_settlement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KALSHI_SETTLEMENT
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polymarket_markets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POLYMARKET_MARKETS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noaa_co2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NOAA_CO2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noaa_data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NOAA_DATA
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noaa_policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NOAA_POLICY
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#wz2006" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WZ2006
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manski2004" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MANSKI2004
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wz2004" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WZ2004
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#berg2008" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BERG2008
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hanson2007" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HANSON2007
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gneiting2007" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GNEITING2007
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#brier1950" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BRIER1950
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#murphy1973" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MURPHY1973
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#guo2017" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GUO2017
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#niculescu2005" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NICULESCU2005
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kull2017" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KULL2017
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#friedman2010" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FRIEDMAN2010
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tibshirani1996" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TIBSHIRANI1996
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gelman2008" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GELMAN2008
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#breiman2001" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BREIMAN2001
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#friedman2001" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FRIEDMAN2001
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chen2016" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CHEN2016
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cox1972" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        COX1972
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kalman1960" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KALMAN1960
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adams2007" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ADAMS2007
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manning2008" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MANNING2008
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rumelhart1986" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RUMELHART1986
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#hochreiter1997" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HOCHREITER1997
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#attention2017" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ATTENTION2017
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#devlin2019" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DEVLIN2019
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ganin2016" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GANIN2016
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bates1969" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BATES1969
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gneiting2013" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GNEITING2013
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#yao2018" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        YAO2018
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bailey2017" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BAILEY2017
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#white2000" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WHITE2000
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benjamini1995" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BENJAMINI1995
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#politis1994" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POLITIS1994
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#howard2021" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HOWARD2021
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kelly1956" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KELLY1956
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glosten1985" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GLOSTEN1985
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kyle1985" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KYLE1985
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#avellaneda2008" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AVELLANEDA2008
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#abernethy2013" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ABERNETHY2013
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dudik2011" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DUDIK2011
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fujimoto2019" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        FUJIMOTO2019
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kalshi_demo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KALSHI_DEMO
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kalshi_history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KALSHI_HISTORY
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kalshi_book" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KALSHI_BOOK
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kalshi_rounding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KALSHI_ROUNDING
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polymarket_fees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POLYMARKET_FEES
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polymarket_resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POLYMARKET_RESOLUTION
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polymarket_collateral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POLYMARKET_COLLATERAL
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polymarket_book" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POLYMARKET_BOOK
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polymarket_terms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POLYMARKET_TERMS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kalshi_settlement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        KALSHI_SETTLEMENT
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polymarket_markets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        POLYMARKET_MARKETS
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noaa_co2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NOAA_CO2
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noaa_data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NOAA_DATA
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#noaa_policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NOAA_POLICY
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="references-and-evidence-boundaries">References and evidence boundaries<a class="headerlink" href="#references-and-evidence-boundaries" title="Permanent link">&para;</a></h1>
+<p>This bibliography supports <em>Machine Learning for Prediction Markets: Probabilities, Evidence, and Execution</em>. Citation headings are stable link targets. All access dates are <strong>2026-09-10</strong>. Years for mutable official documents identify the inspected edition, not an asserted original publication date.</p>
+<p><strong>Inspection is not uniform.</strong> Each entry says whether an abstract, relevant full-text section, official page, or only bibliographic metadata was inspected. Publisher-deposited Crossref records verify bibliographic identity but are not a reading of the paper. A metadata-only entry is a qualified further-reading pointer, not sole evidence for a detailed claim. The machine-readable <a href="../research/sources.json">source ledger</a> and <a href="../research/claims.csv">initial claim map</a> retain these boundaries.</p>
+<p>No paper here, by itself, establishes prediction-market profitability. Forecasting, mathematical mechanism design, simulation, and historically executable trading are different evidence categories.</p>
+<h2 id="wz2006">WZ2006<a class="headerlink" href="#wz2006" title="Permanent link">&para;</a></h2>
+<p>Justin Wolfers and Eric Zitzewitz. <strong>Interpreting Prediction Market Prices as Probabilities.</strong> NBER Working Paper 12200, 2006. DOI: <a href="https://doi.org/10.3386/w12200">10.3386/w12200</a>. <a href="https://www.nber.org/papers/w12200">NBER record</a>.</p>
+<p><strong>Use:</strong> The inspected NBER abstract describes sufficient conditions relating market prices to average beliefs, and useful but sometimes biased approximations beyond those conditions. Risk preferences and belief distributions matter. <strong>Boundary:</strong> This working-paper version is not a peer-reviewed journal article; average belief is not an oracle for event probability. Full text was not inspected.</p>
+<h2 id="manski2004">MANSKI2004<a class="headerlink" href="#manski2004" title="Permanent link">&para;</a></h2>
+<p>Charles F. Manski. <strong>Interpreting the Predictions of Prediction Markets.</strong> NBER Working Paper 10359, 2004. DOI: <a href="https://doi.org/10.3386/w10359">10.3386/w10359</a>. <a href="https://www.nber.org/papers/w10359">NBER record</a>.</p>
+<p><strong>Use:</strong> The inspected abstract presents partial identification of beliefs under heterogeneous beliefs, risk neutrality, and price taking. <strong>Boundary:</strong> It does not say all prediction-market prices are useless. Cite this working paper as this version, not with an unverified later journal DOI.</p>
+<h2 id="wz2004">WZ2004<a class="headerlink" href="#wz2004" title="Permanent link">&para;</a></h2>
+<p>Justin Wolfers and Eric Zitzewitz. <strong>Prediction Markets.</strong> <em>Journal of Economic Perspectives</em> 18(2), 107-126, 2004. DOI: <a href="https://doi.org/10.1257/0895330041371321">10.1257/0895330041371321</a>. <a href="https://www.aeaweb.org/articles?id=10.1257/0895330041371321">AEA publisher page</a>.</p>
+<p><strong>Use:</strong> The inspected publisher abstract synthesizes empirical forecasting comparisons and information-aggregation mechanisms. It also distinguishes conditional-market information from causal interpretation. <strong>Boundary:</strong> Selected historical comparisons are not a universal contemporary benchmark or a trader's net return.</p>
+<h2 id="berg2008">BERG2008<a class="headerlink" href="#berg2008" title="Permanent link">&para;</a></h2>
+<p>Joyce E. Berg, Forrest D. Nelson, and Thomas A. Rietz. <strong>Prediction market accuracy in the long run.</strong> <em>International Journal of Forecasting</em> 24(2), 2008. DOI: <a href="https://doi.org/10.1016/j.ijforecast.2008.03.007">10.1016/j.ijforecast.2008.03.007</a>. <a href="https://iemweb.biz.uiowa.edu/about-iem/research/prediction-market-accuracy-in-the-long-run/">Iowa Electronic Markets institutional page</a>.</p>
+<p><strong>Use:</strong> The inspected institutional abstract reports comparisons with 964 national polls across five U.S. presidential elections, 1988-2004; contemporaneous IEM vote-share forecasts were closer to the eventual two-major-party vote split in 74% of those comparisons. <strong>Boundary:</strong> Five elections are not 964 independent outcomes. This is vote-share accuracy, not necessarily winner-probability calibration or executable profit. <strong>Metadata discrepancy:</strong> The IEM page gives pages 283-298; publisher-deposited DOI metadata gives 285-300. The direct publisher text was inaccessible, so the discrepancy remains disclosed.</p>
+<h2 id="hanson2007">HANSON2007<a class="headerlink" href="#hanson2007" title="Permanent link">&para;</a></h2>
+<p>Robin Hanson. <strong>Logarithmic Market Scoring Rules for Modular Combinatorial Information Aggregation.</strong> <em>The Journal of Prediction Markets</em> 1(1), 3-15, 2007. DOI: <a href="https://doi.org/10.5750/jpm.v1i1.417">10.5750/jpm.v1i1.417</a>. <a href="https://www.ubplj.org/index.php/jpm/article/view/417">Publisher record</a>.</p>
+<p><strong>Use:</strong> The inspected publisher abstract explains market scoring rules and special probability-preservation properties of their logarithmic versions. <strong>Boundary:</strong> The full theorem/cost-function derivation was not audited; independently derived classroom LMSR examples are not live-exchange descriptions. The publisher's issue and citation metadata say 2007 despite later web-deposit metadata. Its indexed title contains a spacing typo, normalized here.</p>
+<h2 id="gneiting2007">GNEITING2007<a class="headerlink" href="#gneiting2007" title="Permanent link">&para;</a></h2>
+<p>Tilmann Gneiting and Adrian E. Raftery. <strong>Strictly Proper Scoring Rules, Prediction, and Estimation.</strong> <em>Journal of the American Statistical Association</em> 102(477), 359-378, 2007. DOI and primary publisher locator: <a href="https://doi.org/10.1198/016214506000001437">10.1198/016214506000001437</a>.</p>
+<p><strong>Use:</strong> The <a href="https://sites.stat.washington.edu/raftery/Research/PDF/Gneiting2007jasa.pdf">author-hosted article</a> was inspected at the abstract, Section 1, Section 2.1 definitions, Section 2.3, and Sections 3.1-3.2 (pp. 359-360 and 362-364). These sections define proper and strictly proper scores, present the categorical representation and quadratic/logarithmic examples, and require score comparisons on the same forecast cases. <strong>Boundary:</strong> The article uses higher-is-better rewards; this book uses losses. Its categorical squared-error sum gives twice the single-YES binary loss after reversing sign. Infinite log loss is possible. Strict propriety is an expectation-level incentive property, not guaranteed finite-sample calibration or profit; outcome-dependent normalized skill scores need not retain propriety. Not all article proofs or case studies were inspected.</p>
+<h2 id="brier1950">BRIER1950<a class="headerlink" href="#brier1950" title="Permanent link">&para;</a></h2>
+<p>Glenn W. Brier. <strong>Verification of Forecasts Expressed in Terms of Probability.</strong> <em>Monthly Weather Review</em> 78(1), 1-3, 1950. DOI and publisher locator: <a href="https://doi.org/10.1175/1520-0493%281950%29078%3C0001%3AVOFEIT%3E2.0.CO%3B2">10.1175/1520-0493(1950)078&lt;0001:VOFEIT&gt;2.0.CO;2</a>.</p>
+<p><strong>Use:</strong> Historical probability-verification reading. <strong>Verification boundary:</strong> The original remains metadata-only after AMS abstract/PDF requests returned 403 and the legacy NOAA archive hostname failed to resolve. Do not claim original-text inspection or an exact original normalization. The independently inspected GNEITING2007 Section 3.1, Example 1, now supplies substantive support for the categorical Brier score; the book explicitly reduces this to one squared YES-probability error per binary event.</p>
+<h2 id="murphy1973">MURPHY1973<a class="headerlink" href="#murphy1973" title="Permanent link">&para;</a></h2>
+<p>Allan H. Murphy. <strong>A New Vector Partition of the Probability Score.</strong> <em>Journal of Applied Meteorology</em> 12(4), 595-600, 1973. DOI and publisher locator: <a href="https://doi.org/10.1175/1520-0450%281973%29012%3C0595%3AANVPOT%3E2.0.CO%3B2">10.1175/1520-0450(1973)012&lt;0595:ANVPOT&gt;2.0.CO;2</a>.</p>
+<p><strong>Use:</strong> Reading pointer for score decomposition. <strong>Verification boundary:</strong> Publisher-deposited metadata only; follow-up AMS abstract and public PDF endpoints remained inaccessible. A population decomposition, an exact finite-table identity, and an arbitrary binned estimate must not be conflated. Keep detailed Murphy attribution qualified until the original is inspected; independently derived classroom identities should be labeled as such.</p>
+<h2 id="guo2017">GUO2017<a class="headerlink" href="#guo2017" title="Permanent link">&para;</a></h2>
+<p>Chuan Guo, Geoff Pleiss, Yu Sun, and Kilian Q. Weinberger. <strong>On Calibration of Modern Neural Networks.</strong> ICML 2017, <em>Proceedings of Machine Learning Research</em> 70, 1321-1330. <a href="https://proceedings.mlr.press/v70/guo17a.html">Primary proceedings</a>.</p>
+<p><strong>Use:</strong> The inspected proceedings abstract reports miscalibration in studied modern neural classifiers and effective temperature scaling on most examined datasets. <strong>Boundary:</strong> These image/document experiments do not ensure calibration on small, shifting event-market samples. The paper is peer-reviewed conference research, not a venue performance study.</p>
+<h2 id="niculescu2005">NICULESCU2005<a class="headerlink" href="#niculescu2005" title="Permanent link">&para;</a></h2>
+<p>Alexandru Niculescu-Mizil and Rich Caruana. <strong>Predicting good probabilities with supervised learning.</strong> ICML 2005, 625-632. DOI and publisher locator: <a href="https://doi.org/10.1145/1102351.1102430">10.1145/1102351.1102430</a>.</p>
+<p><strong>Use:</strong> The <a href="https://www.cs.cornell.edu/~alexn/papers/calibration.icml05.crc.rev3.pdf">Cornell author manuscript</a> was inspected at PDF pp. 1-3 and 8: abstract, calibration methods, dataset/qualitative setup, Figure 8 discussion and conclusions. It explains why calibration should use data independent of base-model fitting, contrasts sigmoid and isotonic maps, and reports both benefits and harms depending on model and sample size. <strong>Boundary:</strong> The eight binary-classification datasets use random samples, not event-grouped chronological validation. Calibration data are reused for model selection in the paper, with a distinct final test set; this is not permission to tune on the final evaluation set. The 2005 neural-network results and GUO2017's modern architectures are not contradictory universal laws.</p>
+<h2 id="kull2017">KULL2017<a class="headerlink" href="#kull2017" title="Permanent link">&para;</a></h2>
+<p>Meelis Kull, Telmo Silva Filho, and Peter Flach. <strong>Beta calibration: a well-founded and easily implemented improvement on logistic calibration for binary classifiers.</strong> AISTATS 2017, <em>Proceedings of Machine Learning Research</em> 54, 623-631. <a href="https://proceedings.mlr.press/v54/kull17a.html">Primary proceedings</a>.</p>
+<p><strong>Use:</strong> The inspected abstract discusses isotonic overfitting in small samples and circumstances in which logistic calibration can make probabilities worse; it proposes beta calibration. <strong>Boundary:</strong> Its classifier-specific comparisons do not establish a universally best calibration method.</p>
+<h2 id="friedman2010">FRIEDMAN2010<a class="headerlink" href="#friedman2010" title="Permanent link">&para;</a></h2>
+<p>Jerome H. Friedman, Trevor Hastie, and Rob Tibshirani. <strong>Regularization Paths for Generalized Linear Models via Coordinate Descent.</strong> <em>Journal of Statistical Software</em> 33(1), 1-22, 2010. DOI: <a href="https://doi.org/10.18637/jss.v033.i01">10.18637/jss.v033.i01</a>. <a href="https://www.jstatsoft.org/index.php/jss/article/view/v033i01">Publisher page</a>.</p>
+<p><strong>Use:</strong> The inspected publisher abstract covers coordinate-descent paths for linear, logistic, and multinomial models with lasso, ridge, and elastic-net penalties, including sparse features. <strong>Boundary:</strong> Efficient fitting does not settle penalty selection, calibration, causal interpretation, or market usefulness.</p>
+<h2 id="tibshirani1996">TIBSHIRANI1996<a class="headerlink" href="#tibshirani1996" title="Permanent link">&para;</a></h2>
+<p>Robert Tibshirani. <strong>Regression Shrinkage and Selection Via the Lasso.</strong> <em>Journal of the Royal Statistical Society, Series B</em> 58(1), 267-288, 1996. DOI and publisher locator: <a href="https://doi.org/10.1111/j.2517-6161.1996.tb02080.x">10.1111/j.2517-6161.1996.tb02080.x</a>.</p>
+<p><strong>Use:</strong> The inspected publisher-deposited abstract describes constraining the sum of absolute coefficients in least squares and obtaining exact zero coefficients. <strong>Boundary:</strong> This is not evidence that selected predictors are causal or stable. Direct full text was not inspected; generalized-model computation is separately covered by FRIEDMAN2010.</p>
+<h2 id="gelman2008">GELMAN2008<a class="headerlink" href="#gelman2008" title="Permanent link">&para;</a></h2>
+<p>Andrew Gelman, Aleks Jakulin, Maria Grazia Pittau, and Yu-Sung Su. <strong>A weakly informative default prior distribution for logistic and other regression models.</strong> <em>The Annals of Applied Statistics</em> 2(4), 2008. DOI: <a href="https://doi.org/10.1214/08-AOAS191">10.1214/08-AOAS191</a>. <a href="https://arxiv.org/abs/0901.4011">Author-deposited manuscript</a>.</p>
+<p><strong>Use:</strong> The inspected author abstract proposes weakly informative Student-t priors with explicit predictor scaling and discusses complete separation. <strong>Boundary:</strong> A proposed default is not a universally optimal prior. The journal year is 2008; 2009 is the repository-deposit year. Full text was not audited.</p>
+<h2 id="breiman2001">BREIMAN2001<a class="headerlink" href="#breiman2001" title="Permanent link">&para;</a></h2>
+<p>Leo Breiman. <strong>Random Forests.</strong> <em>Machine Learning</em> 45(1), 5-32, 2001. DOI: <a href="https://doi.org/10.1023/A:1010933404324">10.1023/A:1010933404324</a>. <a href="https://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm">Breiman/Cutler explanatory website</a>.</p>
+<p><strong>Use:</strong> Relevant author-site text explains bootstrap tree samples, randomized feature subsets at splits, and aggregation of tree votes. <strong>Boundary:</strong> Journal identity was checked against publisher-deposited metadata, but journal proofs were not inspected. Votes are not automatically calibrated probabilities, and out-of-bag machinery does not automatically respect time or event grouping.</p>
+<h2 id="friedman2001">FRIEDMAN2001<a class="headerlink" href="#friedman2001" title="Permanent link">&para;</a></h2>
+<p>Jerome H. Friedman. <strong>Greedy function approximation: A gradient boosting machine.</strong> <em>The Annals of Statistics</em> 29(5), 2001. DOI and publisher locator: <a href="https://doi.org/10.1214/aos/1013203451">10.1214/aos/1013203451</a>.</p>
+<p><strong>Use:</strong> A reading pointer for gradient boosting. <strong>Verification boundary:</strong> The original remains metadata-only: follow-up Project Euclid requests failed, the historical Stanford hostname did not resolve, and the current author manuscript endpoint had an expired TLS certificate. Certificate validation was not disabled. The metadata does not certify a particular pseudocode implementation, convergence claim, or event-market result. CHEN2016 and FRIEDMAN2010 remain separately inspected related sources, not substitutes falsely labeled as this article.</p>
+<h2 id="chen2016">CHEN2016<a class="headerlink" href="#chen2016" title="Permanent link">&para;</a></h2>
+<p>Tianqi Chen and Carlos Guestrin. <strong>XGBoost: A Scalable Tree Boosting System.</strong> KDD 2016. DOI: <a href="https://doi.org/10.1145/2939672.2939785">10.1145/2939672.2939785</a>. <a href="https://arxiv.org/abs/1603.02754">Author manuscript</a>.</p>
+<p><strong>Use:</strong> The inspected abstract describes sparse-data processing, weighted quantile sketches, and systems techniques for scalable boosting. <strong>Boundary:</strong> Its benchmark scalability does not prove forecasting skill in small event samples. This citation does not imply that the companion reimplements XGBoost or requires its package.</p>
+<h2 id="cox1972">COX1972<a class="headerlink" href="#cox1972" title="Permanent link">&para;</a></h2>
+<p>D. R. Cox. <strong>Regression Models and Life-Tables.</strong> <em>Journal of the Royal Statistical Society, Series B</em> 34(2), 187-202, 1972. DOI: <a href="https://doi.org/10.1111/j.2517-6161.1972.tb00899.x">10.1111/j.2517-6161.1972.tb00899.x</a>. <a href="https://academic.oup.com/jrsssb/article/34/2/187/7027194">Publisher locator</a>.</p>
+<p><strong>Use:</strong> The inspected publisher-deposited abstract describes censored failure times and a covariate-modulated hazard with an unspecified baseline. <strong>Boundary:</strong> Hazard assumptions must be justified. Event occurrence, contract close, and settlement are different clocks. Direct article text was not inspected.</p>
+<h2 id="kalman1960">KALMAN1960<a class="headerlink" href="#kalman1960" title="Permanent link">&para;</a></h2>
+<p>R. E. Kalman. <strong>A New Approach to Linear Filtering and Prediction Problems.</strong> <em>Journal of Basic Engineering</em> 82(1), 35-45, 1960. DOI and publisher locator: <a href="https://doi.org/10.1115/1.3662552">10.1115/1.3662552</a>.</p>
+<p><strong>Use:</strong> The inspected publisher-deposited abstract describes state-transition linear filtering and recursive error covariance. <strong>Boundary:</strong> This is a filtering foundation, not an assertion that binary prices have Gaussian observation noise or a diffusion law. Original full text was not inspected.</p>
+<h2 id="adams2007">ADAMS2007<a class="headerlink" href="#adams2007" title="Permanent link">&para;</a></h2>
+<p>Ryan Prescott Adams and David J. C. MacKay. <strong>Bayesian Online Changepoint Detection.</strong> arXiv:0710.3742, 2007. DOI: <a href="https://doi.org/10.48550/arXiv.0710.3742">10.48550/arXiv.0710.3742</a>. <a href="https://arxiv.org/abs/0710.3742">Author preprint</a>.</p>
+<p><strong>Use:</strong> The inspected abstract describes an online posterior over current run length under a changepoint model. <strong>Boundary:</strong> This entry is a preprint; a later peer-reviewed version was not established here. Independence of segment parameters is an explicit model assumption. A detected change is not proof of an exploitable economic regime.</p>
+<h2 id="manning2008">MANNING2008<a class="headerlink" href="#manning2008" title="Permanent link">&para;</a></h2>
+<p>Christopher D. Manning, Prabhakar Raghavan, and Hinrich Schuetze. <strong>Introduction to Information Retrieval.</strong> Cambridge University Press, 2008. <a href="https://nlp.stanford.edu/IR-book/">Author-hosted book website</a>.</p>
+<p><strong>Use:</strong> Inspected HTML sections on term frequency, inverse document frequency, and the initial multinomial Naive Bayes derivation support bag-of-words representations, document-frequency weighting, and log-space probability calculations. <strong>Boundary:</strong> Only the named relevant sections, not the whole textbook, were read. Text representation is not evidence of market prediction skill; publication-time provenance and training-corpus contamination remain separate questions.</p>
+<h2 id="rumelhart1986">RUMELHART1986<a class="headerlink" href="#rumelhart1986" title="Permanent link">&para;</a></h2>
+<p>David E. Rumelhart, Geoffrey E. Hinton, and Ronald J. Williams. <strong>Learning representations by back-propagating errors.</strong> <em>Nature</em> 323(6088), 533-536, 1986. DOI: <a href="https://doi.org/10.1038/323533a0">10.1038/323533a0</a>. <a href="https://www.nature.com/articles/323533a0">Publisher locator</a>.</p>
+<p><strong>Use:</strong> The <a href="https://www.cs.toronto.edu/~hinton/absps/naturebp.pdf">Hinton author copy</a> was visually inspected on pp. 533-535, including the abstract, differentiable feed-forward setup, squared-error objective, chain-rule equations 1-9, gradient/momentum updates, and local-minimum discussion. <strong>Boundary:</strong> The paper explicitly does not guarantee reaching a global minimum. Its illustrative representations are not market-forecasting or calibration evidence. Do not claim exclusive historical priority; it acknowledges independently discovered variants. The final page was not inspected.</p>
+<h2 id="hochreiter1997">HOCHREITER1997<a class="headerlink" href="#hochreiter1997" title="Permanent link">&para;</a></h2>
+<p>Sepp Hochreiter and Juergen Schmidhuber. <strong>Long Short-Term Memory.</strong> <em>Neural Computation</em> 9(8), 1735-1780, 1997. DOI and publisher locator: <a href="https://doi.org/10.1162/neco.1997.9.8.1735">10.1162/neco.1997.9.8.1735</a>.</p>
+<p><strong>Use:</strong> The inspected publisher-deposited abstract introduces LSTM to address decaying error flow when learning long dependencies. <strong>Boundary:</strong> Artificial long-delay sequence experiments are not evidence of market forecasting advantage. Full article text was not inspected, and quote frequency does not increase the number of independent event outcomes.</p>
+<h2 id="attention2017">ATTENTION2017<a class="headerlink" href="#attention2017" title="Permanent link">&para;</a></h2>
+<p>Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Lukasz Kaiser, and Illia Polosukhin. <strong>Attention Is All You Need.</strong> NeurIPS 2017. <a href="https://arxiv.org/abs/1706.03762">Author repository</a>; <a href="https://arxiv.org/html/1706.03762v7">inspected later HTML version</a>.</p>
+<p><strong>Use:</strong> The abstract and Section 4 were inspected. They introduce attention-based sequence transduction and compare computational complexity, parallelism, and dependency path length with recurrence and convolution. <strong>Boundary:</strong> Translation/parsing results are not calibrated event probabilities. Attention is not automatically an explanation. The inspected version is v7, dated 2023, not a retrieved historical 2017 snapshot.</p>
+<h2 id="devlin2019">DEVLIN2019<a class="headerlink" href="#devlin2019" title="Permanent link">&para;</a></h2>
+<p>Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. <strong>BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding.</strong> <em>Proceedings of NAACL-HLT 2019</em>, Volume 1, 4171-4186. DOI: <a href="https://doi.org/10.18653/v1/N19-1423">10.18653/v1/N19-1423</a>. <a href="https://aclanthology.org/N19-1423/">ACL publisher record</a>.</p>
+<p><strong>Use:</strong> The inspected publisher abstract describes bidirectional text pretraining and task-specific fine-tuning. <strong>Boundary:</strong> Language-task performance does not establish financial forecasting skill. A model trained after an evaluation period may encode future information; this source does not certify an as-of model archive.</p>
+<h2 id="ganin2016">GANIN2016<a class="headerlink" href="#ganin2016" title="Permanent link">&para;</a></h2>
+<p>Yaroslav Ganin, Evgeniya Ustinova, Hana Ajakan, Pascal Germain, Hugo Larochelle, Francois Laviolette, Mario Marchand, and Victor Lempitsky. <strong>Domain-Adversarial Training of Neural Networks.</strong> <em>Journal of Machine Learning Research</em> 17(59), 1-35, 2016. <a href="https://www.jmlr.org/papers/v17/15-239.html">Primary journal page</a>.</p>
+<p><strong>Use:</strong> The inspected abstract describes representations that discriminate source-task labels while discouraging discrimination between source and target domains; examples include sentiment and image classification. <strong>Boundary:</strong> Domain adaptation has assumptions and is not a universal cure for market shift. JMLR's page and BibTeX shorten Marchand to March; <a href="https://arxiv.org/abs/1505.07818">author-deposited arXiv metadata</a> confirms the full surname used here.</p>
+<h2 id="bates1969">BATES1969<a class="headerlink" href="#bates1969" title="Permanent link">&para;</a></h2>
+<p>J. M. Bates and C. W. J. Granger. <strong>The Combination of Forecasts.</strong> <em>Operational Research Quarterly</em> 20(4), 451-468, 1969. DOI and current publisher locator: <a href="https://doi.org/10.1057/jors.1969.103">10.1057/jors.1969.103</a>.</p>
+<p><strong>Use:</strong> The complete primary <a href="https://www.tandfonline.com/doi/abs/10.1057/jors.1969.103">publisher abstract</a>, present in the page's structured data but omitted by simplified fetching, was inspected. It describes combining two airline-passenger forecast sets, possible reduction in mean-square error, and combination weights estimated from past forecast errors. <strong>Boundary:</strong> The full article was not inspected; no specific optimal-weight formula is certified. Improvement is possible, not universal, and point-forecast results do not establish calibration of averaged probabilities. The modern publisher uses the successor journal title; its later online date must not replace 1969.</p>
+<h2 id="gneiting2013">GNEITING2013<a class="headerlink" href="#gneiting2013" title="Permanent link">&para;</a></h2>
+<p>Tilmann Gneiting and Roopesh Ranjan. <strong>Combining predictive distributions.</strong> <em>Electronic Journal of Statistics</em> 7, 2013. DOI: <a href="https://doi.org/10.1214/13-EJS823">10.1214/13-EJS823</a>. <a href="https://arxiv.org/abs/1106.1638">Earlier author manuscript</a>.</p>
+<p><strong>Use:</strong> The inspected author abstract treats linear and nonlinear aggregation through coherence, calibration, and dispersion, with simulations and weather/return case studies. <strong>Boundary:</strong> Publication identity was cross-checked in publisher-deposited metadata; a complete version comparison was not performed. Averaging alone does not guarantee calibration or trading profit.</p>
+<h2 id="yao2018">YAO2018<a class="headerlink" href="#yao2018" title="Permanent link">&para;</a></h2>
+<p>Yuling Yao, Aki Vehtari, Daniel Simpson, and Andrew Gelman. <strong>Using Stacking to Average Bayesian Predictive Distributions (with Discussion).</strong> <em>Bayesian Analysis</em> 13(3), 2018. DOI: <a href="https://doi.org/10.1214/17-BA1091">10.1214/17-BA1091</a>. <a href="https://arxiv.org/abs/1704.02030">Author manuscript</a>.</p>
+<p><strong>Use:</strong> The inspected author abstract extends stacking to predictive distributions and compares alternatives in an M-open setting. <strong>Boundary:</strong> Its leave-one-out calculation is not automatically suitable for chronological event data. The discussion and all proofs were not inspected; weights still need leakage-safe fitting.</p>
+<h2 id="bailey2017">BAILEY2017<a class="headerlink" href="#bailey2017" title="Permanent link">&para;</a></h2>
+<p>David H. Bailey, Jonathan Borwein, Marcos Lopez de Prado, and Qiji Jim Zhu. <strong>The Probability of Backtest Overfitting.</strong> <em>Journal of Computational Finance</em>, 2017. DOI: <a href="https://doi.org/10.21314/JCF.2016.322">10.21314/JCF.2016.322</a>. <a href="https://scholarworks.wmich.edu/math_pubs/42/">Western Michigan University record</a>.</p>
+<p><strong>Use:</strong> The inspected institutional abstract proposes a probability-of-backtest-overfitting framework and combinatorially symmetric cross-validation implementations. <strong>Boundary:</strong> The cited journal publication is 2017, not an earlier working-paper year. CSCV is not a universal cure for dependent event labels, and the paper's warning about holdout in investment research is not permission to repeatedly inspect the test set.</p>
+<h2 id="white2000">WHITE2000<a class="headerlink" href="#white2000" title="Permanent link">&para;</a></h2>
+<p>Halbert White. <strong>A Reality Check for Data Snooping.</strong> <em>Econometrica</em> 68(5), 1097-1126, 2000. DOI: <a href="https://doi.org/10.1111/1468-0262.00152">10.1111/1468-0262.00152</a>. <a href="https://www.econometricsociety.org/publications/econometrica/2000/09/01/reality-check-data-snooping">Econometric Society record</a>.</p>
+<p><strong>Use:</strong> The <a href="https://users.ssc.wisc.edu/~behansen/718/White2000.pdf">University of Wisconsin article copy</a> was inspected at the abstract/introduction opening (p. 1097) and Section 2a-2b through p. 1104. It tests the best expected candidate performance relative to a benchmark, gives a least-favorable-null construction, and uses common random-length bootstrap blocks for dependent data. <strong>Boundary:</strong> The setup assumes stationary strong-mixing observations, point-in-time predictors and additional asymptotic regularity. Candidate-family records, treatment of parameter estimation and block-length conditions matter. All Appendix assumptions/proofs were not audited. The method cannot recover undisclosed trials, fix leakage or validate fictitious fills and missing costs.</p>
+<h2 id="benjamini1995">BENJAMINI1995<a class="headerlink" href="#benjamini1995" title="Permanent link">&para;</a></h2>
+<p>Yoav Benjamini and Yosef Hochberg. <strong>Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing.</strong> <em>Journal of the Royal Statistical Society, Series B</em> 57(1), 289-300, 1995. DOI: <a href="https://doi.org/10.1111/j.2517-6161.1995.tb02031.x">10.1111/j.2517-6161.1995.tb02031.x</a>. <a href="https://academic.oup.com/jrsssb/article/57/1/289/7035855">Publisher locator</a>.</p>
+<p><strong>Use:</strong> The inspected publisher-deposited abstract defines the false-discovery-rate objective and states a control result for independent test statistics. <strong>Boundary:</strong> Do not assert arbitrary-dependence validity for the original procedure. Valid p-values and a defined testing family remain necessary; direct full text was not inspected.</p>
+<h2 id="politis1994">POLITIS1994<a class="headerlink" href="#politis1994" title="Permanent link">&para;</a></h2>
+<p>Dimitris N. Politis and Joseph P. Romano. <strong>The Stationary Bootstrap.</strong> <em>Journal of the American Statistical Association</em> 89(428), 1303-1313, 1994. DOI and publisher locator: <a href="https://doi.org/10.1080/01621459.1994.10476870">10.1080/01621459.1994.10476870</a>.</p>
+<p><strong>Use:</strong> The complete primary <a href="https://www.tandfonline.com/doi/abs/10.1080/01621459.1994.10476870">publisher abstract</a> was inspected. It describes geometrically distributed random block lengths, a conditionally stationary resampled pseudo-series, and asymptotic inference for weakly dependent stationary observations. The author publication list corroborates identity; WHITE2000 supplies a separately inspected construction. <strong>Boundary:</strong> Neither the original full proofs nor a particular block-length choice was audited. Do not extend the abstract to arbitrary dependence, nonstationarity or an incorrectly chosen event sampling unit.</p>
+<h2 id="howard2021">HOWARD2021<a class="headerlink" href="#howard2021" title="Permanent link">&para;</a></h2>
+<p>Steven R. Howard, Aaditya Ramdas, Jon McAuliffe, and Jasjeet Sekhon. <strong>Time-uniform, nonparametric, nonasymptotic confidence sequences.</strong> <em>The Annals of Statistics</em> 49(2), 2021. DOI: <a href="https://doi.org/10.1214/20-AOS1991">10.1214/20-AOS1991</a>. <a href="https://arxiv.org/abs/1810.08240">Author repository</a>; <a href="https://arxiv.org/html/1810.08240v9">inspected HTML v9</a>.</p>
+<p><strong>Use:</strong> The abstract and relevant Section 2 text were inspected, including the average-conditional-expectation estimand, filtration, and exponential-supermartingale setup. They explain simultaneous-in-time coverage under stated conditions. <strong>Boundary:</strong> Time-uniform does not mean assumption-free, and sequential machinery does not cure leakage or turn repeated quotes into independent outcomes. The inspected author version is later than the journal publication.</p>
+<h2 id="kelly1956">KELLY1956<a class="headerlink" href="#kelly1956" title="Permanent link">&para;</a></h2>
+<p>J. L. Kelly, Jr. <strong>A New Interpretation of Information Rate.</strong> <em>Bell System Technical Journal</em> 35(4), 917-926, 1956. DOI and publisher locator: <a href="https://doi.org/10.1002/j.1538-7305.1956.tb03809.x">10.1002/j.1538-7305.1956.tb03809.x</a>.</p>
+<p><strong>Use:</strong> All ten pages of the <a href="https://www.princeton.edu/~wbialek/rome/refs/kelly_56.pdf">Princeton-hosted reproduction</a>, explicitly marked reproduced with AT&amp;T permission, were inspected. The paper distinguishes expected log-growth from expected capital, shows the ruin problem with repeated all-in stakes, and allows unbet capital when there is a track take. <strong>Boundary:</strong> The general setup assumes independent symbols/noise; the conclusion identifies reinvestment and stake control as essential and explicitly limits its dominance comparison to fixed allocations for each received symbol. It leaves broader adaptive-policy results open. This is not finite-horizon safety, a theorem for uncertain estimated probabilities, or support for a universally safe fractional-Kelly rule. Its base-two logarithm rescales growth relative to natural logs without changing the optimizer.</p>
+<h2 id="glosten1985">GLOSTEN1985<a class="headerlink" href="#glosten1985" title="Permanent link">&para;</a></h2>
+<p>Lawrence R. Glosten and Paul R. Milgrom. <strong>Bid, ask and transaction prices in a specialist market with heterogeneously informed traders.</strong> <em>Journal of Financial Economics</em> 14(1), 71-100, 1985. DOI and publisher locator: <a href="https://doi.org/10.1016/0304-405X%2885%2990044-3">10.1016/0304-405X(85)90044-3</a>.</p>
+<p><strong>Use:</strong> The <a href="https://milgrom.people.stanford.edu/wp-content/uploads/1984/09/Bid-Ask-and-Transaction-Prices.pdf">Milgrom author-hosted reprint</a> was visually inspected on copy pp. 1-3: abstract and opening Section 1. It explains positive spreads from informational adverse selection even with a risk-neutral specialist and zero expected transaction profits, and values a trade conditional on its direction. <strong>Boundary:</strong> This stock-market analogy assumes competitive zero-profit pricing without transaction costs or binding inventory/cash constraints. The text explicitly warns that binding inventory constraints require departures. Remaining formal propositions/proofs were not inspected, and no actual event-market spread estimate is established.</p>
+<h2 id="kyle1985">KYLE1985<a class="headerlink" href="#kyle1985" title="Permanent link">&para;</a></h2>
+<p>Albert S. Kyle. <strong>Continuous Auctions and Insider Trading.</strong> <em>Econometrica</em> 53(6), 1315-1336, 1985. DOI: <a href="https://doi.org/10.2307/1913210">10.2307/1913210</a>. <a href="https://www.econometricsociety.org/publications/econometrica/1985/11/01/continuous-auctions-and-insider-trading">Econometric Society record</a>.</p>
+<p><strong>Use:</strong> The complete primary publisher abstract was inspected in the raw HTML after simplified fetching omitted it. It identifies one risk-neutral insider, random noise traders and competitive risk-neutral market makers; its continuous-trading equilibrium limit produces Brownian prices, constant depth and eventual information incorporation. <strong>Boundary:</strong> These are model-dependent equilibrium conclusions, not empirical laws for bounded event contracts or evidence about a particular counterparty. Full article proofs were not inspected and no authenticated access was attempted.</p>
+<h2 id="avellaneda2008">AVELLANEDA2008<a class="headerlink" href="#avellaneda2008" title="Permanent link">&para;</a></h2>
+<p>Marco Avellaneda and Sasha Stoikov. <strong>High-frequency trading in a limit order book.</strong> <em>Quantitative Finance</em> 8(3), 217-224, 2008. DOI and publisher locator: <a href="https://doi.org/10.1080/14697680701381228">10.1080/14697680701381228</a>.</p>
+<p><strong>Use:</strong> The <a href="https://math.nyu.edu/inmemoriam/avellaneda/HighFrequencyTrading.pdf">NYU author-hosted article</a> was inspected through Sections 1-3 (pp. 217-223), including the price/utility/arrival assumptions, reservation valuation, approximate quotes and numerical simulations. The main setup uses driftless arithmetic-Brownian stock prices, constant volatility, exponential terminal-wealth utility and distance-dependent Poisson fills. <strong>Boundary:</strong> Equations 29-30 are approximate simple quotes under symmetric exponential arrival rates, not the general exact control solution. The paper focuses on inventory risk rather than a full adverse-selection model. Continuous costless quote changes, one-share fills and a terminal midpoint mark omit important real execution frictions. Its results are simulation comparisons, not historical executable profit; bounded event payouts and settlement jumps invalidate automatic stock-model transfer. The Appendix was not fully inspected.</p>
+<h2 id="abernethy2013">ABERNETHY2013<a class="headerlink" href="#abernethy2013" title="Permanent link">&para;</a></h2>
+<p>Jacob Abernethy, Yiling Chen, and Jennifer Wortman Vaughan. <strong>Efficient Market Making via Convex Optimization, and a Connection to Online Learning.</strong> <em>ACM Transactions on Economics and Computation</em> 1(2), article 12, 1-39, 2013. DOI: <a href="https://doi.org/10.1145/2465769.2465777">10.1145/2465769.2465777</a>. <a href="https://www.microsoft.com/en-us/research/publication/efficient-market-making-via-convex-optimization-and-a-connection-to-online-learning/">Microsoft Research institutional record</a>.</p>
+<p><strong>Use:</strong> The inspected institutional abstract describes convex-cost market design, bounded-payoff securities, convex-hull optimization, and connections with online learning. <strong>Boundary:</strong> This is mechanism-design theory, not a claim that a quoted basket is executable or that separately worded contracts have compatible settlement.</p>
+<h2 id="dudik2011">DUDIK2011<a class="headerlink" href="#dudik2011" title="Permanent link">&para;</a></h2>
+<p>Miroslav Dudik, John Langford, and Lihong Li. <strong>Doubly Robust Policy Evaluation and Learning.</strong> ICML 2011. <a href="https://arxiv.org/abs/1103.4601">Author-deposited manuscript</a>.</p>
+<p><strong>Use:</strong> The inspected abstract addresses evaluation from contextual-bandit logs when target and logged action distributions differ, combining reward and past-policy models. <strong>Boundary:</strong> It does not establish validity without action support or appropriate logging assumptions. Passive historical order books are not automatically action-and-reward logs for a proposed trading policy. This entry identifies the 2011 paper, not a later expanded version.</p>
+<h2 id="fujimoto2019">FUJIMOTO2019<a class="headerlink" href="#fujimoto2019" title="Permanent link">&para;</a></h2>
+<p>Scott Fujimoto, David Meger, and Doina Precup. <strong>Off-Policy Deep Reinforcement Learning without Exploration.</strong> ICML 2019, <em>Proceedings of Machine Learning Research</em> 97, 2052-2062. <a href="https://proceedings.mlr.press/v97/fujimoto19a.html">Primary proceedings</a>.</p>
+<p><strong>Use:</strong> The inspected abstract reports extrapolation problems in fixed-batch off-policy deep reinforcement learning and proposes batch-constrained behavior. <strong>Boundary:</strong> Continuous-control results are not evidence of executable trading performance or simulator fidelity. Restricting a policy does not guarantee a safe live strategy.</p>
+<h2 id="kalshi_demo">KALSHI_DEMO<a class="headerlink" href="#kalshi_demo" title="Permanent link">&para;</a></h2>
+<p>Kalshi. <strong>Test In The Demo Environment.</strong> Official documentation, inspected 2026. <a href="https://docs.kalshi.com/getting_started/demo_env.md">Official page</a>; <a href="https://docs.kalshi.com/llms.txt">documentation index</a>.</p>
+<p><strong>Use:</strong> The complete inspected page describes mock funds, separate credentials, and demo endpoints. <strong>Boundary:</strong> It expressly warns that demo prices and behavior may not reflect real markets. Demo success is a mechanics result, not evidence of live liquidity or profitability.</p>
+<h2 id="kalshi_history">KALSHI_HISTORY<a class="headerlink" href="#kalshi_history" title="Permanent link">&para;</a></h2>
+<p>Kalshi. <strong>Historical Data.</strong> Official documentation, inspected 2026. <a href="https://docs.kalshi.com/getting_started/historical_data.md">Official page</a>.</p>
+<p><strong>Use:</strong> Inspected sections explain moving live/historical cutoffs and object-specific partition times. <strong>Boundary:</strong> The listed historical endpoints do not establish a full historical order-book or queue archive. Public API documentation is not a redistribution license or a guarantee of complete coverage.</p>
+<h2 id="kalshi_book">KALSHI_BOOK<a class="headerlink" href="#kalshi_book" title="Permanent link">&para;</a></h2>
+<p>Kalshi. <strong>Orderbook Responses.</strong> Official documentation, inspected 2026. <a href="https://docs.kalshi.com/getting_started/orderbook_responses.md">Official page</a>.</p>
+<p><strong>Use:</strong> The inspected schema uses string-valued fixed-point dollar prices and quantities in YES/NO bid arrays; opposite-outcome bids imply asks under ordinary binary mechanics. <strong>Boundary:</strong> Recheck schema/version and units. Displayed depth is not a guaranteed fill, and a current response is not historical evidence.</p>
+<h2 id="kalshi_rounding">KALSHI_ROUNDING<a class="headerlink" href="#kalshi_rounding" title="Permanent link">&para;</a></h2>
+<p>Kalshi. <strong>Fee Rounding.</strong> Official documentation, inspected 2026. <a href="https://docs.kalshi.com/getting_started/fee_rounding.md">Official page</a>.</p>
+<p><strong>Use:</strong> The complete inspected page distinguishes trade fee, rounding fee, rebate, balance precision, and a per-order accumulator across fills. <strong>Boundary:</strong> This is not a complete market-specific fee schedule. A hypothetical flat classroom charge must never be labeled the venue's actual fee.</p>
+<h2 id="polymarket_fees">POLYMARKET_FEES<a class="headerlink" href="#polymarket_fees" title="Permanent link">&para;</a></h2>
+<p>Polymarket. <strong>Fees.</strong> Official predictions-product documentation, inspected 2026. <a href="https://docs.polymarket.com/trading/fees.md">Official page</a>; <a href="https://docs.polymarket.com/llms.txt">documentation index</a>.</p>
+<p><strong>Use:</strong> Inspected fee structure and precision sections describe price/quantity-dependent, market-specific taker fees and distinctions by market category. <strong>Boundary:</strong> Do not assume universal zero fees or freeze the current category table as timeless. Different regional products and USDC/pUSD units need separate verification; rebates do not establish a profitable market-making strategy.</p>
+<h2 id="polymarket_resolution">POLYMARKET_RESOLUTION<a class="headerlink" href="#polymarket_resolution" title="Permanent link">&para;</a></h2>
+<p>Polymarket. <strong>Resolution.</strong> Official documentation, inspected 2026. <a href="https://docs.polymarket.com/concepts/resolution.md">Official page</a>.</p>
+<p><strong>Use:</strong> Inspected rules, dispute, UMA Vote, clarification, and redemption text explains why titles alone do not determine payout. An exceptional Unknown/50-50 result pays 0.50 per outcome token. <strong>Boundary:</strong> Timelines are descriptive, not guarantees; retain actual contract rules and exceptional payouts instead of coercing every observation into a binary label.</p>
+<h2 id="polymarket_collateral">POLYMARKET_COLLATERAL<a class="headerlink" href="#polymarket_collateral" title="Permanent link">&para;</a></h2>
+<p>Polymarket. <strong>Polymarket USD.</strong> Official documentation, inspected 2026. <a href="https://docs.polymarket.com/concepts/pusd.md">Official page</a>.</p>
+<p><strong>Use:</strong> Inspected descriptive sections identify pUSD as a Polygon ERC-20 collateral wrapper representing a USDC claim and describe onchain wrapping/unwrapping with a pause gate. <strong>Boundary:</strong> This is the operator's description, not an independent reserve, code, or custody audit. A token claim is not insured cash; this page should not be applied to a different regional product.</p>
+<h2 id="polymarket_book">POLYMARKET_BOOK<a class="headerlink" href="#polymarket_book" title="Permanent link">&para;</a></h2>
+<p>Polymarket. <strong>Prices and Order Books.</strong> Official public-CLOB documentation, inspected 2026. <a href="https://docs.polymarket.com/market-data/prices-order-books.md">Official page</a>.</p>
+<p><strong>Use:</strong> Inspected token mapping and response examples include price/size levels, timestamp, state hash, minimum order size, and tick size. <strong>Boundary:</strong> A response hash does not prove complete history or queue position. Public access is not unrestricted data-reuse permission.</p>
+<h2 id="polymarket_terms">POLYMARKET_TERMS<a class="headerlink" href="#polymarket_terms" title="Permanent link">&para;</a></h2>
+<p>Polymarket. <strong>Terms of Use | Polymarket.</strong> Partial official page response, inspected 2026. <a href="https://polymarket.com/tos">Official locator</a>.</p>
+<p><strong>Use:</strong> The retrieved geographic notice said trading on polymarket.com was blocked in the United States and directed readers to the separate polymarket.us product. <strong>Boundary:</strong> Complete operative terms were not exposed in the response. This source does not establish a full eligibility matrix, data redistribution permission, or an individual reader's legal right to trade. Never bypass geographic restrictions.</p>
+<h2 id="kalshi_settlement">KALSHI_SETTLEMENT<a class="headerlink" href="#kalshi_settlement" title="Permanent link">&para;</a></h2>
+<p>Kalshi. <strong>Market Settlement.</strong> Official documentation, inspected 2026. <a href="https://docs.kalshi.com/getting_started/market_settlement.md">Official page</a>.</p>
+<p><strong>Use:</strong> The complete inspected page describes ordinary payouts, net positions, variable settlement timing, and a distinction between simple YES/NO settlement and sub-cent scalar-settlement fees/rounding. <strong>Boundary:</strong> Do not assume immediate settlement or identical treatment for every product. Preserve actual rule and payout fields.</p>
+<h2 id="polymarket_markets">POLYMARKET_MARKETS<a class="headerlink" href="#polymarket_markets" title="Permanent link">&para;</a></h2>
+<p>Polymarket. <strong>Markets &amp; Events.</strong> Official documentation, inspected 2026. <a href="https://docs.polymarket.com/concepts/markets-events.md">Official page</a>.</p>
+<p><strong>Use:</strong> The inspected page distinguishes market identifiers and outcome tokens from event containers and notes that only some multi-market events are mutually exclusive. It also identifies an order-book eligibility field. <strong>Boundary:</strong> Shared grouping alone does not prove an exhaustive partition or compatible settlement. Verify rules before treating a set of tokens as an executable basket.</p>
+<h2 id="noaa_co2">NOAA_CO2<a class="headerlink" href="#noaa_co2" title="Permanent link">&para;</a></h2>
+<p>NOAA Global Monitoring Laboratory, Carbon Cycle and Greenhouse Gases group. <strong>Mauna Loa CO2 monthly mean data.</strong> Mutable observational dataset, inspected 2026. <a href="https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt">Primary data text</a>.</p>
+<p><strong>Use:</strong> Inspected header/schema and real initial observations establish a concrete monthly series with measurement and interpolation flags. The header identifies early Scripps provenance and the 2022-2023 Maunakea substitution. <strong>Boundary:</strong> This is current-vintage observational data, not an issued-forecast archive or a prediction-market dataset. The book's <a href="../companion/experiments/">completed NOAA-period study</a> freezes, hashes, and attributes its extract while retaining the retrospective-data limitations.</p>
+<h2 id="noaa_data">NOAA_DATA<a class="headerlink" href="#noaa_data" title="Permanent link">&para;</a></h2>
+<p>NOAA Global Monitoring Laboratory. <strong>Trends in Atmospheric Carbon Dioxide: Data.</strong> Official data documentation, inspected 2026. <a href="https://gml.noaa.gov/ccgg/trends/data.html">Official page</a>.</p>
+<p><strong>Use:</strong> Inspected text warns that quality-control checks can revise values and supplies provider citation guidance. <strong>Boundary:</strong> Small expected revisions are not proof of harmless historical leakage or stable threshold labels. No publication-vintage archive was established.</p>
+<h2 id="noaa_policy">NOAA_POLICY<a class="headerlink" href="#noaa_policy" title="Permanent link">&para;</a></h2>
+<p>NOAA Global Monitoring Laboratory. <strong>Disclaimer.</strong> Official use policy, inspected 2026. <a href="https://gml.noaa.gov/about/disclaimer.html">Official policy</a>.</p>
+<p><strong>Use:</strong> The inspected policy describes government-server information as public domain unless annotated otherwise, with attribution, no implied endorsement, and clear labeling of modifications. <strong>Boundary:</strong> Third-party data are separately qualified. Do not silently extend the government-work policy to early Scripps records or imply NOAA endorsement of this book.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../glossary/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Glossary">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Glossary
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../solutions/" class="md-footer__link md-footer__link--next" aria-label="Next: Exercise navigation">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Exercise navigation
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

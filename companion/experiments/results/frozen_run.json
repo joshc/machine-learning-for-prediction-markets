@@ -1,0 +1,18 @@
+{
+  "frozen_at_utc": "2026-09-10T21:49:19Z",
+  "inputs": {
+    "data_sha256": "e3f26607a312e892d4a835d88db37d57c168039f048d2987a638b717c8ef51a4",
+    "implementation_sha256": "2766313762153f92671aae2ff05dbe040983ed4f4d4e64223170deec86ea7125",
+    "protocol_sha256": "3ce89596a3bfa3fa12a2b30f116f473fc000a827623b4011839fd3d33f5f5e71",
+    "provenance_sha256": "55766e437fd91ca566d035d00ac085a3019abf035f950b6a4cb44b83c15a0314",
+    "shared_scoring_sha256": "b8408e9ea5c12a4d23992f19b5c79004c671791bd0ef7452d925f371282d8bc7"
+  },
+  "outputs": {
+    "predictions.csv": "a9b9a34f25d9466ee3d8e7b95a758f5c7bc9d8c4203cf444fc3fac3bdcb4022a",
+    "report.json": "29e6a9f7572975acd8bb63af8dafa7e526ebb5bb2a3c4ec6a099d7748ba42010",
+    "sensitivity_predictions.csv": "5c18d73ac3f259219fdef4c34372809b2d5169b444f09b1a9de5da1419e6353a"
+  },
+  "protocol_id": "noaa-monthly-increase-v1",
+  "protocol_version": 1,
+  "run_policy": "One frozen evaluation plus its predeclared sensitivity; replacement requires explicit opt-in. Protocol is never rewritten by the CLI."
+}

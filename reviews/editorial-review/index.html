@@ -1,0 +1,2322 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/reviews/editorial-review/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Independent whole-manuscript technical editorial review - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#independent-whole-manuscript-technical-editorial-review" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Independent whole-manuscript technical editorial review
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/02-probability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/05-market-microstructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/11-statistical-baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/12-trees-and-ensembles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/13-evolving-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/19-evidence-after-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/22-bankroll-and-portfolios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/23-learning-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/25-research-hypotheses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/28-quickstart-consistency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../chapters/30-first-live-trade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../companion/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#relocation-note" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relocation note
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verdict-and-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verdict and scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#actual-reading-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Actual reading coverage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#substantive-findings-and-resolutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Substantive findings and resolutions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verification-actually-performed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification actually performed
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Verification actually performed">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mathematical-and-numerical-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mathematical and numerical work
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#historical-checks-before-directory-relocation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Historical checks before directory relocation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#current-command-locations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Current command locations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#source-and-evidence-limits-retained" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source and evidence limits retained
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#files-changed-and-completed-parent-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Files changed and completed parent integration
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="independent-whole-manuscript-technical-editorial-review">Independent whole-manuscript technical editorial review<a class="headerlink" href="#independent-whole-manuscript-technical-editorial-review" title="Permanent link">&para;</a></h1>
+<h2 id="relocation-note">Relocation note<a class="headerlink" href="#relocation-note" title="Permanent link">&para;</a></h2>
+<p>This is the completed <strong>pre-relocation editorial record</strong>, not a new full-manuscript review or a new test run. Historical findings, coverage, numerical results, and counts below are preserved. Paths in the coverage/file lists have been translated to the current layout: research and reviews are under <code>book</code>, manuscript tools/tests are under <code>book\scripts</code> and <code>book\tests</code>, and the educational Python project is under <code>book\companion</code>. The trading repository root is separate from that companion project. Current command equivalents appear below the historical validation record.</p>
+<h2 id="verdict-and-scope">Verdict and scope<a class="headerlink" href="#verdict-and-scope" title="Permanent link">&para;</a></h2>
+<p><strong>Editorial corrections and parent integration are complete.</strong> The editor's handoff was conditional on rebuilding the aggregate claim map and completing release checks; the parent subsequently completed those actions, as recorded below. No additional blocking code defect was identified in this editorial alignment work.</p>
+<p>This was an independent AI technical editorial pass by an agent that did not author the draft. It is <strong>not academic peer-review certification</strong>, a legal opinion, an originality/plagiarism certification, or evidence that a trading strategy is profitable. The actual manuscript was read, not merely its outline, inventory, or author summaries.</p>
+<p>The handoff inventory reported 94,725 chapter prose words. At completion of this editorial pass, the manuscript word-count function reported <strong>90,771</strong>, with the shortest chapter at <strong>2,185</strong> words. All 30 chapters remained substantive and exceeded the 1,600-word floor; the manuscript exceeded 60,000 words. The small excess over the soft 90,000-word target was not a release blocker. Reductions removed erroneous or repetitive explanations rather than trimming to a quota; worked derivations, exercises, and the final five practical guides remained. Later directory-navigation wording is not a new mathematical review or part of that historical word count.</p>
+<p>No source-book text or repository was consulted. No commits, publication, dependency installation, source acquisition, funded orders, wallet operations, data refresh, or refreeze occurred. Source files, executable examples, manifests, tests, bibliography, frozen data/results, and the parent README were not edited.</p>
+<h2 id="actual-reading-coverage">Actual reading coverage<a class="headerlink" href="#actual-reading-coverage" title="Permanent link">&para;</a></h2>
+<p>The manifest was read first and supplied the editorial sequence. Every chapter below was read in full using complete file views, including its exercises and solutions. The coverage entries are records of actual reading, not substitutes for reading. Revised passages and affected cross-references were subsequently reread from disk.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Order</th>
+<th>File under <code>book\chapters\</code></th>
+<th>Actual coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">01</td>
+<td><code>01-event-contracts.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">02</td>
+<td><code>02-probability.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">03</td>
+<td><code>03-decisions-and-costs.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">04</td>
+<td><code>04-market-information.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">05</td>
+<td><code>05-market-microstructure.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">06</td>
+<td><code>06-rules-and-settlement.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">07</td>
+<td><code>07-research-datasets.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">08</td>
+<td><code>08-point-in-time-pipelines.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">09</td>
+<td><code>09-exploration.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">10</td>
+<td><code>10-forecast-evaluation.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">11</td>
+<td><code>11-statistical-baselines.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">12</td>
+<td><code>12-trees-and-ensembles.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">13</td>
+<td><code>13-evolving-forecasts.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">14</td>
+<td><code>14-text-and-language-models.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">15</td>
+<td><code>15-neural-models.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">16</td>
+<td><code>16-combining-forecasts.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">17</td>
+<td><code>17-forecast-to-order.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">18</td>
+<td><code>18-execution-aware-backtests.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">19</td>
+<td><code>19-evidence-after-search.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">20</td>
+<td><code>20-cross-market-logic.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">21</td>
+<td><code>21-market-making.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">22</td>
+<td><code>22-bankroll-and-portfolios.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">23</td>
+<td><code>23-learning-policies.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">24</td>
+<td><code>24-paper-operations.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">25</td>
+<td><code>25-research-hypotheses.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">26</td>
+<td><code>26-quickstart-pattern.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">27</td>
+<td><code>27-quickstart-event.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">28</td>
+<td><code>28-quickstart-consistency.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">29</td>
+<td><code>29-quickstart-market-making.md</code></td>
+<td>Complete full file</td>
+</tr>
+<tr>
+<td style="text-align: right;">30</td>
+<td><code>30-first-live-trade.md</code></td>
+<td>Complete full file</td>
+</tr>
+</tbody>
+</table>
+<p>Also read completely:</p>
+<ul>
+<li><code>book\contents.json</code>, <code>book\README.md</code>, <code>book\notation.md</code>, <code>book\glossary.md</code>, <code>book\solutions.md</code>, and all 55 entries in <code>book\references.md</code>.</li>
+<li><code>book\research\README.md</code>, all 55 records in <code>book\research\sources.json</code>, and all 192 records in the supplied <code>book\research\claims.csv</code>.</li>
+<li><code>book\companion\examples\README.md</code>, <code>book\companion\data\README.md</code>, <code>book\companion\experiments\README.md</code>, <code>book\companion\experiments\protocol.json</code>, and <code>book\reviews\technical-review.md</code>.</li>
+<li>The additional <code>book\research\protocols\prediction-market-hypotheses.json</code> was read to check the affected Chapter 25 protocol interface.</li>
+</ul>
+<p>Changed fragment rows were inspected directly in their owning files and reread after editing. Relevant implementation sections were read only to check manuscript claims about existing interfaces and defaults, not to redo the prior general code review.</p>
+<h2 id="substantive-findings-and-resolutions">Substantive findings and resolutions<a class="headerlink" href="#substantive-findings-and-resolutions" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Finding</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chapters 1, 6, 20, 28</td>
+<td>A fractional exceptional state was said necessarily to destroy complement pricing.</td>
+<td>Distinguished ordinary binary-label probabilities from full payoff vectors. A 0.50/0.50 pair still pays one unit in total. Added settlement-time, financing, collateral, and feasible-trading qualifications.</td>
+</tr>
+<tr>
+<td>Chapters 2-4</td>
+<td>Odds direction was reversed; immediate taker execution was presented as all execution; Wolfers-Zitzewitz and Manski were assigned the same risk-neutrality premise.</td>
+<td>Corrected in-favor versus against odds, maker/taker distinctions, and the separate theoretical assumptions. Kept Berg's vote-share estimand and five-election limitation; removed any implied measured effective sample size.</td>
+</tr>
+<tr>
+<td>Chapter 5</td>
+<td>Splitting an LMSR trade was said automatically to reduce its cost, contradicting path independence. A log identity was malformed.</td>
+<td>Derived telescoping split costs, repaired the stable log-sum-exp expression, required positive liquidity, and distinguished numerical safeguards from universal precision. Corrected fixed-point quantity strings and the loss-bound limiting argument.</td>
+</tr>
+<tr>
+<td>Chapter 6 and related claims</td>
+<td>USD 0.90 profit was called payout; a full-refund void appeared to be a documented general venue rule.</td>
+<td>Separated USD 5.00 receipts from USD 0.90 profit. Explicitly labeled refund conventions hypothetical and distinguished refunded fees from nonrefunded fees. Removed unsupported void attribution.</td>
+</tr>
+<tr>
+<td>Chapters 7-11</td>
+<td>Different labels could be mistaken for independence; several passages required eventual labels at their own earlier forecast time.</td>
+<td>Distinguished dependence from contractual identity, feature decision cutoffs from fitting cutoffs, and legitimate future evaluation outcomes from leakage or target-vintage substitution. Corrected constructor, splitter, and evaluation-guard descriptions.</td>
+</tr>
+<tr>
+<td>Chapters 9-10</td>
+<td>Fisher-transform uncertainty was described as raw correlation uncertainty, and dependence was said always to increase standard errors.</td>
+<td>Stated the transform and illustrative normal-theory assumptions; removed the universal variance-direction claim. Kept event and row counts separate.</td>
+</tr>
+<tr>
+<td>Chapter 10</td>
+<td>The Brier uncertainty term was called an irreducible score floor; grouped forecasts were paired in the wrong order; the decomposition gap was attributed to the wrong term.</td>
+<td>Explained how resolution can offset uncertainty, corrected the grouped sequence, and derived the within-bin variance/covariance remainder. Distinguished sharpness from distance to a base rate.</td>
+</tr>
+<tr>
+<td>Chapters 10-12, 16, 19</td>
+<td>Calibration fitting and evaluation cohorts were confused, and a worse toy score was presented as proof of a particular overfitting cause.</td>
+<td>Validation fits the map; test assesses it. Preserved the observed deterioration and qualified its possible explanation. Removed automatic-calibration recommendations.</td>
+</tr>
+<tr>
+<td>Chapters 11-12</td>
+<td>Scaling, posterior inference, and boosting implementation were overstated.</td>
+<td>Explained scaling's penalty/conditioning role, posterior mode versus full posterior, and raw-gradient teaching updates versus the installed boosted classifier's initialization and leaf updates. Removed an unsupported learning-rate-times-stage score bound.</td>
+</tr>
+<tr>
+<td>Chapter 13</td>
+<td>Minimum-variance linear averaging was said to require Gaussian unbounded variables and to leave the probability interval even with valid convex inputs.</td>
+<td>Derived the variance minimizer without that assumption and separated linear estimation from a Gaussian posterior model. Distinguished discrete hazard probabilities, continuous rates, event occurrence, and settlement delay.</td>
+</tr>
+<tr>
+<td>Chapters 14-15</td>
+<td>Hand TF-IDF and sigmoid-network calculations were presented too close to literal descriptions of different installed defaults.</td>
+<td>Documented smoothed IDF, raw counts and L2 normalization; separated sigmoid hand derivations from the six-unit ReLU companion. Corrected feature-vector ordering and optimizer guarantees.</td>
+</tr>
+<tr>
+<td>Chapter 16</td>
+<td>Minimum variance was equated with minimum Brier without a bias assumption; unconstrained weights were treated as probability weights; a blend could supposedly be worse than both components.</td>
+<td>Added zero-mean/second-moment conditions, convex constraints and degeneracy handling. Explained the convex-loss bound and separate weight-fitting/evaluation cohorts.</td>
+</tr>
+<tr>
+<td>Chapters 17, 20, 28</td>
+<td>Ceiling notation omitted cent units; basket examples mislabeled flat-dollar fees as notional percentages.</td>
+<td>Defined cent ceiling, corrected fee units and checked both conventions. Aligned <code>required_cash</code> with the larger of modeled cost and summed reservations, without calling rounding a venue price tick.</td>
+</tr>
+<tr>
+<td>Chapter 20</td>
+<td>Payoff-dominance trade direction and executable inequality were reversed.</td>
+<td>The nonnegative-payoff trade buys broad and sells narrow; strict cash-positive opportunity requires narrow bid above broad ask, under feasible shorting/creation assumptions. The companion remains long-only.</td>
+</tr>
+<tr>
+<td>Chapters 18, 24</td>
+<td>Seven clocks were headed “six”; partial execution was confused with full-size screening failure; cancellation requests were conflated with effective cancellation.</td>
+<td>Corrected the count and distinct interfaces. Explicitly separated ordered paper replay from asynchronous venue match/cancel/receipt reconciliation.</td>
+</tr>
+<tr>
+<td>Chapter 21</td>
+<td>Arrival intensities were equated to finite-window probabilities; expected loss and commitment limits were treated as maximum session-loss bounds.</td>
+<td>Recast the worked example as a coherent one-opportunity probability model, retaining its checked numbers. Distinguished payout risk, administrative settlement, outstanding commitments, and cumulative session loss.</td>
+</tr>
+<tr>
+<td>Chapter 22</td>
+<td>Fee symbol <code>f</code> was reused for Kelly allocation; nonlinear costs were handled by plugging an average cost into a constant-cost optimum.</td>
+<td>Used <code>phi</code> in math notation, proved concavity, and derived the quantity-level log-wealth objective for nonlinear costs. Kept it explicitly unimplemented. Distinguished cash loss, payout notional, borrowing, and optional sizing objectives.</td>
+</tr>
+<tr>
+<td>Chapter 23</td>
+<td>IPS missing finite-sample matches were described as undefined weights; timing and unbiasedness conditions were incomplete.</td>
+<td>Distinguished zero population propensity from an absent sampled match, documented the stricter code gate, and stated fixed-policy, logging, reward-consistency, and fitting-time conditions. Qualified weight ESS.</td>
+</tr>
+<tr>
+<td>Chapter 25</td>
+<td>Correct equal-weight convex projection was said able to worsen aggregate squared error on a feasible realized outcome vector.</td>
+<td>Added the projection inequality and its narrow loss guarantee, while preserving empirical questions about calibration, incorrect edges, weights, coverage, execution, and genuine novelty.</td>
+</tr>
+<tr>
+<td>Chapters 26-30</td>
+<td>A version lock was called hash-locked; fixed source code was treated as evidence of predeclaration; results were described as frozen before scoring. The proposed ask-only edit made a crossed book.</td>
+<td>Corrected environment and evidence claims, labeled output excerpts, and supplied a valid bid/ask sensitivity edit. Corrected basket error semantics, synthetic round-trip scope, and actual evidence-flag values. The manual-only closing boundary is unchanged.</td>
+</tr>
+<tr>
+<td>Claim fragments</td>
+<td>Several rows retained obsolete metadata-only descriptions, misclassified abstract inspection, or repeated corrected source/technical claims.</td>
+<td>Reconciled 14 rows in six fragment files with the existing audit's recorded depth and corrected manuscript. No source record was upgraded or new primary-text reading invented.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="verification-actually-performed">Verification actually performed<a class="headerlink" href="#verification-actually-performed" title="Permanent link">&para;</a></h2>
+<h3 id="mathematical-and-numerical-work">Mathematical and numerical work<a class="headerlink" href="#mathematical-and-numerical-work" title="Permanent link">&para;</a></h3>
+<p>The canonical USD accounting remained unchanged: cost 4.10, binary profits 5.90 and minus 4.10, model-conditional EV 1.40, resale profit 0.40, and fractional-settlement profit 0.90 with no binary label.</p>
+<p>Independent in-memory calculations checked:</p>
+<ul>
+<li>LMSR ten-unit cost 6.201145 at liquidity 10, 5.124948 at liquidity 100, and equality of one ten-unit trade with successive four- and six-unit trades.</li>
+<li>Raw/grouped Brier values 0.075/0.0625, zero perfect-forecast loss, and infinite wrong-certainty natural-log loss.</li>
+<li>Logistic probability and both log-loss branches, the two-forecaster weight 0.272727 and variance 0.031818, and the three feasible outcome-vector projection comparisons.</li>
+<li>The sigmoid hand network's forward pass and all nine parameter gradients, with central finite differences agreeing within <code>1e-8</code>.</li>
+<li>Fill-conditioned probabilities approximately 0.461078, 0.401993, and 0.328358, with ten-unit expected profits approximately 0.510778, minus 0.080066, and minus 0.816418.</li>
+<li>Quarter-Kelly fraction 0.059322 under the stated constant-cost assumptions.</li>
+<li>Flat-fee basket totals 10.10/9.90/9.82 versus notional-rate totals 9.96/9.86/9.82. The 0.3333-price regression case costs 2.02 but requires 2.10, rejecting the lower funding.</li>
+<li>Chapter 27's original suggested ask-only modification raises <code>crossed book is ambiguous</code>; the corrected bid 0.14/ask 0.15 case returns a paper candidate with cost 1.60 and modeled profit 0.405420.</li>
+<li>The normal-noise selection illustration: mean maxima about 1.867827 for 20 draws and 1.161329 for five; repeated-look false positives 24.8105% versus 5.032% at the single final look under the disclosed construction.</li>
+</ul>
+<p>These checks are classroom derivation checks, not new empirical market experiments.</p>
+<h3 id="historical-checks-before-directory-relocation">Historical checks before directory relocation<a class="headerlink" href="#historical-checks-before-directory-relocation" title="Permanent link">&para;</a></h3>
+<p>The following targeted command passed in the former root-level layout. It is retained as a historical record, <strong>not a command for the current layout</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>.\.venv\Scripts\python.exe -m unittest tests.test_companion_examples.ExampleTests.test_all_17_examples_run_offline_and_emit_honest_json tests.test_book_integrity.BookIntegrityTests.test_reading_order_and_companion_files tests.test_book_integrity.BookIntegrityTests.test_full_manuscript_not_chapter_stubs tests.test_book_integrity.BookIntegrityTests.test_bibliography_source_records tests.test_book_integrity.BookIntegrityTests.test_claim_records_reference_known_sources tests.test_book_integrity.BookIntegrityTests.test_local_markdown_links -v
+</code></pre></div>
+<p>That is <strong>six unittest methods</strong>, including the existing method that runs <strong>all 17 default examples with socket connections blocked</strong>. It is not a claim to have rerun the prior 136-test code review or the full release suite. Model, text/neural, split, policy, pattern, and single-event output JSON was also inspected directly against the quoted numbers; the 89/44/45 cohorts, worsened calibration, two frozen-model snapshots, and policy rewards agree.</p>
+<p>The default <code>experiments\noaa_study.py</code> verification (now run from <code>book\companion</code>) passed offline with <strong>no files changed</strong>. It reproduced 132 primary events/85 YES and Briers 0.230313524/0.032459388, plus 123 sensitivity events/79 YES and Briers 0.230757404/0.034708546. The protocol's initial 474 admitted labels, first-day-of-month <code>s+2</code> convention, no-level predictors, and predecessor-sensitive December 2022-August 2023 exclusion remain documented. No data or result was normalized, refreshed, replaced, or refrozen.</p>
+<p>During the editorial pass, the assembler was called only as an in-memory validation function: <strong>192 valid fragment records</strong>. The editor deliberately left the on-disk aggregate unchanged; the parent subsequently rebuilt it during integration.</p>
+<h3 id="current-command-locations">Current command locations<a class="headerlink" href="#current-command-locations" title="Permanent link">&para;</a></h3>
+<p>The current layout separates manuscript validation from companion validation. These are command-location equivalents, not claims of a new run or new test counts.</p>
+<p>From the trading repository root, using standard-library Python:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">python</span> <span class="n">book</span><span class="p">\</span><span class="n">scripts</span><span class="p">\</span><span class="n">assemble_claims</span><span class="p">.</span><span class="n">py</span> <span class="p">-</span><span class="n">-check</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">python</span> <span class="n">book</span><span class="p">\</span><span class="n">scripts</span><span class="p">\</span><span class="n">manuscript_inventory</span><span class="p">.</span><span class="n">py</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">python</span> <span class="n">-m</span> <span class="n">unittest</span> <span class="n">discover</span> <span class="n">-s</span> <span class="n">book</span><span class="p">\</span><span class="n">tests</span> <span class="n">-q</span>
+</code></pre></div>
+<p>For the offline examples check and NOAA reproduction, start from the trading repository root and enter the companion project once:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">Set-Location</span> <span class="n">book</span><span class="p">\</span><span class="n">companion</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">-m</span> <span class="n">unittest</span> <span class="n">tests</span><span class="p">.</span><span class="n">test_companion_examples</span><span class="p">.</span><span class="n">ExampleTests</span><span class="p">.</span><span class="n">test_all_17_examples_run_offline_and_emit_honest_json</span> <span class="n">-v</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">experiments</span><span class="p">\</span><span class="n">noaa_study</span><span class="p">.</span><span class="n">py</span>
+</code></pre></div>
+<p>Use the <a href="../../companion/">companion README</a> for that project's installation and full companion-test command. Do not run the old combined manuscript/companion test command in the new layout.</p>
+<h2 id="source-and-evidence-limits-retained">Source and evidence limits retained<a class="headerlink" href="#source-and-evidence-limits-retained" title="Permanent link">&para;</a></h2>
+<p>All 55 source records and their bibliography entries were compared with the manuscript's uses. This editor did <strong>not</strong> newly retrieve or independently reread the original papers. References to inspected sections describe the prior source audit's explicitly recorded work. The editorial pass checked consistency with that audit and independently verified the elementary arguments listed above; it does not certify every source theorem, proof, historical empirical analysis, or bibliographic identity anew.</p>
+<p>BRIER1950, MURPHY1973, and FRIEDMAN2001 remain metadata-only pointers. Other entries retain their actual abstract-versus-section limits. Wolfers-Zitzewitz/Manski assumptions, Berg's vote-share target, Avellaneda-Stoikov's approximate finite-horizon simulation model, and White/Politis dependence limits remain qualified. Current documentation and a partial terms response do not establish permanent fees, legal eligibility, or unrestricted data rights.</p>
+<p>The NOAA comparison is real current/final-vintage observational forecasting under a hypothetical clock, not market-price or profit evidence. The 17 default examples remain synthetic. Chapter 25 remains an untested research agenda, not proven novelty or alpha. No script gains a live-order path, persistent OMS, venue adapter, or automatic promotion mechanism.</p>
+<h2 id="files-changed-and-completed-parent-integration">Files changed and completed parent integration<a class="headerlink" href="#files-changed-and-completed-parent-integration" title="Permanent link">&para;</a></h2>
+<p>Changed: all 30 chapter files listed above; <code>book\notation.md</code>; <code>book\glossary.md</code>; this report; and:</p>
+<ul>
+<li><code>book\research\claim-fragments\foundations.csv</code></li>
+<li><code>book\research\claim-fragments\data.csv</code></li>
+<li><code>book\research\claim-fragments\modeling.csv</code></li>
+<li><code>book\research\claim-fragments\execution.csv</code></li>
+<li><code>book\research\claim-fragments\operations.csv</code></li>
+<li><code>book\research\claim-fragments\quickstarts.csv</code></li>
+</ul>
+<p>The similarly named foundational audit file <code>foundation.csv</code> was not edited.</p>
+<p><strong>Parent integration completed before relocation:</strong> the parent inspected all 14 corrected claim rows, rebuilt the 192-record aggregate with the then-root-level assembler (now <code>book\scripts\assemble_claims.py</code>), and confirmed that it matched the fragments. The then-combined suite passed all 143 tests, including frozen NOAA reproduction and byte-preservation checks. That historical count comprised 136 companion tests and seven manuscript checks; the current directories and commands are separate. The final inventory at that integration confirmed 30 chapters and 90,771 prose words, and the then-root reading guide described the edition as approximately 91,000 words. The reading guide is now <a href="../../">the book README</a>, while the trading repository's root README describes the system. No source observations, frozen protocol, or empirical results were replaced or refrozen.</p>
+<p>No other specific out-of-scope correction is required by this pass. The research protocols retain their untested status and need no implementation change. Residual limitations are the disclosed source-access, statistical, operational, and portability boundaries above, plus the ordinary possibility of errors not found by an AI editorial review.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

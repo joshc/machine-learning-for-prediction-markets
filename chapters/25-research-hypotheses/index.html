@@ -1,0 +1,2906 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/chapters/25-research-hypotheses/">
+      
+      
+        <link rel="prev" href="../24-paper-operations/">
+      
+      
+        <link rel="next" href="../26-quickstart-pattern/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>25. Prediction-market-specific research hypotheses - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#25-prediction-market-specific-research-hypotheses" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              25. Prediction-market-specific research hypotheses
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-probability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-market-microstructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-statistical-baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-trees-and-ensembles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-evolving-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-evidence-after-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../22-bankroll-and-portfolios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../23-learning-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#251-a-research-agenda-is-not-an-inventory-of-hidden-profits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.1 A research agenda is not an inventory of hidden profits
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#252-proposal-h1-forecast-the-payout-process-not-only-the-headline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.2 Proposal H1: forecast the payout process, not only the headline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.2 Proposal H1: forecast the payout process, not only the headline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-question" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-worked-thought-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A worked thought experiment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-the-experiment-would-require" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the experiment would require
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-it-might-fail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why it might fail
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#253-proposal-h2-a-contract-graph-with-uncertainty-aware-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.3 Proposal H2: a contract graph with uncertainty-aware consistency
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.3 Proposal H2: a contract graph with uncertainty-aware consistency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-question_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forecast-consistency-and-executable-consistency-are-different-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Forecast consistency and executable consistency are different experiments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-falsifiable-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A falsifiable protocol
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#254-proposal-h3-calibrate-on-fills-not-on-all-posted-quotes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.4 Proposal H3: calibrate on fills, not on all posted quotes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.4 Proposal H3: calibrate on fills, not on all posted quotes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-question_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-worked-thought-experiment_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A worked thought experiment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-hardest-part-is-the-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The hardest part is the dataset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#baselines-falsification-and-restraint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Baselines, falsification, and restraint
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#255-proposal-h4-value-information-under-changing-prices-and-locked-capital" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.5 Proposal H4: value information under changing prices and locked capital
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.5 Proposal H4: value information under changing prices and locked capital">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-question_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-transparent-calculation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A transparent calculation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-makes-the-prediction-market-version-interesting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What makes the prediction-market version interesting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-would-count-as-evidence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What would count as evidence
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#256-proposal-h5-hierarchical-transfer-with-permission-to-abstain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.6 Proposal H5: hierarchical transfer with permission to abstain
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.6 Proposal H5: hierarchical transfer with permission to abstain">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-question_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#from-pooling-to-selective-transfer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From pooling to selective transfer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-study-that-could-reject-the-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A study that could reject the idea
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#257-a-common-protocol-and-a-publication-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.7 A common protocol and a publication standard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-a-payout-rather-than-a-headline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: a payout rather than a headline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-consistency-without-profit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: consistency without profit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-conditioning-on-a-fill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: conditioning on a fill
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-a-transfer-models-impressive-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: a transfer model's impressive score
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-naming-the-contribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: naming the contribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../28-quickstart-consistency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../30-first-live-trade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../companion/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#251-a-research-agenda-is-not-an-inventory-of-hidden-profits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.1 A research agenda is not an inventory of hidden profits
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#252-proposal-h1-forecast-the-payout-process-not-only-the-headline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.2 Proposal H1: forecast the payout process, not only the headline
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.2 Proposal H1: forecast the payout process, not only the headline">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-question" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-worked-thought-experiment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A worked thought experiment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-the-experiment-would-require" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the experiment would require
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-it-might-fail" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why it might fail
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#253-proposal-h2-a-contract-graph-with-uncertainty-aware-consistency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.3 Proposal H2: a contract graph with uncertainty-aware consistency
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.3 Proposal H2: a contract graph with uncertainty-aware consistency">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-question_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forecast-consistency-and-executable-consistency-are-different-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Forecast consistency and executable consistency are different experiments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-falsifiable-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A falsifiable protocol
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#254-proposal-h3-calibrate-on-fills-not-on-all-posted-quotes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.4 Proposal H3: calibrate on fills, not on all posted quotes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.4 Proposal H3: calibrate on fills, not on all posted quotes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-question_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-worked-thought-experiment_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A worked thought experiment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-hardest-part-is-the-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The hardest part is the dataset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#baselines-falsification-and-restraint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Baselines, falsification, and restraint
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#255-proposal-h4-value-information-under-changing-prices-and-locked-capital" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.5 Proposal H4: value information under changing prices and locked capital
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.5 Proposal H4: value information under changing prices and locked capital">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-question_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-transparent-calculation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A transparent calculation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-makes-the-prediction-market-version-interesting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What makes the prediction-market version interesting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-would-count-as-evidence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What would count as evidence
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#256-proposal-h5-hierarchical-transfer-with-permission-to-abstain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.6 Proposal H5: hierarchical transfer with permission to abstain
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.6 Proposal H5: hierarchical transfer with permission to abstain">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-question_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The question
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#from-pooling-to-selective-transfer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From pooling to selective transfer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-study-that-could-reject-the-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A study that could reject the idea
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#257-a-common-protocol-and-a-publication-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.7 A common protocol and a publication standard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-a-payout-rather-than-a-headline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: a payout rather than a headline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-consistency-without-profit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: consistency without profit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-conditioning-on-a-fill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: conditioning on a fill
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-a-transfer-models-impressive-score" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: a transfer model's impressive score
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-naming-the-contribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: naming the contribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="25-prediction-market-specific-research-hypotheses">25. Prediction-market-specific research hypotheses<a class="headerlink" href="#25-prediction-market-specific-research-hypotheses" title="Permanent link">&para;</a></h1>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>Read the foundations, data, modeling, and strategy parts before this chapter. In particular, be comfortable with the distinction between an economic event and a contractual payout, event-grouped evaluation, executable prices, adverse selection, and the limits of a paper simulator. The <a href="../../notation/">notation registry</a> supplies the common symbols.</p>
+<h2 id="learning-objectives">Learning objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">&para;</a></h2>
+<p>By the end of this chapter, you should be able to turn an interesting prediction-market idea into a falsifiable research protocol, identify its nearest established literature, separate a forecasting target from an execution target, and explain what evidence would make you abandon the idea. You should also recognize why combining several familiar techniques can create a useful project without establishing an original scientific discovery.</p>
+<h2 id="251-a-research-agenda-is-not-an-inventory-of-hidden-profits">25.1 A research agenda is not an inventory of hidden profits<a class="headerlink" href="#251-a-research-agenda-is-not-an-inventory-of-hidden-profits" title="Permanent link">&para;</a></h2>
+<p>Suppose a researcher notices that event contracts have explicit rules, bounded payouts, related questions, uncertain settlement delays, and many repeated quote observations but relatively few independent outcomes. Those features suggest research problems. They do not establish that the market has failed to price them.</p>
+<p>The important distinction is between a mechanism and an opportunity. A mechanism explains how a relationship could arise. An opportunity additionally requires that the relationship is measurable with available information, sufficiently stable, not already reflected in executable prices, and large enough to survive costs and risk. An elegant mechanism can fail at any of those steps.</p>
+<p>Prediction markets also have a substantial history. Information aggregation, market scoring rules, and combinatorial market design are established research areas, not inventions of the most recent trading interface. Hanson's market-scoring work and the convex-market-design framework of Abernethy, Chen, and Vaughan are relevant foundations, but they do not certify that the proposals below are new or profitable. <a href="../../references/#hanson2007">HANSON2007</a> <a href="../../references/#abernethy2013">ABERNETHY2013</a></p>
+<p>The five proposals in this chapter are therefore <strong>untested research hypotheses</strong>. Their proposed contribution is a particular question and experimental arrangement, not a claim of priority. Each combines known ideas with a prediction-market-specific measurement problem. A serious research project would extend the related-work search, inspect the relevant full texts, and revise its novelty statement before publication.</p>
+<p>The book's research directory contains <a href="../../research/protocols/prediction-market-hypotheses.json">machine-readable protocols</a> for these proposals. They are design artifacts, not completed experiments. No return estimate, statistically significant effect, or successful deployment is being reported here.</p>
+<h2 id="252-proposal-h1-forecast-the-payout-process-not-only-the-headline">25.2 Proposal H1: forecast the payout process, not only the headline<a class="headerlink" href="#252-proposal-h1-forecast-the-payout-process-not-only-the-headline" title="Permanent link">&para;</a></h2>
+<h3 id="the-question">The question<a class="headerlink" href="#the-question" title="Permanent link">&para;</a></h3>
+<p>Can a model that represents contractual resolution uncertainty make better-calibrated payout forecasts or more defensible abstention decisions than a model that predicts only the ordinary YES/NO event?</p>
+<p>The motivation is concrete. A market's title is a compressed description, while its rules determine its payoff. The inspected Polymarket documentation describes disputes, additional context, and an exceptional 50/50 payout. That is evidence about a documented mechanism, not a measurement of how frequently it occurs or an assertion that every venue uses the same rule. <a href="../../references/#polymarket_resolution">POLYMARKET_RESOLUTION</a></p>
+<p>Let <span class="arithmatex">\(Z\)</span> denote an informal real-world proposition and <span class="arithmatex">\(R\)</span> the actual payout per unit. A model of <span class="arithmatex">\(P(Z=1)\)</span> is not automatically a model of the distribution of <span class="arithmatex">\(R\)</span>. The relationship depends on the contract's wording, resolution source, observation window, and permitted exceptional states.</p>
+<p>For a contract whose allowed payout values are explicitly known, a payout model could estimate</p>
+<div class="arithmatex">\[
+\mathbb{E}[R\mid\mathcal I]
+=\sum_{r\in\mathcal R}r\,P(R=r\mid\mathcal I),
+\]</div>
+<p>where <span class="arithmatex">\(\mathcal I\)</span> is the decision's permitted information and <span class="arithmatex">\(\mathcal R\)</span> is the contractual payout set. This is simply the definition of an expectation for a discrete payout. It neither identifies the probabilities nor demonstrates that a useful model can estimate them.</p>
+<h3 id="a-worked-thought-experiment">A worked thought experiment<a class="headerlink" href="#a-worked-thought-experiment" title="Permanent link">&para;</a></h3>
+<p>Consider an invented contract with payouts of zero, one-half, or one dollar. A headline classifier assigns an ordinary YES probability of 0.60. A separate hypothetical payout assessment assigns probability 0.56 to a one-dollar payout, 0.04 to a half-dollar payout, and 0.40 to zero. These probabilities sum to one; the expected payout is USD 0.58.</p>
+<p>At an executable ask of USD 0.57 and a hypothetical fee of USD 0.01 per unit, the headline-only calculation suggests USD 0.02 expected profit. The payout calculation suggests zero. A positive-looking opportunity has disappeared before any discussion of estimation uncertainty or capital lockup.</p>
+<p>This arithmetic is illustrative. It is not evidence that headline models systematically overprice a real market. The alternative payout probabilities were invented to expose the target mismatch, not estimated from observations.</p>
+<h3 id="what-the-experiment-would-require">What the experiment would require<a class="headerlink" href="#what-the-experiment-would-require" title="Permanent link">&para;</a></h3>
+<p>Collect prospective rule snapshots and retain their observation timestamps. Record later clarifications without retroactively inserting them into earlier feature vectors. Preserve final payout values and their availability times. Keep unresolved cases visible, because excluding difficult unresolved markets can erase the very phenomenon being studied.</p>
+<p>Start with a simple baseline: the ordinary event forecast plus a rule-completeness checklist. Compare it with a structured payout model and with an abstention rule based on observable ambiguity flags. Evaluate payout-distribution scores where meaningful, calibration of exceptional-state probabilities, coverage of issued forecasts, and decisions under identical executable-cost assumptions.</p>
+<p>A model that refuses almost every difficult market may appear accurate merely by changing the population. Report performance as a function of coverage and compare to a baseline with a comparable abstention budget. Do not choose the set of excluded markets after learning their outcomes.</p>
+<h3 id="why-it-might-fail">Why it might fail<a class="headerlink" href="#why-it-might-fail" title="Permanent link">&para;</a></h3>
+<p>Exceptional outcomes may be too rare for reliable estimation. Labels can depend on changing institutional procedures. Ambiguity scores derived from text can simply proxy for domain or maturity. Prices may already discount uncertainty. A forecast of the payout process might improve scoring without identifying any tradable difference.</p>
+<p>The useful null result is that the structured model does not improve a predeclared evaluation measure at comparable coverage, or that any benefit disappears after current fees and conservative execution assumptions. An even earlier stopping condition is the inability to reconstruct rule versions without future information.</p>
+<p>The nearest literature includes price interpretation and contract-mechanism design, while the immediate evidence motivating the target is venue resolution documentation. None of these sources establishes the empirical success of this proposal. <a href="../../references/#wz2006">WZ2006</a> <a href="../../references/#abernethy2013">ABERNETHY2013</a></p>
+<h2 id="253-proposal-h2-a-contract-graph-with-uncertainty-aware-consistency">25.3 Proposal H2: a contract graph with uncertainty-aware consistency<a class="headerlink" href="#253-proposal-h2-a-contract-graph-with-uncertainty-aware-consistency" title="Permanent link">&para;</a></h2>
+<h3 id="the-question_1">The question<a class="headerlink" href="#the-question_1" title="Permanent link">&para;</a></h3>
+<p>Can a graph of verified contractual relationships improve forecasts or reject false trading candidates more effectively than treating every market as an unrelated binary classifier?</p>
+<p>A graph's nodes could represent contractual outcomes. Edges could encode verified subset, complement, exclusivity, or partition relationships. The word <strong>verified</strong> is doing important work. Text similarity can suggest an edge for review; it cannot prove the relationship. A shared event container does not by itself make all included markets mutually exclusive. <a href="../../references/#polymarket_markets">POLYMARKET_MARKETS</a></p>
+<p>For compatible events with <span class="arithmatex">\(A\subseteq B\)</span>, probability coherence requires <span class="arithmatex">\(P(A)\leq P(B)\)</span>. If two independently fitted models produce 0.65 and 0.55, respectively, their estimates violate that relationship. An elementary correction is to project them onto the feasible set.</p>
+<p>For equal squared-error weights, the closest pair satisfying the constraint is 0.60 and 0.60. To see why, a solution retaining the violation cannot be feasible; at the closest boundary the estimates coincide, and their common value minimizes the sum of squared distances at their average. Different uncertainty weights change that correction.</p>
+<p>For this exact <strong>equal-weight squared-error projection</strong>, there is a useful guarantee: if the true outcome vector satisfies the constraint, projecting onto the closed convex feasible set cannot increase the sum of squared errors to that vector. In the two-contract example, admissible binary vectors are <span class="arithmatex">\((0,0)\)</span>, <span class="arithmatex">\((0,1)\)</span>, and <span class="arithmatex">\((1,1)\)</span>; projecting <span class="arithmatex">\((0.65,0.55)\)</span> to <span class="arithmatex">\((0.60,0.60)\)</span> lowers summed squared error in each case. More generally, if <span class="arithmatex">\(z\)</span> is the Euclidean projection of forecast vector <span class="arithmatex">\(x\)</span> and <span class="arithmatex">\(y\)</span> is feasible, the projection inequality <span class="arithmatex">\((x-z)\cdot(y-z)\leq0\)</span>, together with expanding squared distances, gives <span class="arithmatex">\(\|z-y\|^2\leq\|x-y\|^2\)</span>. Here <span class="arithmatex">\(\|v\|^2\)</span> means the sum of squared components of <span class="arithmatex">\(v\)</span>.</p>
+<p>The guarantee is narrow. Incorrect graph edges can make the realized vector infeasible; uncertainty-weighted projection protects the corresponding weighted squared loss, not necessarily the unweighted reported score; and other metrics or individual-contract scores need not improve. It also does not guarantee calibration, strict improvement over an already coherent baseline, or profit. Forecast-distribution aggregation has an established literature on coherence, calibration, and dispersion; this elementary projection argument is independently derived, not attributed to an unread theorem. <a href="../../references/#gneiting2013">GNEITING2013</a></p>
+<h3 id="forecast-consistency-and-executable-consistency-are-different-experiments">Forecast consistency and executable consistency are different experiments<a class="headerlink" href="#forecast-consistency-and-executable-consistency-are-different-experiments" title="Permanent link">&para;</a></h3>
+<p>One study could test projection of model forecasts. A separate study could test whether compatible market quotes admit a cost-covered basket. Do not use success in the first study as proof of the second.</p>
+<p>In the simplest invented complementary pair, both sides can be bought for USD 0.49 each. The gross purchase cost is USD 0.98 for a combined terminal payout of USD 1, under the stated compatibility assumption. If each leg costs an additional USD 0.015, total cost is USD 1.01. The apparent USD 0.02 discrepancy is not a positive net opportunity.</p>
+<p>For a larger basket, write down a payout matrix over the complete relevant outcome space. Each column is a contract; each row is a possible settlement scenario. The strategy must survive every included scenario, and the scenario set itself must be justified. An optimizer cannot protect against a legitimate outcome that the researcher omitted from the matrix.</p>
+<p>Convex market design supplies important conceptual tools for bounded-payoff securities, but designing a mechanism is not the same as executing a basket across independent order books. Capital requirements, partial fills, settlement differences, and leg risk remain. <a href="../../references/#abernethy2013">ABERNETHY2013</a></p>
+<h3 id="a-falsifiable-protocol">A falsifiable protocol<a class="headerlink" href="#a-falsifiable-protocol" title="Permanent link">&para;</a></h3>
+<p>Freeze a manually audited relationship set before evaluation. Keep a record of rejected or ambiguous edges. Compare unprojected forecasts, a simple equal-weight projection, and a prespecified uncertainty-weighted projection using identical event-grouped chronological splits.</p>
+<p>For an executable-candidate study, compare a headline-similarity scanner with a rule-audited scanner. Measure false candidates and audit cost as well as any modeled basket margin. Keep the candidate's book timestamp, depth, fee assumptions, and compatible payout proof.</p>
+<p>An attractive contribution may be <strong>fewer false opportunities</strong>, not higher profit. If the graph mostly discovers relationships that already hold within spreads, that can still be a useful negative finding about how efficient the observed prices are at that resolution.</p>
+<p>Abandon a trading interpretation when the required edge cannot be verified, simultaneous quantities cannot be supported, or the complete payout space is uncertain. Abandon the forecasting improvement claim if the effect depends on selecting graph weights after inspecting the evaluation period.</p>
+<h2 id="254-proposal-h3-calibrate-on-fills-not-on-all-posted-quotes">25.4 Proposal H3: calibrate on fills, not on all posted quotes<a class="headerlink" href="#254-proposal-h3-calibrate-on-fills-not-on-all-posted-quotes" title="Permanent link">&para;</a></h2>
+<h3 id="the-question_2">The question<a class="headerlink" href="#the-question_2" title="Permanent link">&para;</a></h3>
+<p>Can a quote-conditional probability model improve the assessment of adverse selection compared with applying an unconditional event forecast to every potential maker fill?</p>
+<p>The first-principles issue is selection. A quote is not filled by drawing a random event observation from the forecaster's dataset. Someone chooses to trade against it, and that choice can convey information.</p>
+<p>For a single-unit bid, let <span class="arithmatex">\(F\)</span> be the event that it fills, <span class="arithmatex">\(d\)</span> the quote decision, and <span class="arithmatex">\(\mathcal I\)</span> the information available when it is posted. Under a simplified hold-to-settlement model with a fee charged only on a fill,</p>
+<div class="arithmatex">\[
+\mathbb E[\Pi\mid d,\mathcal I]
+=P(F\mid d,\mathcal I)
+\left(\mathbb E[R\mid F,d,\mathcal I]-b-f\right).
+\]</div>
+<p>The identity follows by splitting expected profit into the filled and unfilled cases, assigning zero transaction profit to the unfilled case. It omits the opportunity cost of reserved capital and any other costs of maintaining the quote. Those must be added separately when relevant.</p>
+<p>For varying fill quantities, this simple factorization is insufficient unless the dependence between filled quantity and payout is handled. Replacing both with their unconditional averages can introduce another optimistic approximation.</p>
+<h3 id="a-worked-thought-experiment_1">A worked thought experiment<a class="headerlink" href="#a-worked-thought-experiment_1" title="Permanent link">&para;</a></h3>
+<p>Suppose an event model assigns YES probability 0.58. A maker posts a bid at USD 0.50 with no transaction fee in this invented example. It is tempting to assign USD 0.08 expected profit to every unit that fills.</p>
+<p>Now suppose the actual subset of fills has a YES frequency of 0.43 in the relevant population. Conditional expected profit per filled unit is minus USD 0.07. The forecaster's unconditional estimate could have been reasonable across all posted opportunities while being unsuitable for the fill-selected population.</p>
+<p>The values are invented, but the selection calculation is exact under the hypothetical population. The challenge is estimating the conditional population without using information that arrives after the quote decision or treating a simulator's assumptions as observations.</p>
+<h3 id="the-hardest-part-is-the-dataset">The hardest part is the dataset<a class="headerlink" href="#the-hardest-part-is-the-dataset" title="Permanent link">&para;</a></h3>
+<p>A useful dataset needs decisions, quote states, actual or defensibly reconstructed fills, subsequent outcomes, and the behavior policy that generated the decisions. A passive sequence of public prices is not automatically a log of the fills that alternative quotes would have received.</p>
+<p>Policy-evaluation research explicitly studies the difference between logged actions and target actions. Doubly robust methods combine models of rewards and historical action selection, but their existence does not give unsupported actions observable outcomes. <a href="../../references/#dudik2011">DUDIK2011</a></p>
+<p>If the only fills come from an invented replay mechanism, the study can examine that mechanism but cannot estimate a live venue's adverse selection. If genuine authorized logs exist, they may still cover only one narrow quoting policy. A substantially different quote distance or cancellation rule can lie outside the data's useful action support.</p>
+<p>The default book companion does not collect funded-order experience. This proposal therefore remains a design for future authorized data or a clearly labeled simulator investigation. It is not a reason to weaken the paper-only boundary.</p>
+<h3 id="baselines-falsification-and-restraint">Baselines, falsification, and restraint<a class="headerlink" href="#baselines-falsification-and-restraint" title="Permanent link">&para;</a></h3>
+<p>Compare an unconditional forecast, a simple stratification by quote distance and event horizon, and a prespecified conditional model. Evaluate fill prediction and payout prediction separately, then inspect their combined decision implication. Use future event groups, not randomly split fills from the same event.</p>
+<p>Do not tune a maker's price and then report performance on the same fills used to choose it. Report whether calibration improvements survive changes in behavior policy and whether intervals widen appropriately in poorly supported regions.</p>
+<p>The hypothesis fails as a useful improvement when a simple stratified model is just as good, the conditional model merely memorizes event identities, or any apparent advantage vanishes under plausible fill uncertainty. A finding that the available logs cannot identify the proposed policy's value is a substantive result.</p>
+<p>Offline reinforcement-learning research provides another warning: extrapolating beyond a fixed dataset's action distribution can produce unreliable estimates. That literature motivates caution, not a guarantee that a particular restriction makes a trading policy safe. <a href="../../references/#fujimoto2019">FUJIMOTO2019</a></p>
+<h2 id="255-proposal-h4-value-information-under-changing-prices-and-locked-capital">25.5 Proposal H4: value information under changing prices and locked capital<a class="headerlink" href="#255-proposal-h4-value-information-under-changing-prices-and-locked-capital" title="Permanent link">&para;</a></h2>
+<h3 id="the-question_3">The question<a class="headerlink" href="#the-question_3" title="Permanent link">&para;</a></h3>
+<p>When should a researcher spend time or money on an additional information source rather than place a paper order now or abstain?</p>
+<p>The naive answer is "whenever it improves the forecast." The decision-theoretic answer depends on whether the improvement can change a feasible action before the market and the opportunity change.</p>
+<p>For a one-unit binary purchase at a fixed ask and cost, the modeled value of the best available action is the larger of zero and the expected net value of buying. Suppose a signal changes the forecast, and suppose, only for this first classroom calculation, that the quote remains executable after observing it. The value of the signal before its acquisition cost is the expected best post-signal action value minus the best pre-signal action value.</p>
+<h3 id="a-transparent-calculation">A transparent calculation<a class="headerlink" href="#a-transparent-calculation" title="Permanent link">&para;</a></h3>
+<p>The initial forecast is 0.55. The ask is USD 0.56 and the hypothetical fee is USD 0.01, so buying has modeled value minus USD 0.02 and abstaining has value zero.</p>
+<p>An invented signal has two equally likely results, leading to posterior probabilities 0.70 and 0.40. Their average is 0.55, consistent with the prior in this simplified construction. The favorable signal permits modeled value USD 0.13; the unfavorable signal still leads to abstention. The expected post-signal decision value is therefore USD 0.065.</p>
+<p>If observing the signal costs USD 0.02 for this single-unit decision, the net hypothetical information value is USD 0.045. This is not the difference in classification accuracy. It is the value of a changed action under a fixed executable quote and the stated signal distribution.</p>
+<p>Now remove the fixed-quote assumption. If the favorable signal moves the executable ask to USD 0.69 before the researcher can act, the favorable branch's value after the USD 0.01 fee is zero. The apparent information advantage disappears. Better information and a profitable trading opportunity have separated.</p>
+<h3 id="what-makes-the-prediction-market-version-interesting">What makes the prediction-market version interesting<a class="headerlink" href="#what-makes-the-prediction-market-version-interesting" title="Permanent link">&para;</a></h3>
+<p>Markets differ in announcement schedules, liquidity, time until outcome observation, and delay until collateral release. A useful research model could estimate the joint distribution of information arrival, quote response, and capital availability, rather than optimizing forecast score in isolation.</p>
+<p>Capital lockup introduces a resource-allocation problem. Two trades with the same modeled total expected profit can have different opportunity costs when one ties up scarce cash for much longer. But dividing profit by an optimistic duration is not a complete solution: outcome risk, uncertain release times, and correlated opportunities remain.</p>
+<p>An experiment should start with observable operational quantities. Measure when the source actually publishes, when the collector receives it, and which quotes remain available under a stated latency policy. Keep source acquisition costs in the same units as the decision value. A fixed subscription cost cannot be subtracted as though it were a per-unit fee without defining how it is allocated.</p>
+<h3 id="what-would-count-as-evidence">What would count as evidence<a class="headerlink" href="#what-would-count-as-evidence" title="Permanent link">&para;</a></h3>
+<p>Predeclare the information source and compare a no-additional-source baseline with a delayed-information policy under identical cost and capacity rules. Separate forecast-score gain, decision changes, and feasibility after the observed quote response. Report how conclusions change when the execution delay is longer than hoped.</p>
+<p>The hypothesis fails economically if the signal's incremental decision value is absorbed by acquisition expense, quote movement, or capital cost. It fails scientifically if the researcher uses a retrospective source timestamp that did not correspond to actual availability.</p>
+<p>This proposal is an original experimental combination, not a claim to have invented the value of information. The illustrative decision-value calculation is derived directly from the specified action payoffs. Existing price-interpretation research also cautions against assuming that a useful signal is absent from prices merely because one particular forecaster has not used it. <a href="../../references/#wz2006">WZ2006</a></p>
+<h2 id="256-proposal-h5-hierarchical-transfer-with-permission-to-abstain">25.6 Proposal H5: hierarchical transfer with permission to abstain<a class="headerlink" href="#256-proposal-h5-hierarchical-transfer-with-permission-to-abstain" title="Permanent link">&para;</a></h2>
+<h3 id="the-question_4">The question<a class="headerlink" href="#the-question_4" title="Permanent link">&para;</a></h3>
+<p>Can related event families improve a sparse target family's probability estimates without producing unjustified confidence when the target changes?</p>
+<p>Prediction-market datasets often contain an awkward combination: many price snapshots and few genuinely new outcome labels. A model can appear data-rich while learning from a small number of events. Pooling across related families could reduce variance, but it also risks transferring the wrong base rate or mechanism.</p>
+<p>A minimal classroom model illustrates the tradeoff. With a beta prior having parameters <span class="arithmatex">\(\alpha\)</span> and <span class="arithmatex">\(\beta\)</span>, and <span class="arithmatex">\(k\)</span> successes in <span class="arithmatex">\(n\)</span> conditionally Bernoulli observations from one homogeneous family, the posterior predictive probability is</p>
+<div class="arithmatex">\[
+\frac{k+\alpha}{n+\alpha+\beta}.
+\]</div>
+<p>This follows by multiplying the prior density by the Bernoulli likelihood and recognizing the updated beta density. It does not establish that real event families are homogeneous, exchangeable, or independent. Those are the assumptions the example exposes.</p>
+<p>If a family has two successes in three events, the unsmoothed estimate is about 0.667. A beta prior with both parameters equal to two gives a posterior predictive probability of about 0.571. The estimate is less extreme because the prior contributes information. Whether that is an improvement depends on the relevance of the prior, not on shrinkage being inherently virtuous.</p>
+<h3 id="from-pooling-to-selective-transfer">From pooling to selective transfer<a class="headerlink" href="#from-pooling-to-selective-transfer" title="Permanent link">&para;</a></h3>
+<p>A practical research proposal could fit a hierarchical model across prespecified related families, compare it with fully pooled and unpooled baselines, and abstain when observable target conditions fall outside a declared support region. The abstention mechanism must be defined using information available before the outcome.</p>
+<p>Forecast-combination research supplies related ideas about combining predictive distributions. Domain-adversarial learning supplies another transfer-learning direction, but its studied image and sentiment tasks do not prove that features can safely transfer across changing event contracts. <a href="../../references/#yao2018">YAO2018</a> <a href="../../references/#ganin2016">GANIN2016</a></p>
+<p>Do not treat shared vocabulary as proof of a shared data-generating process. A "monthly increase" question about a government release can differ fundamentally from one about a financial price. Even within one release series, a rule change or measurement revision can change the target.</p>
+<h3 id="a-study-that-could-reject-the-idea">A study that could reject the idea<a class="headerlink" href="#a-study-that-could-reject-the-idea" title="Permanent link">&para;</a></h3>
+<p>Choose families before inspecting comparative results. Use chronological evaluation and a separate held-out-family analysis if the intended claim includes transfer to new families. Keep every shared-event outcome out of conflicting splits. Report both probability scores and the coverage at which the model is willing to forecast or trade.</p>
+<p>Compare selective transfer to a simpler baseline allowed the same coverage budget. Otherwise the complicated model might win only because it declines more cases. Examine whether apparent improvements come from easy families dominating the average.</p>
+<p>The proposal fails if gains vanish on new families, if uncertainty remains narrow during known rule changes, or if a simple reference-rate model performs comparably. It also fails as a live-decision claim when improved scores do not survive executable costs.</p>
+<h2 id="257-a-common-protocol-and-a-publication-standard">25.7 A common protocol and a publication standard<a class="headerlink" href="#257-a-common-protocol-and-a-publication-standard" title="Permanent link">&para;</a></h2>
+<p>Across all five proposals, use the same sequence: state the mechanism, identify the estimand, define the admissible information, identify a baseline, freeze the sample and decision rules, specify uncertainty under a defensible dependence model, and name the result that would reject the hypothesis.</p>
+<p>Maintain a trial log that includes discarded graph definitions, ambiguity scores, quote distances, transfer families, and evaluation windows. Strategy selection is broader than the last model fit. Backtest-overfitting research is relevant to this discipline, but it does not make a particular split or test universally valid for sparse dependent events. <a href="../../references/#bailey2017">BAILEY2017</a></p>
+<p>Three separate conclusions may emerge from the same project. First, a measurement system may work: it correctly records rule versions or quote timing. Second, a forecast model may improve an out-of-sample score. Third, a trading decision may have credible positive expected value after costs. Each conclusion needs its own evidence. Do not jump from the first to the third because the engineering was difficult.</p>
+<p>A responsible report includes limitations that could change the interpretation, not just implementation inconveniences. Missing historic rules, unsupported actions, uncertain fees, and revised source data are not cosmetic gaps. They can remove the very quantity the study was supposed to estimate.</p>
+<p>If the result is inconclusive, publish the protocol and the limitation honestly where data permissions allow. The practical contribution may be demonstrating why a popular apparent edge cannot currently be measured. That is more useful than a confident strategy whose evidence depends on an invented fill or a hidden future label.</p>
+<h2 id="exercises-and-solution-sketches">Exercises and solution sketches<a class="headerlink" href="#exercises-and-solution-sketches" title="Permanent link">&para;</a></h2>
+<h3 id="exercise-1-a-payout-rather-than-a-headline">Exercise 1: a payout rather than a headline<a class="headerlink" href="#exercise-1-a-payout-rather-than-a-headline" title="Permanent link">&para;</a></h3>
+<p>A model assigns probabilities 0.50, 0.10, and 0.40 to payouts of USD 1, USD 0.50, and zero. The ask is USD 0.53 and the fee is USD 0.02 per unit. Compute expected payout and modeled net value. State what remains unknown before making a trading claim.</p>
+<p><strong>Solution sketch.</strong> Expected payout is USD 0.55, so modeled net value is zero. The probability estimates, actual size and freshness of the ask, fee applicability, exceptional payout rules, and capital constraints remain relevant. The calculation supplies no positive modeled margin even before uncertainty.</p>
+<h3 id="exercise-2-consistency-without-profit">Exercise 2: consistency without profit<a class="headerlink" href="#exercise-2-consistency-without-profit" title="Permanent link">&para;</a></h3>
+<p>Compatible complementary contracts have asks of USD 0.48 and USD 0.50, with USD 0.015 cost per leg. Does buying one of each produce a positive guaranteed net payout under the simplified settlement assumption?</p>
+<p><strong>Solution sketch.</strong> Total cost is USD 1.01 and total payout is USD 1, so the net outcome is minus USD 0.01. The gross price sum below one was insufficient. In a real setting, compatibility and executable quantity would still require verification.</p>
+<h3 id="exercise-3-conditioning-on-a-fill">Exercise 3: conditioning on a fill<a class="headerlink" href="#exercise-3-conditioning-on-a-fill" title="Permanent link">&para;</a></h3>
+<p>A one-unit bid at USD 0.45 fills with probability 0.20. Conditional on a fill, expected payout is USD 0.42. A USD 0.01 fee applies only when filled. Compute modeled transaction profit per submitted order, ignoring reservation cost.</p>
+<p><strong>Solution sketch.</strong> Profit conditional on a fill is minus USD 0.04. Multiplying by 0.20 gives minus USD 0.008 per submitted order. An unconditional event forecast is not part of this calculation unless it correctly determines the conditional payout distribution.</p>
+<h3 id="exercise-4-a-transfer-models-impressive-score">Exercise 4: a transfer model's impressive score<a class="headerlink" href="#exercise-4-a-transfer-models-impressive-score" title="Permanent link">&para;</a></h3>
+<p>A hierarchical model has a better average Brier score than a baseline but declines to forecast 80 percent of events. The baseline predicts all events. What comparison is needed before concluding that selective transfer improved the decision system?</p>
+<p><strong>Solution sketch.</strong> Compare scores on the same event population and compare coverage-performance curves with a baseline permitted a comparable abstention policy. Check chronological and family holdouts, availability cutoffs, and whether exclusions were chosen before observing outcomes. A lower score on a different, easier population is not by itself evidence of superior transfer.</p>
+<h3 id="exercise-5-naming-the-contribution">Exercise 5: naming the contribution<a class="headerlink" href="#exercise-5-naming-the-contribution" title="Permanent link">&para;</a></h3>
+<p>A project combines a language model to propose contract relationships with a deterministic rule audit and a convex projection. No related-work search beyond this chapter has been performed. What novelty statement is justified?</p>
+<p><strong>Solution sketch.</strong> Describe the implementation and proposed experimental combination. Do not claim a new algorithm, the first contract graph, or a discovered market inefficiency. Conduct and record a broader primary-literature search, distinguish known components, and evaluate the actual contribution against simple baselines.</p>
+<h2 id="where-to-go-next">Where to go next<a class="headerlink" href="#where-to-go-next" title="Permanent link">&para;</a></h2>
+<p>The <a href="../26-quickstart-pattern/">first practical guide</a> begins with a deliberately simple pattern investigation. It is a useful antidote to research excitement: before building a complex system, establish what a small, reproducible experiment can and cannot tell you.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../24-paper-operations/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 24. Operating a paper-trading system">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                24. Operating a paper-trading system
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../26-quickstart-pattern/" class="md-footer__link md-footer__link--next" aria-label="Next: 26. Investigate your first simple pattern">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                26. Investigate your first simple pattern
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,28 @@
+.md-grid {
+  max-width: 90rem;
+}
+
+.md-content {
+  line-height: 1.7;
+}
+
+.md-content__inner {
+  max-width: 52rem;
+}
+
+.md-typeset h1 {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.md-typeset h2 {
+  margin-top: 2.2em;
+}
+
+.md-typeset table:not([class]) {
+  font-size: 0.76rem;
+}
+
+.md-typeset .arithmatex {
+  overflow-x: auto;
+}

@@ -1,0 +1,2403 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/chapters/13-evolving-forecasts/">
+      
+      
+        <link rel="prev" href="../12-trees-and-ensembles/">
+      
+      
+        <link rel="next" href="../14-text-and-language-models/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>13. Forecasts that evolve with time - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#13-forecasts-that-evolve-with-time" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              13. Forecasts that evolve with time
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-probability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-market-microstructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-statistical-baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-trees-and-ensembles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#131-a-forecast-is-not-fixed-the-moment-it-is-made" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 A forecast is not fixed the moment it is made
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#132-sequential-bayesian-updating-from-first-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 Sequential Bayesian updating from first principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#133-a-scalar-state-space-idea-combining-a-prior-estimate-with-a-new-observation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3 A scalar state-space idea: combining a prior estimate with a new observation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#134-scheduled-releases-and-repeated-snapshots-revisited" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4 Scheduled releases and repeated snapshots, revisited
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#135-survival-and-hazard-models-and-where-they-actually-apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5 Survival and hazard models, and where they actually apply
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#136-a-brief-note-on-detecting-regime-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.6 A brief note on detecting regime changes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#137-a-real-data-illustration-of-current-vintage-versus-point-in-time-tension" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.7 A real-data illustration of current-vintage versus point-in-time tension
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#138-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.8 Failure modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-a-two-step-bayesian-chain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: a two-step Bayesian chain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-a-variance-weighted-combination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: a variance-weighted combination
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-reading-the-companions-two-snapshot-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: reading the companion's two-snapshot output
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-occurrence-versus-settlement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: occurrence versus settlement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-a-discrete-hazard-sanity-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: a discrete hazard sanity check
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-evidence-after-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../22-bankroll-and-portfolios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../23-learning-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../25-research-hypotheses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../28-quickstart-consistency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../30-first-live-trade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../companion/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#131-a-forecast-is-not-fixed-the-moment-it-is-made" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 A forecast is not fixed the moment it is made
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#132-sequential-bayesian-updating-from-first-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 Sequential Bayesian updating from first principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#133-a-scalar-state-space-idea-combining-a-prior-estimate-with-a-new-observation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3 A scalar state-space idea: combining a prior estimate with a new observation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#134-scheduled-releases-and-repeated-snapshots-revisited" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4 Scheduled releases and repeated snapshots, revisited
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#135-survival-and-hazard-models-and-where-they-actually-apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5 Survival and hazard models, and where they actually apply
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#136-a-brief-note-on-detecting-regime-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.6 A brief note on detecting regime changes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#137-a-real-data-illustration-of-current-vintage-versus-point-in-time-tension" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.7 A real-data illustration of current-vintage versus point-in-time tension
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#138-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.8 Failure modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-a-two-step-bayesian-chain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: a two-step Bayesian chain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-a-variance-weighted-combination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: a variance-weighted combination
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-reading-the-companions-two-snapshot-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: reading the companion's two-snapshot output
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-occurrence-versus-settlement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: occurrence versus settlement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-a-discrete-hazard-sanity-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: a discrete hazard sanity check
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="13-forecasts-that-evolve-with-time">13. Forecasts that evolve with time<a class="headerlink" href="#13-forecasts-that-evolve-with-time" title="Permanent link">&para;</a></h1>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>Read Chapters 11 and 12 first; this chapter reuses the same fixture, the same three-feature <code>EventRow</code> representation, and the point-in-time discipline established there. You should be comfortable with conditional probability, Bayes' rule, and simple weighted averages. The <a href="../../notation/">notation registry</a> distinguishes event time, decision time, and label-availability time; that distinction is the organizing idea of this chapter.</p>
+<h2 id="learning-objectives">Learning objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">&para;</a></h2>
+<p>By the end of this chapter you should be able to: derive a sequential Bayesian update and apply it to a chain of successive evidence; derive a scalar, variance-weighted combination of a prior estimate and a new observation in the style of a linear filter, and state why bounded [0,1] probabilities should not be assumed Gaussian without justification; explain when a survival/hazard framing is actually appropriate for a prediction-market question, and why modeling <em>when</em> something resolves is a different exercise from modeling the <em>probability of YES</em> itself; and read the companion's two-snapshot example correctly, without treating repeated observations of one event as independent evaluation trials.</p>
+<h2 id="131-a-forecast-is-not-fixed-the-moment-it-is-made">13.1 A forecast is not fixed the moment it is made<a class="headerlink" href="#131-a-forecast-is-not-fixed-the-moment-it-is-made" title="Permanent link">&para;</a></h2>
+<p>Every model built in Chapters 11 and 12 produces a single forecast from a single feature vector at a single decision time. But an actual event contract is typically observed repeatedly before it resolves: new information arrives, scheduled releases occur, and the horizon to resolution shrinks. A forecasting system that only knows how to answer "what is <span class="arithmatex">\(\hat p\)</span> given <span class="arithmatex">\(x\)</span> right now" still needs a disciplined way to handle the fact that <span class="arithmatex">\(x\)</span>, and therefore <span class="arithmatex">\(\hat p\)</span>, changes as the event approaches.</p>
+<p>The companion fixture makes this concrete without needing a real data feed. Each synthetic event in <code>generate_recurring</code> is observed at two decision times, 12 hours and 3 hours before resolution, with a fresh, independently noised <code>signal</code> feature at each decision time. This is not a second independent draw of the outcome — it is the same underlying event, observed twice, at two different amounts of remaining uncertainty. This chapter is about the machinery for reasoning across that kind of evolving observation sequence, and about the specific labeled traps in doing so carelessly.</p>
+<h2 id="132-sequential-bayesian-updating-from-first-principles">13.2 Sequential Bayesian updating from first principles<a class="headerlink" href="#132-sequential-bayesian-updating-from-first-principles" title="Permanent link">&para;</a></h2>
+<p>Chapter 11 already used single-step Bayes' rule; the sequential case simply chains it. Given a prior probability <span class="arithmatex">\(p_0\)</span> and a sequence of evidence items <span class="arithmatex">\(e_1, e_2, \ldots\)</span>, each conditionally informative about the same underlying event, Bayes' rule after the first item is</p>
+<div class="arithmatex">\[
+p_1 = \frac{p_0 \cdot P(e_1\mid Y=1)}{p_0\cdot P(e_1\mid Y=1) + (1-p_0)\cdot P(e_1\mid Y=0)},
+\]</div>
+<p>and the posterior <span class="arithmatex">\(p_1\)</span> becomes the prior for the next update using <span class="arithmatex">\(e_2\)</span>, and so on. This is exactly the book's <code>bayes_update</code> function applied repeatedly, and it is worth checking on a small chain to see the mechanics rather than trust the formula from memory.</p>
+<p>Start at <span class="arithmatex">\(p_0=0.30\)</span>. Suppose a first bulletin has likelihood ratio <span class="arithmatex">\(P(e_1\mid Y{=}1){=}0.70\)</span> against <span class="arithmatex">\(P(e_1\mid Y{=}0){=}0.40\)</span>: the update gives <span class="arithmatex">\(p_1 = 0.30(0.70)/[0.30(0.70)+0.70(0.40)] = 0.428571\)</span>. A second bulletin with <span class="arithmatex">\(P(e_2\mid Y{=}1){=}0.65\)</span> against <span class="arithmatex">\(P(e_2\mid Y{=}0){=}0.45\)</span> updates <span class="arithmatex">\(p_1\)</span> to <span class="arithmatex">\(p_2 = 0.428571(0.65)/[0.428571(0.65)+0.571429(0.45)] = 0.520000\)</span> (both values checked with a script). Two pieces of moderately informative evidence moved the belief from 0.30 to 0.52 — noticeably, but not dramatically, which is the correct behavior of Bayes' rule when neither piece of evidence is overwhelming on its own.</p>
+<p>This chain-of-updates view has an important, easy-to-miss requirement: each <span class="arithmatex">\(e_i\)</span>'s likelihoods must be genuinely conditionally independent given <span class="arithmatex">\(Y\)</span>, or specified jointly if they are not. Two bulletins drawn from the same underlying report, restated in different words, are not two independent pieces of evidence, and feeding both into a naive sequential update as if they were double-counts whatever the shared report actually established. The companion's two-snapshot fixture sidesteps this by using <code>latest_per_event</code> to collapse each event to one row before scoring (Chapter 11); this chapter's sequential-update machinery is a separate tool for cases where you genuinely intend to combine successive, distinct evidence about one still-unresolved event, not a license to treat every repeated observation as new information.</p>
+<h2 id="133-a-scalar-state-space-idea-combining-a-prior-estimate-with-a-new-observation">13.3 A scalar state-space idea: combining a prior estimate with a new observation<a class="headerlink" href="#133-a-scalar-state-space-idea-combining-a-prior-estimate-with-a-new-observation" title="Permanent link">&para;</a></h2>
+<p>A related but distinct problem: suppose you already have a running numerical estimate <span class="arithmatex">\(m_0\)</span> of some quantity, with an associated uncertainty (variance) <span class="arithmatex">\(v_0\)</span>, and a new noisy observation <span class="arithmatex">\(z\)</span> arrives with its own variance <span class="arithmatex">\(r\)</span>. How should you combine them? <a href="../../references/#kalman1960">KALMAN1960</a> is the foundational reference for the general linear-filtering answer to this question in a state-space setting; the scalar case, which this book derives independently rather than reproducing from the unread full text, is simple enough to check by hand.</p>
+<p>If <span class="arithmatex">\(m_0\)</span> and <span class="arithmatex">\(z\)</span> are unbiased estimates of the same quantity with independent errors of positive variances <span class="arithmatex">\(v_0\)</span> and <span class="arithmatex">\(r\)</span>, the variance of <span class="arithmatex">\((1-K)m_0+Kz\)</span> is <span class="arithmatex">\((1-K)^2v_0+K^2r\)</span>. Differentiating gives <span class="arithmatex">\(-2(1-K)v_0+2Kr=0\)</span>, and the second derivative is <span class="arithmatex">\(2(v_0+r)&gt;0\)</span>. Thus the minimum-variance linear combination is</p>
+<div class="arithmatex">\[
+K = \frac{v_0}{v_0+r}, \qquad m_1 = m_0 + K\,(z-m_0), \qquad v_1 = (1-K)\,v_0.
+\]</div>
+<p><span class="arithmatex">\(K\)</span> (the "gain") is between 0 and 1: as <span class="arithmatex">\(r\to0\)</span> (the new observation is nearly noise-free), <span class="arithmatex">\(K\to1\)</span> and <span class="arithmatex">\(m_1\to z\)</span>; as <span class="arithmatex">\(r\to\infty\)</span> (the new observation is nearly useless), <span class="arithmatex">\(K\to0\)</span> and <span class="arithmatex">\(m_1\to m_0\)</span>. A worked instance: <span class="arithmatex">\(m_0=0.55\)</span>, <span class="arithmatex">\(v_0=0.04\)</span>, <span class="arithmatex">\(z=0.62\)</span>, <span class="arithmatex">\(r=0.01\)</span>. Then <span class="arithmatex">\(K=0.04/0.05=0.8\)</span>, <span class="arithmatex">\(m_1=0.55+0.8(0.07)=0.606\)</span>, and the updated variance <span class="arithmatex">\(v_1=(1-0.8)(0.04)=0.008\)</span> (checked with a script) — smaller than either input variance, reflecting that combining two independent estimates is never worse, in expected squared error, than using either alone.</p>
+<p>This linear-estimation derivation requires finite variances, unbiasedness, and the stated error covariance; it does <strong>not</strong> require Gaussian errors or an unbounded target. Moreover, when both input estimates lie in <span class="arithmatex">\([0,1]\)</span>, the convex average with <span class="arithmatex">\(0\leq K\leq1\)</span> stays there. What needs extra assumptions is interpreting these formulas as an exact <strong>Bayesian posterior</strong> mean and variance, or repeatedly propagating a Gaussian state distribution. A Gaussian probability-state model can assign mass outside <span class="arithmatex">\([0,1]\)</span>, and a noisy observation of an underlying signal need not itself be a valid probability. One can model a transformed state such as log-odds, but then the observation model and transformation of uncertainty must also be specified. Independent unbiased probability estimates with known variances are not automatically available just because two models report numbers.</p>
+<h2 id="134-scheduled-releases-and-repeated-snapshots-revisited">13.4 Scheduled releases and repeated snapshots, revisited<a class="headerlink" href="#134-scheduled-releases-and-repeated-snapshots-revisited" title="Permanent link">&para;</a></h2>
+<p>Run the companion script:</p>
+<p><strong>Command working directory:</strong> run this chapter's Python commands from <code>book\companion</code>. From the trading repository root, run <code>Set-Location book\companion</code> once first. The <code>.venv</code> belongs to that companion project; see <a href="../../companion/">companion setup</a>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">examples</span><span class="p">\</span><span class="n">forecast_models</span><span class="p">.</span><span class="n">py</span>
+</code></pre></div>
+<p>Its output includes a block labeled <code>same_event_updates_not_independent_trials</code>: for one held-out event, the same fitted (frozen) logistic model is applied to that event's two decision-time snapshots, 12 hours and 3 hours before resolution. On the run recorded here, the reported probabilities are 0.258916 at the 12-hour snapshot and 0.258227 at the 3-hour snapshot — barely different, even though the actual <code>signal</code> feature differs between the two snapshots (it is drawn with less noise at the closer horizon in the fixture's construction). The script's own label for this limitation is exact: the model is frozen at its original training-period fit and merely re-scored at two snapshots, so its calibration at the earlier, noisier horizon is unvalidated by anything in this exercise.</p>
+<p>Be precise about what this demonstration is and is not. It is <strong>not</strong> an application of Section 13.2's sequential Bayesian updating (nothing here chains a posterior from the 12-hour snapshot into a prior for the 3-hour snapshot), and it is <strong>not a fitted sequence model</strong> of any kind — not a recurrent network, not a state-space filter, not a model whose parameters were estimated from how an event's own history evolves over time. It is one ordinary, time-independent classifier from Chapter 11, fit once on cross-sectional training rows, applied twice to two snapshots of one event that happen to arrive at different horizons. Sections 13.2 and 13.3 describe machinery that <em>could</em>, in principle, treat successive observations of one event as a genuine updating chain; the companion does not currently implement either one, and this section's two-number result should not be mistaken for evidence that it does.</p>
+<p>This is deliberately shown, not hidden, because it illustrates a genuine limitation rather than a success. A logistic model fit once on training data does not automatically know how to weight information differently as an event's horizon shrinks; if the relationship between <code>signal</code> and the outcome genuinely changes with horizon (which the fixture's construction, using less noise at 3 hours, suggests it should), a single frozen model applied at both horizons is not exploiting that difference, and a more horizon-aware model — for instance, one that includes horizon as an interacting feature, or that is fit and calibrated separately per horizon bucket — would need its own dedicated validation before being trusted. Nothing in this book's companion currently implements that more elaborate design; the honest lesson from this section is naming the gap, not claiming to have closed it.</p>
+<p>The evaluation implication is the one already established in Chapter 11 and repeated here because it is easy to forget under time pressure: <strong>the two snapshots of one event are not two independent test cases.</strong> Reporting a score across "all snapshot rows" rather than "one row per event" would silently inflate the apparent sample size and could let an event whose two snapshots happen to agree with the label count twice toward an apparently strong score. <code>latest_per_event</code> exists specifically to prevent this, and any custom evaluation code you write for a sequential or state-updating model needs the same discipline.</p>
+<h2 id="135-survival-and-hazard-models-and-where-they-actually-apply">13.5 Survival and hazard models, and where they actually apply<a class="headerlink" href="#135-survival-and-hazard-models-and-where-they-actually-apply" title="Permanent link">&para;</a></h2>
+<p>A different, and frequently confused, question is not "what is the probability the underlying proposition is YES" but "how long until this contract resolves." These are genuinely different targets, and conflating them is a specific, named failure mode this chapter asks you to avoid.</p>
+<p>Survival analysis models the distribution of a <strong>time-to-event</strong>, <span class="arithmatex">\(T\)</span>, often through the <strong>hazard function</strong></p>
+<div class="arithmatex">\[
+h(t) = \lim_{dt\to 0}\frac{P(t\le T&lt; t+dt \mid T\ge t)}{dt},
+\]</div>
+<p>the instantaneous rate of the event occurring at time <span class="arithmatex">\(t\)</span>, given it has not yet occurred. <a href="../../references/#cox1972">COX1972</a> proposes the widely used proportional-hazards form <span class="arithmatex">\(h(t\mid x) = h_0(t)\exp(\beta\cdot x)\)</span>, where covariates multiply an unspecified baseline hazard <span class="arithmatex">\(h_0(t)\)</span> rather than requiring you to specify its exact shape. This is a genuinely useful model <strong>when the question you actually care about is a time</strong>, such as "how many days until this contract's resolution is published" or "how long until a recurring threshold is first crossed," and when a proportional-hazards assumption (that covariate effects scale the hazard multiplicatively at every time, rather than changing its shape) is independently justified for your specific contract, not merely borrowed because the model has a well-known name.</p>
+<p>It is not automatically the right model for the ordinary binary YES/NO question this book has otherwise focused on, and applying it there without justification confuses two different things that this chapter's title deliberately keeps separate: an event's <strong>occurrence</strong> (did the underlying proposition come true) and its <strong>settlement</strong> (when and how the contractual payout is actually determined and released). A contract can be economically decided well before its formal settlement completes, or its settlement can be delayed by review or dispute processes unrelated to the underlying proposition's truth. If your genuine research question concerns settlement timing or delay risk — a legitimate and often underexplored question — a hazard model of the <em>time to settlement</em>, built from contract-level data about actual settlement delays, is the right tool; it says nothing by itself about the <em>probability</em> that the underlying proposition resolves YES, which remains a separate binary-outcome forecasting problem of the kind built in Chapters 11 and 12.</p>
+<p>A small illustration uses <strong>discrete conditional occurrence probabilities</strong>, not the continuous-time rate defined above: let <span class="arithmatex">\(h_1=0.10\)</span>, <span class="arithmatex">\(h_2=0.15\)</span>, <span class="arithmatex">\(h_3=0.20\)</span>, and <span class="arithmatex">\(h_4=0.25\)</span> be the probabilities of occurrence during each week conditional on survival to its start. The week-by-week occurrence probabilities are <span class="arithmatex">\(0.100000\)</span>, <span class="arithmatex">\(0.135000\)</span>, <span class="arithmatex">\(0.153000\)</span>, and <span class="arithmatex">\(0.153000\)</span>, leaving survival probability <span class="arithmatex">\(0.459000\)</span>. They sum to one. If a contract actually asks whether this same first-occurrence event happens by week four, its YES probability is <span class="arithmatex">\(1-0.459=0.541\)</span>: a time-to-occurrence model can answer a binary deadline question. A model of administrative settlement delay cannot be substituted for that occurrence model.</p>
+<h2 id="136-a-brief-note-on-detecting-regime-changes">13.6 A brief note on detecting regime changes<a class="headerlink" href="#136-a-brief-note-on-detecting-regime-changes" title="Permanent link">&para;</a></h2>
+<p>A related, forward-looking idea worth naming without overclaiming: <a href="../../references/#adams2007">ADAMS2007</a> derives an online algorithm for maintaining a posterior distribution over the "current run length" since the last change in an underlying data-generating process, under a changepoint model where the parameters before and after a change are assumed independent. This is conceptually attractive for a forecasting system that suspects the relationship between features and outcomes shifts over time (a market family's dynamics changing after a rule update, for instance), but the abstract's own assumption — independent before/after parameters — is a modeling choice that needs justification, and a detected changepoint is a statistical signal, not proof of a causal regime shift or evidence that a new trading opportunity has appeared. This book's companion does not implement online changepoint detection; it is mentioned here as a named, citable direction for a reader who wants to extend the sequential-updating ideas of Section 13.2 into a setting where the underlying relationship is not assumed constant, with the same caution applied to any other model in this part of the book: a fancier update rule does not, by itself, verify that it is tracking something real.</p>
+<h2 id="137-a-real-data-illustration-of-current-vintage-versus-point-in-time-tension">13.7 A real-data illustration of current-vintage versus point-in-time tension<a class="headerlink" href="#137-a-real-data-illustration-of-current-vintage-versus-point-in-time-tension" title="Permanent link">&para;</a></h2>
+<p>The book's separate NOAA Mauna Loa monthly carbon-dioxide study, described in full in <a href="../../companion/experiments/"><code>experiments/README.md</code></a>, is a completed, frozen, real-data illustration of a theme this chapter has treated abstractly: a series that evolves over time is not automatically a point-in-time series, and a strong recurring pattern is not automatically a prediction-market result. The design was predeclared before acquisition or scoring, and its recorded results are hash-verified rather than adjusted after the fact.</p>
+<p>The predeclared question is whether a calendar-month-specific ("seasonal") event rate improves on an expanding overall rate for recorded monthly increases. Both use the Beta smoothing introduced in Chapter 11, Section 11.5: add one success and one failure to the admitted counts. The overall model pools all admitted labels; the seasonal model uses only the target calendar month's admitted labels. They do not fit a hierarchical distribution or learn cross-month pooling. No regression coefficients, trees, or networks are involved.</p>
+<p>On the predeclared primary evaluation cohort (January 2015 through December 2025, 132 monthly events, 85 realized YES outcomes), the frozen results are: overall-model Brier 0.230314 and log loss 0.653345; seasonal-model Brier 0.032459 and log loss 0.130672 — a large, one-directional improvement for the calendar-aware model on this particular real, physically seasonal quantity. A predeclared sensitivity check that conservatively excludes the December 2022-August 2023 window affected by the post-eruption Mauna Kea measurement relocation, leaving 123 events with 79 YES outcomes and models refit on the reduced admitted history, shows the same pattern: overall Brier 0.230757 and seasonal Brier 0.034709. The seasonal model's advantage is not an artifact of the excluded months.</p>
+<p>Read this result for exactly what it licenses and no further. It shows that a real, strongly seasonal physical process (atmospheric CO2's well-known annual cycle) is, unsurprisingly, forecast better by a model that uses calendar information than by one that does not — a legitimate, disclosed, real-data finding about <em>this</em> series. It does <strong>not</strong> show that a real prediction-market question with different underlying dynamics would exhibit similar seasonal structure, does not compare against any executable market price, computes no fees, spread, or profit-and-loss figure, and does not establish availability at any verified historical publication time: the study's admission clock is an explicitly <strong>hypothetical retrospective convention</strong> layered onto a mutable, current-vintage NOAA extract, precisely the vintage-versus-availability distinction this chapter has emphasized throughout. A chronological, calendar-aware split of that data, however carefully constructed, still cannot recover the historical vintage — the values as they actually stood — at each past decision date, because only the current, possibly revised, extract is available for download today. See the <a href="../../research/data-feasibility/">data feasibility assessment</a> for the full provenance and rights discussion behind the extract itself.</p>
+<h2 id="138-failure-modes">13.8 Failure modes<a class="headerlink" href="#138-failure-modes" title="Permanent link">&para;</a></h2>
+<p>Treating repeated snapshots as independent trials overstates independent outcome information; use a declared horizon or an explicitly grouped multi-horizon evaluation. A variance-weighted average is not automatically a Bayesian state update: verify unbiasedness, covariance, and any assumed distribution. A Gaussian state can misrepresent bounded probability uncertainty, although a convex average of valid probabilities remains valid. Survival models require actual time-to-event and censoring definitions; a binary label alone cannot supply them. A detected changepoint is not causal proof. Finally, date-ordering a current-vintage series does not reconstruct historical vintages or establish past input availability.</p>
+<h2 id="exercises-and-solution-sketches">Exercises and solution sketches<a class="headerlink" href="#exercises-and-solution-sketches" title="Permanent link">&para;</a></h2>
+<h3 id="exercise-1-a-two-step-bayesian-chain">Exercise 1: a two-step Bayesian chain<a class="headerlink" href="#exercise-1-a-two-step-bayesian-chain" title="Permanent link">&para;</a></h3>
+<p>Starting from <span class="arithmatex">\(p_0=0.30\)</span>, apply a first update with likelihoods <span class="arithmatex">\(0.70\)</span> (given <span class="arithmatex">\(Y=1\)</span>) and <span class="arithmatex">\(0.40\)</span> (given <span class="arithmatex">\(Y=0\)</span>), then a second update with likelihoods <span class="arithmatex">\(0.65\)</span> and <span class="arithmatex">\(0.45\)</span>. Compute <span class="arithmatex">\(p_1\)</span> and <span class="arithmatex">\(p_2\)</span>.</p>
+<p><strong>Solution sketch.</strong> <span class="arithmatex">\(p_1 = 0.30(0.70)/[0.30(0.70)+0.70(0.40)] = 0.210/0.490 = 0.428571\)</span>. <span class="arithmatex">\(p_2 = 0.428571(0.65)/[0.428571(0.65)+0.571429(0.45)] = 0.278571/0.535714 = 0.520000\)</span>.</p>
+<h3 id="exercise-2-a-variance-weighted-combination">Exercise 2: a variance-weighted combination<a class="headerlink" href="#exercise-2-a-variance-weighted-combination" title="Permanent link">&para;</a></h3>
+<p>A prior estimate is <span class="arithmatex">\(m_0=0.55\)</span> with variance <span class="arithmatex">\(v_0=0.04\)</span>; a new observation is <span class="arithmatex">\(z=0.62\)</span> with variance <span class="arithmatex">\(r=0.01\)</span>. Compute the gain <span class="arithmatex">\(K\)</span>, the updated estimate <span class="arithmatex">\(m_1\)</span>, and the updated variance <span class="arithmatex">\(v_1\)</span>.</p>
+<p><strong>Solution sketch.</strong> <span class="arithmatex">\(K=0.04/(0.04+0.01)=0.8\)</span>. <span class="arithmatex">\(m_1=0.55+0.8(0.62-0.55)=0.606\)</span>. <span class="arithmatex">\(v_1=(1-0.8)(0.04)=0.008\)</span>, smaller than either input variance because combining two independent estimates reduces uncertainty.</p>
+<h3 id="exercise-3-reading-the-companions-two-snapshot-output">Exercise 3: reading the companion's two-snapshot output<a class="headerlink" href="#exercise-3-reading-the-companions-two-snapshot-output" title="Permanent link">&para;</a></h3>
+<p>The companion reports logistic probabilities of 0.258916 at a 12-hour horizon and 0.258227 at a 3-hour horizon for the same event. A colleague proposes scoring both as separate test observations to "get more data." Explain what is wrong with that proposal.</p>
+<p><strong>Solution sketch.</strong> Both snapshots belong to a single event with one eventual outcome label; scoring both as separate observations would let that one outcome be counted twice in an aggregate score, inflating apparent sample size and potentially overweighting events observed more often than others. <code>latest_per_event</code> (or an equivalent explicit collapse) should reduce this to one row per event before any evaluation.</p>
+<h3 id="exercise-4-occurrence-versus-settlement">Exercise 4: occurrence versus settlement<a class="headerlink" href="#exercise-4-occurrence-versus-settlement" title="Permanent link">&para;</a></h3>
+<p>A researcher wants to model "how many days until a contract's outcome is officially confirmed" using a proportional-hazards model, but instead trains it on the binary YES/NO label as if that label were a time-to-event target. Identify the specific conceptual error.</p>
+<p><strong>Solution sketch.</strong> The proportional-hazards model is designed for a time-to-event target, not a binary outcome; feeding it a YES/NO label conflates "did the proposition occur" with "how long until settlement." The correct approach is either an ordinary binary-outcome model (Chapters 11–12) for the YES/NO question, or a genuine time-to-event target (actual settlement timestamps and a defined start time) if settlement delay is the real object of study — not both collapsed into one model.</p>
+<h3 id="exercise-5-a-discrete-hazard-sanity-check">Exercise 5: a discrete hazard sanity check<a class="headerlink" href="#exercise-5-a-discrete-hazard-sanity-check" title="Permanent link">&para;</a></h3>
+<p>Given weekly hazard rates <span class="arithmatex">\(0.10, 0.15, 0.20, 0.25\)</span> for four weeks, compute the probability of the event occurring in each week and the probability it has not occurred by the end of week 4. Confirm the four occurrence probabilities plus the remaining-survival probability sum to 1.</p>
+<p><strong>Solution sketch.</strong> Week 1: <span class="arithmatex">\(0.100000\)</span>. Week 2: <span class="arithmatex">\((1-0.10)(0.15)=0.135000\)</span>. Week 3: <span class="arithmatex">\((1-0.10)(1-0.15)(0.20)=0.153000\)</span>. Week 4: <span class="arithmatex">\((1-0.10)(1-0.15)(1-0.20)(0.25)=0.153000\)</span>. Remaining survival: <span class="arithmatex">\((1-0.10)(1-0.15)(1-0.20)(1-0.25)=0.459000\)</span>. Sum: <span class="arithmatex">\(0.100000+0.135000+0.153000+0.153000+0.459000=1.000000\)</span>, confirming the bookkeeping is consistent.</p>
+<h2 id="where-to-go-next">Where to go next<a class="headerlink" href="#where-to-go-next" title="Permanent link">&para;</a></h2>
+<p><a href="../14-text-and-language-models/">Chapter 14</a> turns from numeric time-series-style features to text: the same forecasting and evaluation discipline applies, but the representation problem changes, and with it come specific new risks around training-corpus contamination and a temptation to trust a language model's own stated confidence.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../12-trees-and-ensembles/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 12. Trees and nonlinear ensembles">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                12. Trees and nonlinear ensembles
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../14-text-and-language-models/" class="md-footer__link md-footer__link--next" aria-label="Next: 14. Text, news, and language models">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                14. Text, news, and language models
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

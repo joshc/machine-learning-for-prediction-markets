@@ -1,0 +1,2397 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/chapters/12-trees-and-ensembles/">
+      
+      
+        <link rel="prev" href="../11-statistical-baselines/">
+      
+      
+        <link rel="next" href="../13-evolving-forecasts/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>12. Trees and nonlinear ensembles - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#12-trees-and-nonlinear-ensembles" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              12. Trees and nonlinear ensembles
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-probability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-market-microstructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-statistical-baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#121-a-nonlinear-motivating-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 A nonlinear motivating case
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#122-decision-trees-from-first-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 Decision trees from first principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#123-random-forests-averaging-decorrelated-trees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.3 Random forests: averaging decorrelated trees
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#124-boosting-a-sequence-of-small-corrections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4 Boosting: a sequence of small corrections
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#125-loss-functions-and-hyperparameters-as-capacity-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.5 Loss functions and hyperparameters as capacity controls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#126-honest-feature-importance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.6 Honest feature importance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#127-calibration-assess-the-correction-rather-than-assume-it-helps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.7 Calibration: assess the correction rather than assume it helps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#128-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.8 Failure modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-computing-an-impurity-gain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: computing an impurity gain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-one-boosting-stage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: one boosting stage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-why-capacity-controls-matter-more-at-small-n" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: why capacity controls matter more at small \(n\)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-interpreting-a-calibration-result" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: interpreting a calibration result
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-impurity-based-versus-permutation-importance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: impurity-based versus permutation importance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-evolving-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-evidence-after-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../22-bankroll-and-portfolios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../23-learning-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../25-research-hypotheses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../28-quickstart-consistency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../30-first-live-trade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../companion/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#121-a-nonlinear-motivating-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 A nonlinear motivating case
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#122-decision-trees-from-first-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 Decision trees from first principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#123-random-forests-averaging-decorrelated-trees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.3 Random forests: averaging decorrelated trees
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#124-boosting-a-sequence-of-small-corrections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4 Boosting: a sequence of small corrections
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#125-loss-functions-and-hyperparameters-as-capacity-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.5 Loss functions and hyperparameters as capacity controls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#126-honest-feature-importance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.6 Honest feature importance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#127-calibration-assess-the-correction-rather-than-assume-it-helps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.7 Calibration: assess the correction rather than assume it helps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#128-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.8 Failure modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-computing-an-impurity-gain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: computing an impurity gain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-one-boosting-stage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: one boosting stage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-why-capacity-controls-matter-more-at-small-n" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: why capacity controls matter more at small \(n\)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-interpreting-a-calibration-result" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: interpreting a calibration result
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-impurity-based-versus-permutation-importance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: impurity-based versus permutation importance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="12-trees-and-nonlinear-ensembles">12. Trees and nonlinear ensembles<a class="headerlink" href="#12-trees-and-nonlinear-ensembles" title="Permanent link">&para;</a></h1>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>Read Chapter 11 before this one; the fitting/evaluation distinction, the point-in-time and event-grouping constraints, and the companion's <code>forecast_models.py</code> fixture are assumed rather than re-derived. You should be comfortable with basic probability (proportions, expectations) and simple algebra; no linear-algebra background beyond arithmetic on vectors is required. Keep the <a href="../../notation/">notation registry</a> open for <span class="arithmatex">\(\hat p\)</span>, <span class="arithmatex">\(n\)</span>, and the Brier/log-loss definitions.</p>
+<h2 id="learning-objectives">Learning objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">&para;</a></h2>
+<p>By the end of this chapter you should be able to: derive the impurity reduction motivating a tree split; explain how random forests and gradient boosting use different error-reduction mechanisms; identify the companion's capacity controls; distinguish impurity-based from permutation-based feature importance; and explain why calibration needs a separate assessment and can worsen a model's held-out score.</p>
+<h2 id="121-a-nonlinear-motivating-case">12.1 A nonlinear motivating case<a class="headerlink" href="#121-a-nonlinear-motivating-case" title="Permanent link">&para;</a></h2>
+<p>Chapter 11's logistic model assumes the log-odds of the outcome is a straight line in the features. That assumption can be wrong in an identifiable way: perhaps the outcome depends on whether <code>signal</code> exceeds a threshold <em>and</em> <code>horizon_hours</code> is small, an interaction a single linear term cannot represent no matter how the coefficients are chosen. Tree-based models represent exactly this kind of conditional, if-this-then-that structure directly, by asking a sequence of yes/no questions about the features. This chapter asks what that buys you, what it costs, and why the answer it gives about a probability is not automatically trustworthy on its own.</p>
+<h2 id="122-decision-trees-from-first-principles">12.2 Decision trees from first principles<a class="headerlink" href="#122-decision-trees-from-first-principles" title="Permanent link">&para;</a></h2>
+<p>A decision tree partitions the feature space by repeatedly asking a threshold question ("is <code>signal</code> greater than 0.1?") and sending each observation to a left or right child depending on the answer. The question at each node is chosen to make the resulting groups as <strong>pure</strong> as possible with respect to the outcome label.</p>
+<p>For a binary outcome, a standard impurity measure is the <strong>Gini index</strong> of a node containing <span class="arithmatex">\(n\)</span> observations with <span class="arithmatex">\(p\)</span> the fraction labeled 1:</p>
+<div class="arithmatex">\[
+G = 1 - p^2 - (1-p)^2 = 2p(1-p).
+\]</div>
+<p><span class="arithmatex">\(G\)</span> is zero when <span class="arithmatex">\(p\in\{0,1\}\)</span> (the node is pure) and maximal at <span class="arithmatex">\(p=0.5\)</span> (maximal disorder for a binary label). A split is scored by the <strong>weighted impurity</strong> of its two children, and the split chosen is the one that reduces impurity the most relative to the parent.</p>
+<p>Work a small case by hand. Ten events, six YES and four NO: parent Gini is <span class="arithmatex">\(1-0.6^2-0.4^2=0.48\)</span>. Suppose splitting on <code>signal &gt; 0</code> sends 7 events left (5 YES, 2 NO) and 3 events right (1 YES, 2 NO). Left Gini is <span class="arithmatex">\(1-(5/7)^2-(2/7)^2=0.408163\)</span>; right Gini is <span class="arithmatex">\(1-(1/3)^2-(2/3)^2=0.444444\)</span>. The weighted impurity is <span class="arithmatex">\((7/10)(0.408163)+(3/10)(0.444444)=0.419048\)</span>, and the impurity reduction ("gain") from this split is <span class="arithmatex">\(0.48-0.419048=0.060952\)</span> (all values checked with a script). A tree-fitting algorithm evaluates many candidate thresholds across many features at each node and greedily picks the split with the largest such gain, then recurses on each child.</p>
+<p>Two things about this procedure matter for everything that follows. First, it is <strong>greedy</strong>: each split is chosen to be locally best, with no guarantee that the resulting tree is the globally best possible tree of a given size. Second, an unconstrained tree can keep splitting until every leaf is pure (or contains one observation), which drives training impurity to zero and is a direct route to overfitting; hence practical trees are limited by hyperparameters such as maximum depth or a minimum number of observations per leaf, exactly as the companion's boosted model does (Section 12.5).</p>
+<h2 id="123-random-forests-averaging-decorrelated-trees">12.3 Random forests: averaging decorrelated trees<a class="headerlink" href="#123-random-forests-averaging-decorrelated-trees" title="Permanent link">&para;</a></h2>
+<p>A single deep tree fit to one training sample is a high-variance estimator: a slightly different sample can produce a noticeably different tree. <strong>Random forests</strong> address this by growing many trees and averaging their votes, using two sources of randomness to keep the individual trees from all making the same mistakes.</p>
+<p><a href="../../references/#breiman2001">BREIMAN2001</a>'s author-maintained description explains the construction directly: each tree is grown on an independent bootstrap resample of the training rows (sampling with replacement, so on average roughly 63% of distinct rows appear per resample), and at each split only a random subset of candidate features is considered, rather than all of them. Averaging <span class="arithmatex">\(n\)</span> <em>independent</em> estimates with equal variance <span class="arithmatex">\(\sigma^2\)</span> reduces the variance of the average to <span class="arithmatex">\(\sigma^2/n\)</span>; averaging <em>correlated</em> estimates reduces variance by less, because correlated errors partly cancel less effectively than independent ones do. Restricting each split to a random feature subset is specifically intended to decorrelate the trees: if one feature is a strong overall predictor, an unrestricted forest would have every tree split on it near the root, making the trees resemble each other and undermining the averaging benefit.</p>
+<p>The inspected author description aggregates class votes; its <strong>vote fraction</strong> is the proportion of trees voting positive. Implementations can instead average the class proportions in terminal leaves, as scikit-learn's random-forest probability method does. Those conventions can yield different numbers, and neither guarantees calibration. Out-of-bag predictions also do not automatically respect chronological or event-group boundaries. The companion implements boosting rather than a random forest; Section 12.7 uses it to examine calibration empirically on the toy sample.</p>
+<h2 id="124-boosting-a-sequence-of-small-corrections">12.4 Boosting: a sequence of small corrections<a class="headerlink" href="#124-boosting-a-sequence-of-small-corrections" title="Permanent link">&para;</a></h2>
+<p>Where a forest fits many trees independently and averages them, <strong>gradient boosting</strong> fits trees <em>sequentially</em>, with each new tree specifically targeting the current model's mistakes. <a href="../../references/#friedman2001">FRIEDMAN2001</a> is this chapter's bibliographic reading pointer for the general staged, gradient-based function-approximation idea; per the ledger, only its metadata has been inspected, so the derivation below is produced independently rather than reproduced from the unread proof.</p>
+<p>For binary classification with log loss, the model maintains a running score <span class="arithmatex">\(F(x)\)</span> (a log-odds, exactly as in Chapter 11), and each stage computes a <strong>pseudo-residual</strong> for each training observation: the negative gradient of the loss with respect to the current score, which for log loss works out to <span class="arithmatex">\(y_i - \hat p_i\)</span> where <span class="arithmatex">\(\hat p_i=\sigma(F(x_i))\)</span>. A tree is fit to predict these pseudo-residuals, and its predictions are added to <span class="arithmatex">\(F\)</span> after multiplying by a small <strong>learning rate</strong>, shrinking each stage's contribution so that no single tree dominates the final model.</p>
+<p>Work one stage by hand. Start all five observations at <span class="arithmatex">\(F_0=0\)</span>, so <span class="arithmatex">\(\hat p_0=\sigma(0)=0.5\)</span> for everyone. With labels <span class="arithmatex">\(y=(1,0,1,1,0)\)</span>, the pseudo-residuals are <span class="arithmatex">\(y_i - 0.5 = (0.5,-0.5,0.5,0.5,-0.5)\)</span>. If the fitted stump for this step predicts the mean residual in a single leaf containing all five points, that prediction is <span class="arithmatex">\(0.1\)</span>. With learning rate <span class="arithmatex">\(0.05\)</span>, the updated score is <span class="arithmatex">\(F_1 = 0 + 0.05(0.1) = 0.005\)</span>, giving <span class="arithmatex">\(\hat p_1=\sigma(0.005)\approx 0.501250\)</span> (values checked with a script). The single stage barely moved the prediction, which is exactly the intended effect of a small learning rate: many small, cautious corrections rather than a few large, unstable ones.</p>
+<p>This hand calculation uses a deliberately simple raw-gradient update, not the exact first stage of the companion's <code>GradientBoostingClassifier</code>. That estimator starts from training class log-odds by default, fits regression trees to negative gradients, and uses loss-specific Newton updates for terminal-leaf values before applying shrinkage. The gradient direction is the shared idea; initialization and leaf-step magnitudes are implementation choices.</p>
+<p><a href="../../references/#chen2016">CHEN2016</a> documents XGBoost's sparsity-aware split finding and weighted quantile sketch. Its engineering and benchmark results are background, not a claim that the companion uses or reproduces XGBoost; the installed model is scikit-learn's <code>GradientBoostingClassifier</code>.</p>
+<h2 id="125-loss-functions-and-hyperparameters-as-capacity-controls">12.5 Loss functions and hyperparameters as capacity controls<a class="headerlink" href="#125-loss-functions-and-hyperparameters-as-capacity-controls" title="Permanent link">&para;</a></h2>
+<p>The companion's boosted model is configured with <code>n_estimators=35</code>, <code>max_depth=2</code>, <code>learning_rate=0.05</code>, and <code>min_samples_leaf=8</code>. Each of these is a capacity control, and together they matter more at the event counts this book works with than they would with a dataset of millions of rows.</p>
+<p><code>max_depth=2</code> limits the number of splits along a tree path; <code>min_samples_leaf=8</code> prevents leaves with fewer than eight training rows. On 89 training events, that is a meaningful capacity constraint. <code>learning_rate=0.05</code> shrinks each fitted stage and <code>n_estimators=35</code> limits the number of stages. Their product is not a universal numerical bound on log-odds movement: fitted leaf values matter too. Choosing these settings is a training/validation decision, never a reason to watch the final test score and stop when it improves.</p>
+<p>The tree-splitting criterion for classification is typically an impurity measure such as Gini (Section 12.2) or, for boosting specifically, the log-loss gradient framework in Section 12.4; both are proxies chosen because they are tractable to optimize greedily at each node or stage, not because they are identical to every possible business objective. If your actual decision criterion cares about a specific cost asymmetry (a missed YES matters more than a missed NO, say), that asymmetry needs to enter your evaluation and, ideally, your hyperparameter selection, not just your intuition about the fitted model afterward.</p>
+<p>Finally, and easy to miss: any preprocessing step with parameters fit from data (a scaler, an encoder, an imputer) must be fit on the training fold only, exactly as in Chapter 11, before being applied to validation and test rows. A tree-based model's split thresholds are themselves data-dependent parameters in the same sense, which is one more reason the whole pipeline, not just the final score, needs to respect the point-in-time and dependence-group boundaries established in the data part of this book.</p>
+<h2 id="126-honest-feature-importance">12.6 Honest feature importance<a class="headerlink" href="#126-honest-feature-importance" title="Permanent link">&para;</a></h2>
+<p>A fitted tree ensemble commonly reports a <strong>feature importance</strong> score, often based on the total impurity reduction attributed to each feature across all splits and all trees. This measure has a well-known bias: it tends to favor features with many possible split points (continuous or high-cardinality features) over binary or low-cardinality ones, because such features simply offer the tree more candidate thresholds to try, some of which will look useful on training data by chance alone, independent of any real relationship to the outcome.</p>
+<p>A more defensible alternative is <strong>permutation importance</strong>: take a fitted model, shuffle one feature's values across the evaluation rows (breaking its relationship with the outcome while preserving its marginal distribution), and measure how much the model's held-out score degrades. A feature whose shuffling barely changes the score was not doing much work for this model on this evaluation set. Permutation importance is still conditional on the specific fitted model and the specific evaluation sample, and it can understate the importance of a feature that is highly correlated with another retained feature, since shuffling one of a correlated pair leaves the model able to substitute the other. Neither importance measure is a causal statement: a feature can be "important" to a fitted model's score while having no causal role in the real-world event, and a feature can be causally central while looking unimportant because it is redundant with something else already in the model.</p>
+<p>The practical discipline is to treat feature importance as a diagnostic about <em>this fitted model's</em> behavior, worth investigating further (does the direction of the effect make sense? does it hold up on a fresh validation cohort?), not as a discovery about the world that a single importance ranking can certify on its own.</p>
+<h2 id="127-calibration-assess-the-correction-rather-than-assume-it-helps">12.7 Calibration: assess the correction rather than assume it helps<a class="headerlink" href="#127-calibration-assess-the-correction-rather-than-assume-it-helps" title="Permanent link">&para;</a></h2>
+<p>Run the companion script from the companion project root (<code>book\companion</code>):</p>
+<p><strong>Command working directory:</strong> run this chapter's Python commands from <code>book\companion</code>. From the trading repository root, run <code>Set-Location book\companion</code> once first. The <code>.venv</code> belongs to that companion project; see <a href="../../companion/">companion setup</a>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">examples</span><span class="p">\</span><span class="n">forecast_models</span><span class="p">.</span><span class="n">py</span>
+</code></pre></div>
+<p>On its default synthetic fixture (labeled <code>SYNTHETIC / ILLUSTRATIVE</code> in the script's own output, with <code>live_edge_claim: false</code>), the boosted model's raw output scores Brier 0.220607 and log loss 0.628186 on the 45 test events. After isotonic-regression calibration — fit on a <em>separate</em> 44-event validation cohort that played no role in fitting the trees themselves — the same underlying model's calibrated output scores Brier 0.267200 and log loss 0.751586. <strong>The calibrated score is worse than the raw score on this run.</strong> That is not a bug to paper over; it is the honest, disclosed outcome of this particular invented fixture and this particular small validation cohort, and it is exactly the kind of result this book commits to reporting unchanged. None of these numbers describes a real market, and none should be read as a measured trading edge.</p>
+<p>Why might calibration make things worse here, rather than better? <a href="../../references/#guo2017">GUO2017</a> reports that modern neural classifiers in the studied image and document benchmarks are often poorly calibrated and that a simple rescaling (temperature scaling) improved calibration on most of the examined datasets — evidence that raw classifier outputs commonly need correction <em>in those benchmarks</em>, not a guarantee that any particular correction method helps on any particular small dataset. More specifically, <a href="../../references/#kull2017">KULL2017</a> warns that isotonic calibration, precisely because it is a flexible, nonparametric monotone mapping, can overfit a small calibration sample; with only 44 validation events, an isotonic fit has limited data with which to estimate that mapping reliably, and the companion's own code comment records exactly this risk: isotonic calibration can emit exact 0 or 1 endpoints, and a single such prediction that turns out wrong contributes infinite log loss under this book's stated log-loss convention (no clipping). That single design fact — a monotone step function fit on 44 points, applied to fresh test rows — is a complete, sufficient explanation for why a calibrated score can be worse than an uncalibrated one in a small sample, without needing to invoke anything more exotic.</p>
+<p>The broader lesson is that <strong>calibration is a statistical procedure, not a free correctness upgrade</strong>. Probability distortion can depend on the ensemble, loss, regularization, and data; do not assume a universal overconfidence direction. Fit a proposed correction separately, then assess it on genuinely held-out data. Retain the raw model as a comparison rather than presuming that a respected calibration method must improve it.</p>
+<h2 id="128-failure-modes">12.8 Failure modes<a class="headerlink" href="#128-failure-modes" title="Permanent link">&para;</a></h2>
+<p>An unconstrained tree grown to purity memorizes its training sample and generalizes poorly; always check that depth, leaf-size, or estimator-count limits are actually active, not merely set in a configuration file that a different code path ignores. Random forests reduce variance through decorrelated averaging, but if the underlying signal-to-noise ratio is low, averaging many weak, noisy trees still produces a weak, if smoother, model — averaging is not a substitute for informative features. Boosting's sequential correction can overfit to training-fold idiosyncrasies if the learning rate and estimator count are too generous for the sample size; there is no universal safe setting, and the correct budget depends on how much genuine signal is present relative to noise. Feature importance rankings, of either kind, are frequently over-interpreted as causal or as robust across resamples; report them with the same "conditional on this fitted model and this sample" caveat you would apply to any other model diagnostic. And calibration applied to a small validation cohort can make a model's reported score worse, exactly as this chapter's own companion output demonstrates; always compare calibrated against uncalibrated scores on the same held-out data before adopting either one, and never fit or select a calibration method using the test period's outcomes.</p>
+<h2 id="exercises-and-solution-sketches">Exercises and solution sketches<a class="headerlink" href="#exercises-and-solution-sketches" title="Permanent link">&para;</a></h2>
+<h3 id="exercise-1-computing-an-impurity-gain">Exercise 1: computing an impurity gain<a class="headerlink" href="#exercise-1-computing-an-impurity-gain" title="Permanent link">&para;</a></h3>
+<p>Ten events split into 7 left (5 YES, 2 NO) and 3 right (1 YES, 2 NO) from a parent of 6 YES and 4 NO. Compute the parent Gini, both child Gini values, the weighted child impurity, and the gain.</p>
+<p><strong>Solution sketch.</strong> Parent: <span class="arithmatex">\(1-0.36-0.16=0.48\)</span>. Left: <span class="arithmatex">\(1-(5/7)^2-(2/7)^2=0.408163\)</span>. Right: <span class="arithmatex">\(1-(1/3)^2-(2/3)^2=0.444444\)</span>. Weighted: <span class="arithmatex">\(0.7(0.408163)+0.3(0.444444)=0.419048\)</span>. Gain: <span class="arithmatex">\(0.48-0.419048=0.060952\)</span>.</p>
+<h3 id="exercise-2-one-boosting-stage">Exercise 2: one boosting stage<a class="headerlink" href="#exercise-2-one-boosting-stage" title="Permanent link">&para;</a></h3>
+<p>Five observations start at <span class="arithmatex">\(F_0=0\)</span> with labels <span class="arithmatex">\((1,0,1,1,0)\)</span>. A stump predicts the mean pseudo-residual <span class="arithmatex">\(y_i-\hat p_0\)</span> in a single leaf, and the learning rate is 0.05. Compute the updated score <span class="arithmatex">\(F_1\)</span> and the new predicted probability.</p>
+<p><strong>Solution sketch.</strong> <span class="arithmatex">\(\hat p_0=0.5\)</span> for all five, so residuals are <span class="arithmatex">\((0.5,-0.5,0.5,0.5,-0.5)\)</span> with mean <span class="arithmatex">\(0.1\)</span>. <span class="arithmatex">\(F_1=0+0.05(0.1)=0.005\)</span>, and <span class="arithmatex">\(\hat p_1=\sigma(0.005)\approx0.501250\)</span>. One stage moves the prediction only slightly, which is the intended, cautious effect of a small learning rate.</p>
+<h3 id="exercise-3-why-capacity-controls-matter-more-at-small-n">Exercise 3: why capacity controls matter more at small <span class="arithmatex">\(n\)</span><a class="headerlink" href="#exercise-3-why-capacity-controls-matter-more-at-small-n" title="Permanent link">&para;</a></h3>
+<p>The companion boosted model uses <code>max_depth=2</code>, <code>min_samples_leaf=8</code>, <code>n_estimators=35</code>, <code>learning_rate=0.05</code> on roughly 89 training events. Explain in two or three sentences why this configuration would need to be reconsidered, not simply scaled up proportionally, if the training cohort were instead 89,000 events.</p>
+<p><strong>Solution sketch.</strong> More data may support more leaves, deeper trees, or more stages while retaining adequate observations per leaf. It does not make a leaf of fewer than eight events more precisely estimated merely because unrelated leaves contain more data. Reconsider capacity using training/validation evidence and actual per-leaf support, not proportional scaling of every hyperparameter or an automatic reduction of <code>min_samples_leaf</code>.</p>
+<h3 id="exercise-4-interpreting-a-calibration-result">Exercise 4: interpreting a calibration result<a class="headerlink" href="#exercise-4-interpreting-a-calibration-result" title="Permanent link">&para;</a></h3>
+<p>The companion reports boosted Brier 0.220607 and boosted-and-calibrated Brier 0.267200 on the same 45 test events. Does this show that isotonic calibration is a bad technique in general?</p>
+<p><strong>Solution sketch.</strong> No. It shows that, on this particular run, calibrating on a 44-event validation cohort produced a worse Brier score than leaving the raw boosted output uncalibrated, plausibly because isotonic regression's flexible monotone fit is prone to overfitting a small calibration sample (as KULL2017's abstract warns for related methods). The general lesson is to compare calibrated and uncalibrated scores on genuinely held-out data before adopting either, not to assume calibration is either always helpful or always harmful.</p>
+<h3 id="exercise-5-impurity-based-versus-permutation-importance">Exercise 5: impurity-based versus permutation importance<a class="headerlink" href="#exercise-5-impurity-based-versus-permutation-importance" title="Permanent link">&para;</a></h3>
+<p>A continuous feature with many distinct values receives a high impurity-based importance score, while a binary feature with a clear real-world relationship to the outcome receives a low one. Name one plausible, non-causal explanation for this pattern.</p>
+<p><strong>Solution sketch.</strong> Impurity-based importance is biased toward features offering many candidate split thresholds; a continuous feature can appear informative purely because it gives the tree-fitting algorithm many chances to find a threshold that looks useful on the training sample by chance, independent of a genuine relationship to the outcome. A permutation-importance check on a separate held-out sample, or restricting candidate splits, would help distinguish a real effect from this artifact.</p>
+<h2 id="where-to-go-next">Where to go next<a class="headerlink" href="#where-to-go-next" title="Permanent link">&para;</a></h2>
+<p><a href="../13-evolving-forecasts/">Chapter 13</a> keeps the tree-ensemble and logistic baselines from this and the previous chapter, but asks a different question: what should change about a forecast as new information arrives before an event resolves, and how do sequential updating, state-space ideas, and survival-style hazard models fit into that picture without being confused with the settlement process itself.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../11-statistical-baselines/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 11. Transparent statistical baselines">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                11. Transparent statistical baselines
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../13-evolving-forecasts/" class="md-footer__link md-footer__link--next" aria-label="Next: 13. Forecasts that evolve with time">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                13. Forecasts that evolve with time
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

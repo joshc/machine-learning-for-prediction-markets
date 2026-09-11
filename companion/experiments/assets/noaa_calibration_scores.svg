@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1020" height="560" viewBox="0 0 1020 560" role="img" aria-labelledby="title desc">
+<title id="title">NOAA monthly-rise forecast calibration and Brier scores</title>
+<desc id="desc">Original descriptive figure from the frozen final-vintage NOAA study. Five-bin primary calibration, with counts beside nonempty bins; primary and refitted sensitivity single-YES Brier scores. No confidence intervals or trading evidence.</desc>
+<rect width="1020" height="560" fill="white"/>
+<style>text{font-family:Arial,sans-serif;fill:#192b3b;font-size:14px}.heading{font-size:20px;font-weight:bold}.subheading{font-size:16px;font-weight:bold}.small{font-size:12px}.axis{stroke:#506474;stroke-width:1}.grid{stroke:#e2e7ed;stroke-width:1}</style>
+<text x="40" y="35" class="heading">Real NOAA observations: seasonal and overall probability forecasts</text>
+<text x="40" y="59" >FINAL-VINTAGE retrospective exercise | 2015-2025 | Not a prediction-market backtest</text>
+<text x="65" y="100" class="subheading">Calibration: primary cohort (n=132)</text>
+<text x="570" y="100" class="subheading">Single-YES Brier score (lower is better)</text>
+<line x1="80" y1="420" x2="80" y2="140" class="grid"/>
+<line x1="80" y1="420" x2="430" y2="420" class="grid"/>
+<text x="80" y="442" text-anchor="middle" class="small">0.0</text>
+<text x="68" y="424" text-anchor="end" class="small">0.0</text>
+<line x1="150.0" y1="420" x2="150.0" y2="140" class="grid"/>
+<line x1="80" y1="364.0" x2="430" y2="364.0" class="grid"/>
+<text x="150.0" y="442" text-anchor="middle" class="small">0.2</text>
+<text x="68" y="368.0" text-anchor="end" class="small">0.2</text>
+<line x1="220.0" y1="420" x2="220.0" y2="140" class="grid"/>
+<line x1="80" y1="308.0" x2="430" y2="308.0" class="grid"/>
+<text x="220.0" y="442" text-anchor="middle" class="small">0.4</text>
+<text x="68" y="312.0" text-anchor="end" class="small">0.4</text>
+<line x1="290.0" y1="420" x2="290.0" y2="140" class="grid"/>
+<line x1="80" y1="252.0" x2="430" y2="252.0" class="grid"/>
+<text x="290.0" y="442" text-anchor="middle" class="small">0.6</text>
+<text x="68" y="256.0" text-anchor="end" class="small">0.6</text>
+<line x1="360.0" y1="420" x2="360.0" y2="140" class="grid"/>
+<line x1="80" y1="196.0" x2="430" y2="196.0" class="grid"/>
+<text x="360.0" y="442" text-anchor="middle" class="small">0.8</text>
+<text x="68" y="200.0" text-anchor="end" class="small">0.8</text>
+<line x1="430" y1="420" x2="430" y2="140" class="grid"/>
+<line x1="80" y1="140" x2="430" y2="140" class="grid"/>
+<text x="430" y="442" text-anchor="middle" class="small">1.0</text>
+<text x="68" y="144" text-anchor="end" class="small">1.0</text>
+<line x1="80" y1="420" x2="430" y2="420" class="axis"/>
+<line x1="80" y1="420" x2="80" y2="140" class="axis"/>
+<line x1="80" y1="420" x2="430" y2="140" stroke="#8b959e" stroke-dasharray="5 4"/>
+<text x="255.0" y="467" text-anchor="middle">Mean predicted YES probability</text>
+<text x="25" y="280" text-anchor="middle" transform="rotate(-90 25 280)">Observed YES fraction</text>
+<circle cx="302.247" cy="239.697" r="5" fill="#b75608" stroke="white"/>
+<text x="302.247" y="229.697" text-anchor="middle" class="small">n=132</text>
+<circle cx="91.374" cy="413.636" r="5" fill="#086d9b" stroke="white"/>
+<text x="91.374" y="403.636" text-anchor="middle" class="small">n=44</text>
+<circle cx="316.351" cy="216.364" r="5" fill="#086d9b" stroke="white"/>
+<text x="316.351" y="206.364" text-anchor="middle" class="small">n=11</text>
+<circle cx="418.857" cy="143.636" r="5" fill="#086d9b" stroke="white"/>
+<text x="418.857" y="161.636" text-anchor="middle" class="small">n=77</text>
+<line x1="700.0" y1="138" x2="700.0" y2="410" class="grid"/>
+<text x="700.0" y="438" text-anchor="middle" class="small">0.00</text>
+<line x1="746.0" y1="138" x2="746.0" y2="410" class="grid"/>
+<text x="746.0" y="438" text-anchor="middle" class="small">0.05</text>
+<line x1="792.0" y1="138" x2="792.0" y2="410" class="grid"/>
+<text x="792.0" y="438" text-anchor="middle" class="small">0.10</text>
+<line x1="838.0" y1="138" x2="838.0" y2="410" class="grid"/>
+<text x="838.0" y="438" text-anchor="middle" class="small">0.15</text>
+<line x1="884.0" y1="138" x2="884.0" y2="410" class="grid"/>
+<text x="884.0" y="438" text-anchor="middle" class="small">0.20</text>
+<line x1="930.0" y1="138" x2="930.0" y2="410" class="grid"/>
+<text x="930.0" y="438" text-anchor="middle" class="small">0.25</text>
+<text x="570" y="133" class="subheading">Primary (n=132)</text>
+<text x="688" y="166" text-anchor="end">Overall</text>
+<rect x="700" y="148" width="211.888" height="25" fill="#b75608"/>
+<text x="916.8884418404881" y="166" class="small">0.2303</text>
+<text x="688" y="209" text-anchor="end">Seasonal</text>
+<rect x="700" y="191" width="29.863" height="25" fill="#086d9b"/>
+<text x="734.8626365140985" y="209" class="small">0.0325</text>
+<text x="570" y="270" class="subheading">Sensitivity (n=123)</text>
+<text x="688" y="303" text-anchor="end">Overall</text>
+<rect x="700" y="285" width="212.297" height="25" fill="#b75608"/>
+<text x="917.2968118958588" y="303" class="small">0.2308</text>
+<text x="688" y="346" text-anchor="end">Seasonal</text>
+<rect x="700" y="328" width="31.932" height="25" fill="#086d9b"/>
+<text x="736.9318622680099" y="346" class="small">0.0347</text>
+<text x="570" y="467" class="small">Sensitivity: affected target/predecessor months removed,</text>
+<text x="570" y="485" class="small">same reduced evaluation cohort for both refitted models.</text>
+<rect x="90" y="482" width="13" height="13" fill="#b75608"/>
+<text x="110" y="494" class="small">Overall</text>
+<rect x="250" y="482" width="13" height="13" fill="#086d9b"/>
+<text x="270" y="494" class="small">Seasonal</text>
+<text x="40" y="524" class="small">Five equal-width calibration bins; empty bins omitted. Counts are monthly events, not independent replicates.</text>
+<text x="40" y="544" class="small">Data: NOAA GML, Carbon Cycle and Greenhouse Gases group. Original transformations; no NOAA endorsement.</text>
+</svg>

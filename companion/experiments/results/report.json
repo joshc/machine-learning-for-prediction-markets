@@ -1,0 +1,641 @@
+{
+  "flagged_records": [
+    {
+      "month": "1975-12",
+      "reasons": [
+        "flagged_or_zero_ndays",
+        "negative_sdev"
+      ]
+    },
+    {
+      "month": "1984-04",
+      "reasons": [
+        "negative_sdev"
+      ]
+    }
+  ],
+  "frozen_csv_sha256": "e3f26607a312e892d4a835d88db37d57c168039f048d2987a638b717c8ef51a4",
+  "hypothetical_clock": "A label with target month s is admitted at 00:00:00 UTC on the first day of s+2. Forecast month t at its start uses labels with target months no later than t-2, never t-1 or t.",
+  "initial_admitted_labels": 474,
+  "initial_pre_evaluation_events": 475,
+  "limitations": [
+    "Real NOAA observational data, final/current vintage at actual acquisition time; historical revisions and center-of-month correction remain.",
+    "Original normalization, targets, and models are not official NOAA products or NOAA-endorsed.",
+    "No historical prediction-market contract, prices, fees, fills, queues, or executable-profit evidence.",
+    "Not a real prediction-market backtest and not passing evidence for a first live trade.",
+    "No tuning, strategy search, or favorable-direction requirement on the fixed evaluation period.",
+    "Only eleven evaluation years, dependent monthly labels and repeated seasonal structure; no inferential uncertainty claim.",
+    "The immediately preceding mean is used solely to define the eventual outcome, not as an as-of predictor.",
+    "Availability dates are invented index conventions; actual historical publication dates are unavailable.",
+    "Final-vintage revisions or provider processing may change threshold labels; withholding future labels does not remove vintage leakage.",
+    "Sensitivity changes both the evaluation cohort and later training histories; matched primary scores isolate the cohort change."
+  ],
+  "models": {
+    "overall": "Beta(1,1) posterior predictive: (admitted YES labels + 1)/(admitted labels + 2).",
+    "seasonal": "Separate target-month Beta(1,1) posterior predictive: (admitted YES labels for this calendar month + 1)/(admitted labels for this calendar month + 2). No pooling, tuning, or model selection."
+  },
+  "primary": {
+    "admitted_labels_range": [
+      474,
+      605
+    ],
+    "count": 132,
+    "first_target": "2015-01",
+    "last_target": "2025-12",
+    "models": {
+      "overall": {
+        "brier": 0.23031352373966096,
+        "calibration_bins": [
+          {
+            "count": 0,
+            "lower": 0.0,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.2
+          },
+          {
+            "count": 0,
+            "lower": 0.2,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.4
+          },
+          {
+            "count": 0,
+            "lower": 0.4,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.6000000000000001
+          },
+          {
+            "count": 132,
+            "lower": 0.6000000000000001,
+            "mean_probability": 0.6349906656291062,
+            "observed_rate": 0.6439393939393939,
+            "upper": 0.8
+          },
+          {
+            "count": 0,
+            "lower": 0.8,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 1.0
+          }
+        ],
+        "log_loss": 0.6533454404990765,
+        "mean_probability": 0.6349906656291062,
+        "probability_range": [
+          0.6304728546409807,
+          0.6396226415094339
+        ]
+      },
+      "seasonal": {
+        "brier": 0.03245938751532452,
+        "calibration_bins": [
+          {
+            "count": 44,
+            "lower": 0.0,
+            "mean_probability": 0.03249760855414941,
+            "observed_rate": 0.022727272727272728,
+            "upper": 0.2
+          },
+          {
+            "count": 0,
+            "lower": 0.2,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.4
+          },
+          {
+            "count": 0,
+            "lower": 0.4,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.6000000000000001
+          },
+          {
+            "count": 11,
+            "lower": 0.6000000000000001,
+            "mean_probability": 0.67528865672119,
+            "observed_rate": 0.7272727272727273,
+            "upper": 0.8
+          },
+          {
+            "count": 77,
+            "lower": 0.8,
+            "mean_probability": 0.9681629380452106,
+            "observed_rate": 0.987012987012987,
+            "upper": 1.0
+          }
+        ],
+        "log_loss": 0.13067206459295996,
+        "mean_probability": 0.6318683047711884,
+        "probability_range": [
+          0.019230769230769232,
+          0.9807692307692307
+        ]
+      }
+    },
+    "observed_yes_rate": 0.6439393939393939,
+    "paired_difference_seasonal_minus_overall": {
+      "brier": -0.19785413622433648,
+      "log_loss": -0.5226733759061165
+    },
+    "seasonal_labels_range": [
+      38,
+      50
+    ],
+    "year_counts": {
+      "2015": 12,
+      "2016": 12,
+      "2017": 12,
+      "2018": 12,
+      "2019": 12,
+      "2020": 12,
+      "2021": 12,
+      "2022": 12,
+      "2023": 12,
+      "2024": 12,
+      "2025": 12
+    },
+    "yes_count": 85
+  },
+  "primary_evaluation_exclusions": [],
+  "primary_exclusions_all_years": [
+    {
+      "reasons": [
+        "previous_missing"
+      ],
+      "target_month": "1975-01"
+    },
+    {
+      "reasons": [
+        "target_flagged_or_zero_ndays",
+        "target_negative_sdev"
+      ],
+      "target_month": "1975-12"
+    },
+    {
+      "reasons": [
+        "previous_flagged_or_zero_ndays",
+        "previous_negative_sdev"
+      ],
+      "target_month": "1976-01"
+    },
+    {
+      "reasons": [
+        "target_negative_sdev"
+      ],
+      "target_month": "1984-04"
+    },
+    {
+      "reasons": [
+        "previous_negative_sdev"
+      ],
+      "target_month": "1984-05"
+    }
+  ],
+  "primary_on_sensitivity_cohort": {
+    "admitted_labels_range": [
+      474,
+      605
+    ],
+    "count": 123,
+    "first_target": "2015-01",
+    "last_target": "2025-12",
+    "models": {
+      "overall": {
+        "brier": 0.23074720537600468,
+        "calibration_bins": [
+          {
+            "count": 0,
+            "lower": 0.0,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.2
+          },
+          {
+            "count": 0,
+            "lower": 0.2,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.4
+          },
+          {
+            "count": 0,
+            "lower": 0.4,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.6000000000000001
+          },
+          {
+            "count": 123,
+            "lower": 0.6000000000000001,
+            "mean_probability": 0.6351477257726161,
+            "observed_rate": 0.6422764227642277,
+            "upper": 0.8
+          },
+          {
+            "count": 0,
+            "lower": 0.8,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 1.0
+          }
+        ],
+        "log_loss": 0.6542336692380349,
+        "mean_probability": 0.6351477257726161,
+        "probability_range": [
+          0.6305841924398625,
+          0.6396226415094339
+        ]
+      },
+      "seasonal": {
+        "brier": 0.034717810677183755,
+        "calibration_bins": [
+          {
+            "count": 41,
+            "lower": 0.0,
+            "mean_probability": 0.032436457960550585,
+            "observed_rate": 0.024390243902439025,
+            "upper": 0.2
+          },
+          {
+            "count": 0,
+            "lower": 0.2,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.4
+          },
+          {
+            "count": 0,
+            "lower": 0.4,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.6000000000000001
+          },
+          {
+            "count": 11,
+            "lower": 0.6000000000000001,
+            "mean_probability": 0.67528865672119,
+            "observed_rate": 0.7272727272727273,
+            "upper": 0.8
+          },
+          {
+            "count": 71,
+            "lower": 0.8,
+            "mean_probability": 0.9683416015841466,
+            "observed_rate": 0.9859154929577465,
+            "upper": 1.0
+          }
+        ],
+        "log_loss": 0.1377034397735049,
+        "mean_probability": 0.6301652334373176,
+        "probability_range": [
+          0.019230769230769232,
+          0.9807692307692307
+        ]
+      }
+    },
+    "observed_yes_rate": 0.6422764227642277,
+    "paired_difference_seasonal_minus_overall": {
+      "brier": -0.19602939469882094,
+      "log_loss": -0.51653022946453
+    },
+    "seasonal_labels_range": [
+      38,
+      50
+    ],
+    "year_counts": {
+      "2015": 12,
+      "2016": 12,
+      "2017": 12,
+      "2018": 12,
+      "2019": 12,
+      "2020": 12,
+      "2021": 12,
+      "2022": 11,
+      "2023": 4,
+      "2024": 12,
+      "2025": 12
+    },
+    "yes_count": 79
+  },
+  "protocol_id": "noaa-monthly-increase-v1",
+  "protocol_sha256": "3ce89596a3bfa3fa12a2b30f116f473fc000a827623b4011839fd3d33f5f5e71",
+  "protocol_version": 1,
+  "score_conventions": {
+    "brier": "Single YES squared error, averaged over the cohort.",
+    "calibration_bins": 5,
+    "inference": "Descriptive only. No p-value or confidence interval; monthly events are dependent and span only 11 evaluation years.",
+    "log_loss": "Natural logarithms, no clipping; a wrong probability-zero forecast has infinite loss. Beta smoothing yields strictly interior probabilities here.",
+    "paired_difference": "Seasonal minus overall, so negative favors seasonal.",
+    "unit": "One equally weighted usable target calendar month."
+  },
+  "selected_calendar_rows": 612,
+  "sensitivity": {
+    "admitted_labels_range": [
+      474,
+      596
+    ],
+    "count": 123,
+    "first_target": "2015-01",
+    "last_target": "2025-12",
+    "models": {
+      "overall": {
+        "brier": 0.2307574042346291,
+        "calibration_bins": [
+          {
+            "count": 0,
+            "lower": 0.0,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.2
+          },
+          {
+            "count": 0,
+            "lower": 0.2,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.4
+          },
+          {
+            "count": 0,
+            "lower": 0.4,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.6000000000000001
+          },
+          {
+            "count": 123,
+            "lower": 0.6000000000000001,
+            "mean_probability": 0.6350253990314498,
+            "observed_rate": 0.6422764227642277,
+            "upper": 0.8
+          },
+          {
+            "count": 0,
+            "lower": 0.8,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 1.0
+          }
+        ],
+        "log_loss": 0.6542554600240067,
+        "mean_probability": 0.63502539903145,
+        "probability_range": [
+          0.6300174520069808,
+          0.6396226415094339
+        ]
+      },
+      "seasonal": {
+        "brier": 0.03470854594348906,
+        "calibration_bins": [
+          {
+            "count": 41,
+            "lower": 0.0,
+            "mean_probability": 0.032539463515493014,
+            "observed_rate": 0.024390243902439025,
+            "upper": 0.2
+          },
+          {
+            "count": 0,
+            "lower": 0.2,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.4
+          },
+          {
+            "count": 0,
+            "lower": 0.4,
+            "mean_probability": null,
+            "observed_rate": null,
+            "upper": 0.6000000000000001
+          },
+          {
+            "count": 11,
+            "lower": 0.6000000000000001,
+            "mean_probability": 0.67528865672119,
+            "observed_rate": 0.7272727272727273,
+            "upper": 0.8
+          },
+          {
+            "count": 71,
+            "lower": 0.8,
+            "mean_probability": 0.9682237407886908,
+            "observed_rate": 0.9859154929577465,
+            "upper": 1.0
+          }
+        ],
+        "log_loss": 0.13763990938982476,
+        "mean_probability": 0.6301315351550028,
+        "probability_range": [
+          0.019230769230769232,
+          0.9807692307692307
+        ]
+      }
+    },
+    "observed_yes_rate": 0.6422764227642277,
+    "paired_difference_seasonal_minus_overall": {
+      "brier": -0.19604885829114005,
+      "log_loss": -0.5166155506341819
+    },
+    "seasonal_labels_range": [
+      38,
+      50
+    ],
+    "year_counts": {
+      "2015": 12,
+      "2016": 12,
+      "2017": 12,
+      "2018": 12,
+      "2019": 12,
+      "2020": 12,
+      "2021": 12,
+      "2022": 11,
+      "2023": 4,
+      "2024": 12,
+      "2025": 12
+    },
+    "yes_count": 79
+  },
+  "sensitivity_definition": {
+    "affected_record_months_end": "2023-07",
+    "affected_record_months_start": "2022-12",
+    "comparison": "Also score the original primary forecasts on the sensitivity cohort to distinguish cohort removal from refitting. This is a predeclared diagnostic, not another selected model.",
+    "id": "exclude-alternate-location",
+    "rule": "Conservatively exclude any event whose target or immediately preceding source month is within the full affected months. Remove those events from both training and evaluation, refit expanding rates with the same clock, and score both models on the same reduced cohort."
+  },
+  "sensitivity_evaluation_exclusions": [
+    {
+      "reasons": [
+        "target_alternate_location"
+      ],
+      "target_month": "2022-12"
+    },
+    {
+      "reasons": [
+        "target_alternate_location",
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-01"
+    },
+    {
+      "reasons": [
+        "target_alternate_location",
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-02"
+    },
+    {
+      "reasons": [
+        "target_alternate_location",
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-03"
+    },
+    {
+      "reasons": [
+        "target_alternate_location",
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-04"
+    },
+    {
+      "reasons": [
+        "target_alternate_location",
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-05"
+    },
+    {
+      "reasons": [
+        "target_alternate_location",
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-06"
+    },
+    {
+      "reasons": [
+        "target_alternate_location",
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-07"
+    },
+    {
+      "reasons": [
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-08"
+    }
+  ],
+  "sensitivity_exclusions_all_years": [
+    {
+      "reasons": [
+        "previous_missing"
+      ],
+      "target_month": "1975-01"
+    },
+    {
+      "reasons": [
+        "target_flagged_or_zero_ndays",
+        "target_negative_sdev"
+      ],
+      "target_month": "1975-12"
+    },
+    {
+      "reasons": [
+        "previous_flagged_or_zero_ndays",
+        "previous_negative_sdev"
+      ],
+      "target_month": "1976-01"
+    },
+    {
+      "reasons": [
+        "target_negative_sdev"
+      ],
+      "target_month": "1984-04"
+    },
+    {
+      "reasons": [
+        "previous_negative_sdev"
+      ],
+      "target_month": "1984-05"
+    },
+    {
+      "reasons": [
+        "target_alternate_location"
+      ],
+      "target_month": "2022-12"
+    },
+    {
+      "reasons": [
+        "target_alternate_location",
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-01"
+    },
+    {
+      "reasons": [
+        "target_alternate_location",
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-02"
+    },
+    {
+      "reasons": [
+        "target_alternate_location",
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-03"
+    },
+    {
+      "reasons": [
+        "target_alternate_location",
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-04"
+    },
+    {
+      "reasons": [
+        "target_alternate_location",
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-05"
+    },
+    {
+      "reasons": [
+        "target_alternate_location",
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-06"
+    },
+    {
+      "reasons": [
+        "target_alternate_location",
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-07"
+    },
+    {
+      "reasons": [
+        "previous_alternate_location"
+      ],
+      "target_month": "2023-08"
+    }
+  ],
+  "sensitivity_removed_primary_evaluation_months": [
+    "2022-12",
+    "2023-01",
+    "2023-02",
+    "2023-03",
+    "2023-04",
+    "2023-05",
+    "2023-06",
+    "2023-07",
+    "2023-08"
+  ],
+  "source_acquired_at_utc": "2026-09-10T21:48:07Z",
+  "study_status": "Retrospective FINAL-VINTAGE observational forecast scoring; not prediction-market backtest or profitability evidence.",
+  "usable_primary_events_all_years": 607
+}

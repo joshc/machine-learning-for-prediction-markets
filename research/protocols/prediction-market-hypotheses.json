@@ -1,0 +1,70 @@
+{
+  "status": "untested_research_designs",
+  "version": 1,
+  "date": "2026-09-10",
+  "execution_boundary": "No funded orders. These are proposals, not implemented empirical studies or established novel contributions.",
+  "common_requirements": [
+    "Inspect nearest related primary research before claiming novelty.",
+    "Define event groups, information cutoffs, target, baseline and evaluation split before observing final results.",
+    "Separate measurement validity, forecast quality and executable trading value.",
+    "Keep uncertainty assumptions, trial history, coverage and negative results visible.",
+    "Do not substitute synthetic or demo fills for empirical execution evidence."
+  ],
+  "hypotheses": [
+    {
+      "id": "H1",
+      "name": "Resolution-aware payout forecasting",
+      "question": "Does an explicitly modeled payout process or observable-rule abstention policy improve forecasts at comparable coverage?",
+      "required_data": ["Prospective rule versions", "Clarification observation times", "Final payout and availability times", "Unresolved-case records"],
+      "baseline": "Ordinary event forecast plus a fixed rule-completeness checklist.",
+      "evaluation": "Future event-grouped payout scores, exceptional-state calibration and comparable coverage; costs evaluated separately.",
+      "falsification": "No improvement over the simple baseline, or improvements disappear at comparable coverage.",
+      "stop": "Historical rules cannot be reconstructed without future information.",
+      "related_sources": ["POLYMARKET_RESOLUTION", "WZ2006", "ABERNETHY2013"]
+    },
+    {
+      "id": "H2",
+      "name": "Uncertainty-aware contract consistency",
+      "question": "Do audited payoff relationships improve forecast coherence or reject false trading candidates?",
+      "required_data": ["Audited rule-compatible relationships", "Forecasts at identical cutoffs", "Executable prices and size for any trading interpretation", "Complete relevant payout scenarios"],
+      "baseline": "Independent forecasts and a separate headline-similarity candidate scanner.",
+      "evaluation": "Future event-grouped forecast scores and separately false-candidate rate, audit effort and cost-covered basket feasibility.",
+      "falsification": "Projection fails to improve held-out scores or audited scanning offers no useful benefit over simple checks.",
+      "stop": "Relationship, full outcome space, size, fees or simultaneous execution assumptions cannot be justified.",
+      "related_sources": ["ABERNETHY2013", "GNEITING2013", "POLYMARKET_MARKETS"]
+    },
+    {
+      "id": "H3",
+      "name": "Fill-conditioned probability calibration",
+      "question": "Does modeling payout conditional on a quote filling improve adverse-selection assessment?",
+      "required_data": ["Authorized decision and fill logs or explicitly synthetic simulation", "Behavior-policy information", "Quote states and times", "Outcome labels and availability"],
+      "baseline": "Unconditional forecast and simple quote-distance/horizon stratification.",
+      "evaluation": "Future event-grouped fill and conditional-payout metrics within supported actions; policy value only if identifiable.",
+      "falsification": "No advantage over stratification, or results fail outside memorized event identities or behavior-policy conditions.",
+      "stop": "Passive price observations or synthetic fills are the only basis for an asserted empirical execution effect.",
+      "related_sources": ["DUDIK2011", "FUJIMOTO2019"]
+    },
+    {
+      "id": "H4",
+      "name": "Information value under latency and capital lockup",
+      "question": "Does additional information change feasible decisions enough to cover acquisition, quote response and capital costs?",
+      "required_data": ["Source publication and receive timestamps", "Quotes and depth after realistic latency", "Acquisition expenses", "Settlement and capital-release observations"],
+      "baseline": "No-additional-source policy under the same executable-cost and capacity rules.",
+      "evaluation": "Separate forecast-score gain, changed decisions, retained executable margin and capital usage.",
+      "falsification": "Incremental modeled decision value is absorbed by information expense, quote response or capital commitment.",
+      "stop": "Retrospective source timestamps cannot establish actual availability.",
+      "related_sources": ["WZ2006"]
+    },
+    {
+      "id": "H5",
+      "name": "Hierarchical transfer with abstention",
+      "question": "Can prespecified related event families improve sparse-family forecasts without unjustified confidence under change?",
+      "required_data": ["Prespecified family definitions", "Independent outcomes and availability times", "Rule changes", "Observable support/drift indicators"],
+      "baseline": "Fully pooled, unpooled and reference-rate forecasts with comparable abstention budgets.",
+      "evaluation": "Chronological event-grouped and held-out-family scores with coverage-performance curves.",
+      "falsification": "Gains vanish on new families, depend on easy-family weighting, or retain narrow uncertainty during known changes.",
+      "stop": "Family construction, abstention thresholds or priors were selected using final evaluation outcomes.",
+      "related_sources": ["YAO2018", "GANIN2016", "GNEITING2013"]
+    }
+  ]
+}

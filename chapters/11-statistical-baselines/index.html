@@ -1,0 +1,2416 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/chapters/11-statistical-baselines/">
+      
+      
+        <link rel="prev" href="../10-forecast-evaluation/">
+      
+      
+        <link rel="next" href="../12-trees-and-ensembles/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>11. Transparent statistical baselines - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#11-transparent-statistical-baselines" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              11. Transparent statistical baselines
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-probability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-market-microstructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#111-why-start-with-a-baseline-you-can-fully-explain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 Why start with a baseline you can fully explain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#112-from-odds-to-a-linear-model-deriving-logistic-regression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 From odds to a linear model: deriving logistic regression
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#113-regularization-as-a-first-principles-idea-not-a-knob" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.3 Regularization as a first-principles idea, not a knob
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#114-a-bayesian-view-of-the-same-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4 A Bayesian view of the same problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#115-partial-pooling-what-to-do-with-too-few-labels-per-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.5 Partial pooling: what to do with too few labels per group
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#116-sample-and-label-constraints-specific-to-this-domain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.6 Sample and label constraints specific to this domain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#117-reading-the-companions-baseline-output-honestly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.7 Reading the companion's baseline output honestly
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#118-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.8 Failure modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-log-odds-to-probability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: log-odds to probability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-ridge-shrinkage-by-hand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: ridge shrinkage by hand
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-partial-pooling-toward-a-reference-rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: partial pooling toward a reference rate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-separating-fitting-loss-from-evaluation-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: separating fitting loss from evaluation loss
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-reading-the-companions-brier-numbers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: reading the companion's Brier numbers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-trees-and-ensembles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-evolving-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-evidence-after-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../22-bankroll-and-portfolios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../23-learning-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../25-research-hypotheses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../28-quickstart-consistency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../30-first-live-trade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../companion/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#111-why-start-with-a-baseline-you-can-fully-explain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.1 Why start with a baseline you can fully explain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#112-from-odds-to-a-linear-model-deriving-logistic-regression" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.2 From odds to a linear model: deriving logistic regression
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#113-regularization-as-a-first-principles-idea-not-a-knob" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.3 Regularization as a first-principles idea, not a knob
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#114-a-bayesian-view-of-the-same-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.4 A Bayesian view of the same problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#115-partial-pooling-what-to-do-with-too-few-labels-per-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.5 Partial pooling: what to do with too few labels per group
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#116-sample-and-label-constraints-specific-to-this-domain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.6 Sample and label constraints specific to this domain
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#117-reading-the-companions-baseline-output-honestly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.7 Reading the companion's baseline output honestly
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#118-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11.8 Failure modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-log-odds-to-probability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: log-odds to probability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-ridge-shrinkage-by-hand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: ridge shrinkage by hand
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-partial-pooling-toward-a-reference-rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: partial pooling toward a reference rate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-separating-fitting-loss-from-evaluation-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: separating fitting loss from evaluation loss
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-5-reading-the-companions-brier-numbers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 5: reading the companion's Brier numbers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#where-to-go-next" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where to go next
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="11-transparent-statistical-baselines">11. Transparent statistical baselines<a class="headerlink" href="#11-transparent-statistical-baselines" title="Permanent link">&para;</a></h1>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>You should be comfortable with conditional probability and Bayes' rule, the definitions of Brier score and natural-log loss, and the point-in-time discipline built across the data part of this book: decision cutoffs, label-availability cutoffs, and grouped chronological splits that keep an event's repeated snapshots on one side of a split. Chapter 10's forecast-evaluation material is assumed rather than repeated. The <a href="../../notation/">notation registry</a> fixes the symbols <span class="arithmatex">\(\hat p\)</span>, <span class="arithmatex">\(x\)</span>, <span class="arithmatex">\(\beta\)</span>, <span class="arithmatex">\(\lambda\)</span>, and <span class="arithmatex">\(n\)</span> used below; keep the registry open while reading.</p>
+<h2 id="learning-objectives">Learning objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">&para;</a></h2>
+<p>By the end of this chapter you should be able to: derive logistic regression as maximum-likelihood fitting of a log-odds-linear model and show why that likelihood is the same quantity as log loss; explain ridge and lasso penalties as constrained or penalized likelihood and connect them to specific Bayesian priors; explain what partial pooling buys you when many event families each have too few labeled outcomes to fit separately; and state, precisely, why a model's posterior interval or penalty choice is not a guarantee against misspecification, leakage, or an unrepresentative sample.</p>
+<h2 id="111-why-start-with-a-baseline-you-can-fully-explain">11.1 Why start with a baseline you can fully explain<a class="headerlink" href="#111-why-start-with-a-baseline-you-can-fully-explain" title="Permanent link">&para;</a></h2>
+<p>A prediction-market forecasting project is tempting to start with the most flexible model available. This book starts somewhere else: with a model whose every coefficient can be inspected, whose likelihood is an explicit function you can write on one line, and whose failure modes are well understood. That choice is not conservatism for its own sake. A transparent baseline gives you a number to beat, a diagnosis tool when a fancier model disagrees with it, and a fallback when data are too thin for anything more elaborate to be trustworthy.</p>
+<p>"Too thin" is the ordinary condition in this domain, not an edge case. A recurring weekly question template might generate a few dozen resolved events per year. A one-off contract generates exactly one label, ever. Compare that to a typical supervised-learning benchmark with millions of rows, and the difference in what a model is entitled to claim becomes stark. Chapter 7 already established that dependence groups, not raw rows, are the currency of sample size here; this chapter is about models that respect that currency honestly.</p>
+<p>The companion script for this chapter, <a href="../../companion/examples/forecast_models.py"><code>forecast_models.py</code></a>, fits a plain logistic-regression baseline (this chapter), a boosted-tree model with held-out calibration (Chapter 12), and inspects the same fitted logistic model at two snapshots of one event (Chapter 13). Run it from the companion project root (<code>book\companion</code>):</p>
+<p><strong>Command working directory:</strong> run this chapter's Python commands from <code>book\companion</code>. From the trading repository root, run <code>Set-Location book\companion</code> once first. The <code>.venv</code> belongs to that companion project; see <a href="../../companion/">companion setup</a>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">examples</span><span class="p">\</span><span class="n">forecast_models</span><span class="p">.</span><span class="n">py</span>
+</code></pre></div>
+<p>Its fixture is <code>generate_recurring</code>, an invented threshold-like process with 180 synthetic events, each observed at two decision times before a single resolution. Every <code>EventRow</code> carries exactly three numeric features available at its own decision time: <code>signal</code>, <code>horizon_hours</code>, and <code>market_probability</code>. There is no fourth feature quietly smuggled in. The chapter's arithmetic below is worked by hand and checked with a small script, independent of that fixture, so you can follow the algebra without running anything.</p>
+<h2 id="112-from-odds-to-a-linear-model-deriving-logistic-regression">11.2 From odds to a linear model: deriving logistic regression<a class="headerlink" href="#112-from-odds-to-a-linear-model-deriving-logistic-regression" title="Permanent link">&para;</a></h2>
+<p>Start from a question a decision-maker actually asks: given a feature vector <span class="arithmatex">\(x\)</span>, what probability should I assign to <span class="arithmatex">\(Y=1\)</span>? A convenient way to guarantee an output between 0 and 1 without clipping is to model the <strong>log-odds</strong> as a linear function of <span class="arithmatex">\(x\)</span>:</p>
+<div class="arithmatex">\[
+\log\frac{\hat p}{1-\hat p} = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k .
+\]</div>
+<p>Solving for <span class="arithmatex">\(\hat p\)</span> gives the logistic (sigmoid) function of the linear score <span class="arithmatex">\(z=\beta_0+\sum_j \beta_j x_j\)</span>:</p>
+<div class="arithmatex">\[
+\hat p = \sigma(z) = \frac{1}{1+e^{-z}}.
+\]</div>
+<p>Two sanity checks are worth doing once rather than trusting from memory. As <span class="arithmatex">\(z\to -\infty\)</span>, <span class="arithmatex">\(e^{-z}\to\infty\)</span>, so <span class="arithmatex">\(\hat p\to 0\)</span>; as <span class="arithmatex">\(z\to\infty\)</span>, <span class="arithmatex">\(\hat p\to 1\)</span>; at <span class="arithmatex">\(z=0\)</span>, <span class="arithmatex">\(\hat p=0.5\)</span>. A concrete point: with <span class="arithmatex">\(\beta_0=-0.5\)</span>, <span class="arithmatex">\(\beta_1=1.4\)</span>, and <span class="arithmatex">\(x=0.9\)</span>, <span class="arithmatex">\(z = -0.5+1.4(0.9)=0.76\)</span>, and <span class="arithmatex">\(\sigma(0.76)=0.681354\)</span> (five out of six decimal places checked with a script; report the number you actually computed, not a memorized constant).</p>
+<p>Now ask how to choose <span class="arithmatex">\(\beta\)</span>. The natural criterion is: pick the coefficients that make the observed outcomes as probable as possible under this model. For <span class="arithmatex">\(n\)</span> independent-given-<span class="arithmatex">\(x\)</span> observations, the likelihood is</p>
+<div class="arithmatex">\[
+L(\beta) = \prod_{i=1}^n \hat p_i^{\,y_i}(1-\hat p_i)^{1-y_i}.
+\]</div>
+<p>Taking the log (monotone, so it does not change the maximizer) and negating (so we can minimize instead of maximize) gives</p>
+<div class="arithmatex">\[
+-\log L(\beta) = -\sum_{i=1}^n \big[y_i\log \hat p_i + (1-y_i)\log(1-\hat p_i)\big].
+\]</div>
+<p>Divide by <span class="arithmatex">\(n\)</span> and you have exactly the book's log-loss formula from <code>notation.md</code>. This is not a coincidence dressed up as one: <strong>fitting a logistic regression by maximum likelihood is the same optimization as minimizing average log loss on the training data.</strong> The forecasting evaluation criterion from Chapter 10 and the fitting criterion in this chapter are the same function, evaluated on different samples with different purposes. That identity is worth internalizing, because it explains why a logistic model's training log loss is usually optimistic: the coefficients were chosen specifically to make the training log loss small.</p>
+<p>A single-observation numeric check makes the two loss terms concrete. With <span class="arithmatex">\(\hat p=0.681354\)</span>: if <span class="arithmatex">\(y=1\)</span>, the loss contribution is <span class="arithmatex">\(-\log(0.681354)=0.383674\)</span>; if <span class="arithmatex">\(y=0\)</span>, it is <span class="arithmatex">\(-\log(1-0.681354)=1.143674\)</span>. The asymmetry matters for teaching: a model that assigns high probability to an outcome that fails to occur is charged much more than a small miss near <span class="arithmatex">\(\hat p=0.5\)</span>, exactly reflecting the convexity of <span class="arithmatex">\(-\log(\cdot)\)</span>.</p>
+<p>Fitting generally uses an iterative numerical optimizer, not a closed-form coefficient solution. The companion standardizes features using training rows only, then calls scikit-learn's regularized <code>LogisticRegression</code>. Scaling changes the relative strength of a coefficient penalty and can improve numerical conditioning. Without regularization, rescaling a feature can be offset by inversely rescaling its coefficient; a large numeric range does not inherently make it dominate the fitted score. Refitting the scaler on validation or test rows would nevertheless use their distribution to alter an otherwise training-only pipeline.</p>
+<h2 id="113-regularization-as-a-first-principles-idea-not-a-knob">11.3 Regularization as a first-principles idea, not a knob<a class="headerlink" href="#113-regularization-as-a-first-principles-idea-not-a-knob" title="Permanent link">&para;</a></h2>
+<p>A maximum-likelihood fit with many candidate features and modest sample size can overfit sharply, and it can fail outright under <strong>complete separation</strong>: if some linear combination of features perfectly predicts every training outcome, the unpenalized likelihood is maximized by coefficients that grow without bound, and the optimizer either fails to converge or reports an unstable, absurdly confident model. Regularization addresses both problems by adding a penalty on the size of <span class="arithmatex">\(\beta\)</span> to the objective being minimized.</p>
+<p><strong>Ridge (L2) regularization</strong> minimizes</p>
+<div class="arithmatex">\[
+-\log L(\beta) + \lambda \sum_j \beta_j^2 .
+\]</div>
+<p>To see where this comes from without appealing to a black box, consider the simplest possible case: ordinary least-squares fitting of <span class="arithmatex">\(y \approx \beta x\)</span> from three points <span class="arithmatex">\((1,0.8)\)</span>, <span class="arithmatex">\((2,1.7)\)</span>, <span class="arithmatex">\((3,2.9)\)</span>, penalized the same way. Minimizing <span class="arithmatex">\(\sum_i(y_i-\beta x_i)^2+\lambda\beta^2\)</span> over the scalar <span class="arithmatex">\(\beta\)</span> has a closed form, <span class="arithmatex">\(\hat\beta=\dfrac{\sum_i x_iy_i}{\sum_i x_i^2+\lambda}\)</span>. Plugging in the three points gives <span class="arithmatex">\(\hat\beta=0.921429\)</span> at <span class="arithmatex">\(\lambda=0\)</span> (the unpenalized least-squares slope), <span class="arithmatex">\(0.860000\)</span> at <span class="arithmatex">\(\lambda=1\)</span>, and <span class="arithmatex">\(0.678947\)</span> at <span class="arithmatex">\(\lambda=5\)</span> (values checked with a script). As <span class="arithmatex">\(\lambda\)</span> grows, the fitted slope shrinks toward zero. That is the entire mechanism of ridge regularization laid bare in a case simple enough to compute by hand: it trades a small increase in fit-to-data error for a reduction in coefficient magnitude, which typically reduces the variance of the fitted coefficient across resamples at the cost of a small bias. The logistic case has the identical shrinkage intuition, without a closed form for <span class="arithmatex">\(\beta\)</span>.</p>
+<p><strong>Lasso (L1) regularization</strong> minimizes <span class="arithmatex">\(-\log L(\beta)+\lambda\sum_j|\beta_j|\)</span>. Because the absolute-value penalty has a kink at zero, the optimum can land exactly at <span class="arithmatex">\(\beta_j=0\)</span> for some coefficients, which ridge's smooth quadratic penalty essentially never produces exactly. <a href="../../references/#tibshirani1996">TIBSHIRANI1996</a> proposes this constrained least-squares formulation and demonstrates that it can produce exact zeros; the original abstract's primary setting is linear regression, and its extension to sparse feature selection is a genuinely useful property, not proof that a selected feature is causally relevant to the underlying event. A coefficient of exactly zero says "this feature did not help the penalized fit criterion here"; it does not certify the feature is irrelevant to the real-world process, nor does it survive automatically to a different sample or period.</p>
+<p><strong>Elastic net</strong> blends the two penalties, <span class="arithmatex">\(\lambda\big(\alpha\sum_j|\beta_j| + (1-\alpha)\sum_j\beta_j^2\big)\)</span>, and coordinate-descent methods can fit the resulting penalized path efficiently across linear, logistic, and multinomial models. <a href="../../references/#friedman2010">FRIEDMAN2010</a> documents this computational machinery; it is a statement about how efficiently a penalized path can be computed, not a statement that any particular penalty improves this book's forecasting task. Choosing <span class="arithmatex">\(\lambda\)</span> and <span class="arithmatex">\(\alpha\)</span> is a model-selection decision like any other, and it must be made using only training and validation rows under the same point-in-time and dependence-group constraints as everything else in this book — never by peeking at test-period outcomes.</p>
+<h2 id="114-a-bayesian-view-of-the-same-problem">11.4 A Bayesian view of the same problem<a class="headerlink" href="#114-a-bayesian-view-of-the-same-problem" title="Permanent link">&para;</a></h2>
+<p>Ridge regularization has an exact Bayesian reading: minimizing <span class="arithmatex">\(-\log L(\beta)+\lambda\sum_j\beta_j^2\)</span> is equivalent to maximizing the posterior <span class="arithmatex">\(\propto L(\beta)\cdot p(\beta)\)</span> under an independent Gaussian prior on each <span class="arithmatex">\(\beta_j\)</span> with variance inversely related to <span class="arithmatex">\(\lambda\)</span>. <a href="../../references/#gelman2008">GELMAN2008</a> argues for a related but more deliberately chosen default: scale predictors to a comparable range and place independent Student-t priors (heavier-tailed than Gaussian) on logistic-regression coefficients, motivated specifically by the complete-separation failure described above. A heavier-tailed prior still shrinks implausibly large coefficients toward zero, while assigning more prior mass to moderately large values than a Gaussian would, which the paper's abstract argues behaves more gracefully when separation is nearly exact. This is a proposed default, not a provably optimal choice for every dataset; treat it as a documented, reasonable starting point that still requires checking against your own data and priorities.</p>
+<p>The Bayesian framing changes what output one can seek. A penalized optimizer with a Bayesian interpretation supplies a posterior <strong>mode</strong>, not the full posterior or a credible interval automatically. Full Bayesian inference instead represents the posterior distribution over <span class="arithmatex">\(\beta\)</span> and the induced uncertainty in predictions. The <code>bayes_update</code> helper illustrates prior-times-likelihood normalization for a binary hypothesis; it does not fit Bayesian logistic coefficients. Posterior computation for logistic regression generally needs numerical integration or sampling/approximation machinery, none of which this companion implements.</p>
+<p>The important caution, worth stating plainly because it is easy to elide: <strong>a posterior credible interval quantifies uncertainty conditional on the model and prior being adequate. It does not, by itself, guarantee protection against misspecification.</strong> If the true relationship between features and outcome is not close to the logistic form, if there is unmodeled dependence between "independent" observations, or if the training period does not resemble the evaluation period, a narrow credible interval can be confidently wrong. Bayesian machinery formalizes uncertainty within a stated model; it does not verify that the stated model is the right one.</p>
+<h2 id="115-partial-pooling-what-to-do-with-too-few-labels-per-group">11.5 Partial pooling: what to do with too few labels per group<a class="headerlink" href="#115-partial-pooling-what-to-do-with-too-few-labels-per-group" title="Permanent link">&para;</a></h2>
+<p>Prediction markets often arrive in families: many structurally similar but not identical recurring questions (a weekly threshold contract, a recurring economic-release question), each with only a handful of resolved events. Two naive strategies bound the useful range. <strong>Complete pooling</strong> ignores family identity and fits one model on all events, which discards genuine differences between families. <strong>No pooling</strong> fits a separate model per family, which for a family with, say, six resolved events produces an estimate with enormous sampling variance; a family that happened to see 4 of 6 events resolve YES gets a raw rate of <span class="arithmatex">\(4/6=0.666667\)</span>, and that number is barely more informative than the coin flip that produced it.</p>
+<p><strong>Partial pooling</strong> is the compromise: shrink each family's raw estimate toward a shared reference (such as the overall base rate across families) by an amount that depends on how much data that family actually has. A simple, fully worked instance of the idea, before any hierarchical-model machinery, is a Beta-Binomial shrinkage estimate: if a family has <span class="arithmatex">\(n\)</span> observed events with <span class="arithmatex">\(s\)</span> successes, and the shared reference rate across families is <span class="arithmatex">\(\bar p\)</span>, then</p>
+<div class="arithmatex">\[
+\tilde p = \frac{s + k\bar p}{n+k}
+\]</div>
+<p>for a prior-strength parameter <span class="arithmatex">\(k\)</span> that can be read as "worth <span class="arithmatex">\(k\)</span> pseudo-observations of the reference rate." With <span class="arithmatex">\(n=6\)</span>, <span class="arithmatex">\(s=4\)</span>, <span class="arithmatex">\(\bar p=0.40\)</span>: at <span class="arithmatex">\(k=2\)</span>, <span class="arithmatex">\(\tilde p=(4+0.8)/8=0.600000\)</span>; at <span class="arithmatex">\(k=5\)</span>, <span class="arithmatex">\(\tilde p=(4+2.0)/11=0.545455\)</span>; at <span class="arithmatex">\(k=10\)</span>, <span class="arithmatex">\(\tilde p=(4+4.0)/16=0.500000\)</span> (all checked with a script). As <span class="arithmatex">\(k\)</span> grows, the family's own six observations are increasingly outweighed by the shared reference, pulling the estimate toward <span class="arithmatex">\(\bar p\)</span>. As <span class="arithmatex">\(n\)</span> grows for a fixed <span class="arithmatex">\(k\)</span>, the family's own data dominates instead. That single formula is the entire idea behind hierarchical, partially pooled models: a family with little data borrows strength from the population; a family with abundant data is left mostly alone.</p>
+<p>A full hierarchical logistic regression generalizes this by placing a shared prior distribution on family-level intercepts (or coefficients) whose own parameters are estimated from all families jointly, so that the amount of pooling is itself learned from the data's between-family and within-family variance rather than fixed by hand. This book does not implement that joint estimation; the Beta-Binomial case above is presented because it is small enough to verify without unfamiliar software, and it isolates the mechanism (shrink more when the group's own information is scarce) that motivates the larger machinery. <a href="../../references/#gelman2008">GELMAN2008</a> is again the relevant reading pointer for weakly informative priors in this style of model; it does not certify a specific choice of <span class="arithmatex">\(k\)</span> or a specific pooling structure for prediction-market families, which remain modeling decisions you must justify from your own data and its actual group sizes.</p>
+<h2 id="116-sample-and-label-constraints-specific-to-this-domain">11.6 Sample and label constraints specific to this domain<a class="headerlink" href="#116-sample-and-label-constraints-specific-to-this-domain" title="Permanent link">&para;</a></h2>
+<p>Two constraints recur across every model in this part of the book, and they apply to the plainest logistic baseline exactly as much as to anything more elaborate.</p>
+<p>First, <strong>repeated snapshots of the same event are not additional independent samples.</strong> The companion fixture deliberately generates two decision times per event; <code>latest_per_event</code> collapses these to one row per event before fitting or scoring specifically so that a single underlying outcome cannot be counted twice as evidence for or against a model. If you instead trained on both snapshots as if they were independent labeled examples, the fitted model would implicitly overweight events observed more often, and a model evaluated the same way could report artificially confident scores driven by duplicated labels rather than genuine sample size.</p>
+<p>Second, <strong>features must be available at each row's decision time; training labels must be available by the later model-fitting cutoff.</strong> Requiring labels at their own earlier prediction times would defeat forecasting. <code>grouped_chronological_split</code> raises for feature-late rows or inconsistent identities, but excludes whole groups that straddle boundaries or lack labels at the relevant cohort cutoff. The fitting pipeline separately rejects a supplied split that violates those constraints. The default result is 89 training events, 44 validation events used for the boosted calibrator, and 45 test events, with two groups purged. The cohort counts reflect both time and group availability, not an arbitrary division into equal thirds.</p>
+<h2 id="117-reading-the-companions-baseline-output-honestly">11.7 Reading the companion's baseline output honestly<a class="headerlink" href="#117-reading-the-companions-baseline-output-honestly" title="Permanent link">&para;</a></h2>
+<p>Running <code>forecast_models.py</code> reports, on 45 test events: <code>reference_rate</code> Brier 0.249699 and log loss 0.692562; <code>market_probability</code> Brier 0.207439 and log loss 0.606343; and <code>logistic</code> Brier 0.198372 and log loss 0.582490. Logistic beats both baselines on this synthetic run. The generator makes the label probability logistic in an unobserved latent value, while the model receives a <strong>noisy signal</strong>, not that latent value itself. This construction makes predictive signal plausible but does not guarantee logistic specification is exact or that the fitted model wins on every finite test sample. The baselines make the observed comparison interpretable rather than self-congratulatory.</p>
+<p>Two things this comparison does <strong>not</strong> show are worth stating explicitly. It does not show that a logistic model beats a real market's own quoted probability, because <code>market_probability</code> here is a synthetic feature generated by the same toy process, not an executable, fee-inclusive price from an actual venue. And a single synthetic run with one random seed is not evidence of a stable advantage; the honest use of this script is to check that your pipeline behaves correctly under known ground truth, not to report its numbers as a discovered edge.</p>
+<h2 id="118-failure-modes">11.8 Failure modes<a class="headerlink" href="#118-failure-modes" title="Permanent link">&para;</a></h2>
+<p>A regularized fit does not protect against a badly specified feature set: shrinking irrelevant coefficients toward zero is not the same as having included the relevant ones. Complete separation is easy to trigger accidentally with a rare categorical feature or a near-perfect proxy, and an unpenalized fit can silently report absurd coefficients rather than an error; always inspect fitted coefficient magnitudes, not just the reported score. Fitting a scaler, an imputer, or a feature-selection step on data that includes validation or test rows is leakage even if the model itself is later fit correctly on training rows only. Partial pooling can be pushed too far: an aggressive shared prior can erase a real difference between families that would have been visible with a more modest amount of shrinkage, and there is no shrinkage amount that is correct for every dataset. Finally, a Bayesian posterior interval answers "how uncertain am I within this model," not "how likely is this model to be the right one"; treating a narrow credible interval as proof against misspecification is a category error, not a subtle numerical one.</p>
+<h2 id="exercises-and-solution-sketches">Exercises and solution sketches<a class="headerlink" href="#exercises-and-solution-sketches" title="Permanent link">&para;</a></h2>
+<h3 id="exercise-1-log-odds-to-probability">Exercise 1: log-odds to probability<a class="headerlink" href="#exercise-1-log-odds-to-probability" title="Permanent link">&para;</a></h3>
+<p>A logistic model reports <span class="arithmatex">\(\beta_0=-0.5\)</span>, <span class="arithmatex">\(\beta_1=1.4\)</span> for a single feature <span class="arithmatex">\(x\)</span>. Compute <span class="arithmatex">\(\hat p\)</span> at <span class="arithmatex">\(x=0.9\)</span>, and at <span class="arithmatex">\(x=-0.9\)</span>. Which prediction is more confident, and why does the sign of <span class="arithmatex">\(x\)</span> matter here?</p>
+<p><strong>Solution sketch.</strong> At <span class="arithmatex">\(x=0.9\)</span>: <span class="arithmatex">\(z=0.76\)</span>, <span class="arithmatex">\(\hat p=\sigma(0.76)=0.681354\)</span>. At <span class="arithmatex">\(x=-0.9\)</span>: <span class="arithmatex">\(z=-0.5-1.26=-1.76\)</span>, <span class="arithmatex">\(\hat p=\sigma(-1.76)\approx 0.147\)</span>. The negative-<span class="arithmatex">\(x\)</span> case is more confident (further from 0.5) because the same magnitude of <span class="arithmatex">\(\beta_1 x\)</span> now reinforces the negative intercept rather than partly offsetting it; the model is not symmetric around <span class="arithmatex">\(x=0\)</span> because <span class="arithmatex">\(\beta_0\neq0\)</span>.</p>
+<h3 id="exercise-2-ridge-shrinkage-by-hand">Exercise 2: ridge shrinkage by hand<a class="headerlink" href="#exercise-2-ridge-shrinkage-by-hand" title="Permanent link">&para;</a></h3>
+<p>Using the three points <span class="arithmatex">\((1,0.8)\)</span>, <span class="arithmatex">\((2,1.7)\)</span>, <span class="arithmatex">\((3,2.9)\)</span> and the scalar ridge formula <span class="arithmatex">\(\hat\beta=\frac{\sum x_iy_i}{\sum x_i^2+\lambda}\)</span>, compute <span class="arithmatex">\(\hat\beta\)</span> at <span class="arithmatex">\(\lambda=0,1,5\)</span> and describe the trend.</p>
+<p><strong>Solution sketch.</strong> <span class="arithmatex">\(\sum x_iy_i=1(0.8)+2(1.7)+3(2.9)=12.9\)</span>; <span class="arithmatex">\(\sum x_i^2=1+4+9=14\)</span>. At <span class="arithmatex">\(\lambda=0\)</span>: <span class="arithmatex">\(12.9/14=0.921429\)</span>. At <span class="arithmatex">\(\lambda=1\)</span>: <span class="arithmatex">\(12.9/15=0.860000\)</span>. At <span class="arithmatex">\(\lambda=5\)</span>: <span class="arithmatex">\(12.9/19=0.678947\)</span>. The slope shrinks monotonically toward zero as <span class="arithmatex">\(\lambda\)</span> grows, trading fit for coefficient magnitude.</p>
+<h3 id="exercise-3-partial-pooling-toward-a-reference-rate">Exercise 3: partial pooling toward a reference rate<a class="headerlink" href="#exercise-3-partial-pooling-toward-a-reference-rate" title="Permanent link">&para;</a></h3>
+<p>A market family has <span class="arithmatex">\(n=6\)</span> resolved events with <span class="arithmatex">\(s=4\)</span> successes; the shared reference rate is <span class="arithmatex">\(\bar p=0.40\)</span>. Compute the shrunk estimate at prior strengths <span class="arithmatex">\(k=2\)</span> and <span class="arithmatex">\(k=10\)</span>, and explain in one sentence why the raw rate <span class="arithmatex">\(4/6\)</span> might be misleading here.</p>
+<p><strong>Solution sketch.</strong> At <span class="arithmatex">\(k=2\)</span>: <span class="arithmatex">\((4+0.8)/8=0.600000\)</span>. At <span class="arithmatex">\(k=10\)</span>: <span class="arithmatex">\((4+4.0)/16=0.500000\)</span>. The raw rate of <span class="arithmatex">\(0.666667\)</span> is based on only six outcomes, so its sampling variance is large; shrinkage trades some of that noise for a controlled bias toward the reference rate, and the appropriate <span class="arithmatex">\(k\)</span> should reflect how similar you believe this family genuinely is to the reference population, not be chosen to produce a preferred answer.</p>
+<h3 id="exercise-4-separating-fitting-loss-from-evaluation-loss">Exercise 4: separating fitting loss from evaluation loss<a class="headerlink" href="#exercise-4-separating-fitting-loss-from-evaluation-loss" title="Permanent link">&para;</a></h3>
+<p>Explain why a logistic model's log loss computed on its own training data is generally an optimistic estimate of the log loss it will achieve on a properly held-out, event-grouped test period, even before considering any leakage bug.</p>
+<p><strong>Solution sketch.</strong> The coefficients were chosen specifically to minimize the training log loss (Section 11.2's identity between maximum likelihood and log loss), so the training score reflects both genuine signal and fitting to that particular sample's noise. A held-out score, computed on events whose labels played no role in choosing <span class="arithmatex">\(\beta\)</span>, does not benefit from that fitting-to-noise effect and is the honest number to report, provided the split also respects event grouping and label availability.</p>
+<h3 id="exercise-5-reading-the-companions-brier-numbers">Exercise 5: reading the companion's Brier numbers<a class="headerlink" href="#exercise-5-reading-the-companions-brier-numbers" title="Permanent link">&para;</a></h3>
+<p>The companion script reports <code>reference_rate</code> Brier 0.249699, <code>market_probability</code> Brier 0.207439, and <code>logistic</code> Brier 0.198372 on 45 test events. Is this comparison evidence that logistic regression outperforms real market prices in general?</p>
+<p><strong>Solution sketch.</strong> No. <code>market_probability</code> here is a feature generated by the same synthetic process used to generate the labels, not an executable price from an actual venue, and the entire exercise runs on one seeded synthetic sample. The comparison is a correctness check on the pipeline (does a model with access to the true signal beat naive baselines under known ground truth), not a market-beating claim, and it says nothing about a real venue's price efficiency.</p>
+<h2 id="where-to-go-next">Where to go next<a class="headerlink" href="#where-to-go-next" title="Permanent link">&para;</a></h2>
+<p><a href="../12-trees-and-ensembles/">Chapter 12</a> keeps the same fixture and evaluation discipline but asks how nonlinear splits are chosen, how boosting accumulates corrections, and how to assess a separate calibration step without assuming that it helps.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../10-forecast-evaluation/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 10. Evaluating probability forecasts">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                10. Evaluating probability forecasts
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../12-trees-and-ensembles/" class="md-footer__link md-footer__link--next" aria-label="Next: 12. Trees and nonlinear ensembles">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                12. Trees and nonlinear ensembles
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

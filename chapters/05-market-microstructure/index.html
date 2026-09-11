@@ -1,0 +1,2298 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/chapters/05-market-microstructure/">
+      
+      
+        <link rel="prev" href="../04-market-information/">
+      
+      
+        <link rel="next" href="../06-rules-and-settlement/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>5. Order books and automated market makers - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#5-order-books-and-automated-market-makers" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              5. Order books and automated market makers
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-probability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#51-two-different-objects-called-a-market" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Two different objects called "a market"
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#52-real-clob-mechanics-depth-queues-and-order-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Real CLOB mechanics: depth, queues, and order types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#53-the-lmsr-cost-function-derived" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 The LMSR cost function, derived
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#54-why-the-cost-function-is-numerically-stable-and-why-that-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Why the cost function is numerically stable, and why that matters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#55-a-worked-numerical-case-buying-into-an-lmsr-market" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 A worked numerical case: buying into an LMSR market
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#56-the-bounded-loss-property-derived" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 The bounded-loss property, derived
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#57-assumptions-counterexamples-and-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.7 Assumptions, counterexamples, and failure modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#58-companion-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.8 Companion example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sources-and-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sources and further reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-statistical-baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-trees-and-ensembles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-evolving-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-evidence-after-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../22-bankroll-and-portfolios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../23-learning-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../25-research-hypotheses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../28-quickstart-consistency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../30-first-live-trade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../companion/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#51-two-different-objects-called-a-market" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 Two different objects called "a market"
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#52-real-clob-mechanics-depth-queues-and-order-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Real CLOB mechanics: depth, queues, and order types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#53-the-lmsr-cost-function-derived" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 The LMSR cost function, derived
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#54-why-the-cost-function-is-numerically-stable-and-why-that-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Why the cost function is numerically stable, and why that matters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#55-a-worked-numerical-case-buying-into-an-lmsr-market" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 A worked numerical case: buying into an LMSR market
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#56-the-bounded-loss-property-derived" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 The bounded-loss property, derived
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#57-assumptions-counterexamples-and-failure-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.7 Assumptions, counterexamples, and failure modes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#58-companion-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.8 Companion example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sources-and-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sources and further reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="5-order-books-and-automated-market-makers">5. Order books and automated market makers<a class="headerlink" href="#5-order-books-and-automated-market-makers" title="Permanent link">&para;</a></h1>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>Chapters 1-4, especially the executable-price discipline of Chapter 3 and the price-interpretation cautions of Chapter 4. Comfort with exponentials, logarithms, and basic algebra. One optional differentiation step connects a cost function to its marginal prices; the loss bound itself uses only elementary inequalities.</p>
+<h2 id="learning-objectives">Learning objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">&para;</a></h2>
+<p>By the end of this chapter you should be able to: describe how a real central limit order book (CLOB) represents depth, queue priority, and order types, and why that representation differs from a textbook single "price"; derive the logarithmic market scoring rule's (LMSR) cost function behavior and its bounded-loss property from first principles, given the liquidity parameter <span class="arithmatex">\(B\)</span>; compute LMSR prices and trade costs for a small worked example and explain what the parameter <span class="arithmatex">\(B\)</span> controls economically; and state clearly why LMSR is a mechanism-design construction, not a description of how either Kalshi or Polymarket's live order books work.</p>
+<h2 id="51-two-different-objects-called-a-market">5.1 Two different objects called "a market"<a class="headerlink" href="#51-two-different-objects-called-a-market" title="Permanent link">&para;</a></h2>
+<p>This book has so far treated "the market" as a source of an executable ask and bid. That is a black-box view, sufficient for the decision arithmetic in Chapter 3, but it hides two structurally different mechanisms that produce those prices in real venues, and understanding both matters once you start reasoning about depth, price impact, and what a "thin" market really means.</p>
+<p><strong>A central limit order book (CLOB)</strong> is a list of resting orders on each side of the market, sorted by price and, within a price level, typically by arrival time. Kalshi's documented orderbook response schema returns arrays of bid levels for each side, with a stated dollar price and a fixed-point quantity at each level, and explains that opposite-outcome bids imply the corresponding asks under ordinary binary mechanics. <a href="../../references/#kalshi_book">KALSHI_BOOK</a> Polymarket's documented public book interface similarly identifies a specific outcome token and returns price and size levels alongside market constraints and book-state metadata. <a href="../../references/#polymarket_book">POLYMARKET_BOOK</a> In a CLOB, prices and depth emerge from whatever independent participants have chosen to post; there is no single formula generating them, and a large buy order sweeps through however much resting liquidity happens to be posted, exactly as Chapter 3's depth-limited sweep-cost example showed.</p>
+<p><strong>An automated market maker (AMM)</strong>, by contrast, is a specified mathematical mechanism that always quotes a price as a function of its own current inventory or state, without requiring an opposing human order to be resting at that moment. The logarithmic market scoring rule, the subject of the rest of this chapter, is one influential AMM design among others, and it is not how either venue examined in this book's documentation operates its central markets — worth stating plainly before working through the mechanism, so the mathematics below is never mistaken for a description of Kalshi's or Polymarket's live books.</p>
+<h2 id="52-real-clob-mechanics-depth-queues-and-order-types">5.2 Real CLOB mechanics: depth, queues, and order types<a class="headerlink" href="#52-real-clob-mechanics-depth-queues-and-order-types" title="Permanent link">&para;</a></h2>
+<p>A CLOB's practical behavior depends on several features a single "current price" number does not capture.</p>
+<p><strong>Depth</strong> is the quantity available at each price level away from the best bid and ask. As Chapter 3 demonstrated, an order whose size exceeds the best level's quantity sweeps into worse prices, and the realized average price depends on the entire depth profile, not just the touch price. A market can have a tight bid-ask spread and still be effectively illiquid for any order beyond a small size if the depth behind the touch is thin.</p>
+<p><strong>Queue priority</strong> determines which resting order at a given price level executes first when an opposing order arrives. Common conventions prioritize orders by arrival time within a price level, meaning two resting orders at the identical price can have very different chances of filling depending purely on when they were placed. A backtest that does not model queue position, and simply assumes its own hypothetical resting order fills whenever the touch price crosses it, can substantially overstate historical fill rates; the glossary's "queue priority" and "order-book replay" entries flag exactly this risk.</p>
+<p><strong>Order types</strong> commonly include market orders (execute immediately against the best available opposing depth, accepting whatever price results), limit orders (execute only at a specified price or better, controlling acceptable price but not whether or when a fill occurs), and various conditional or time-in-force variants. A limit order sitting unfilled is not "no position"; it can represent reserved cash (Chapter 3's worst-case reservation logic) with no guarantee of ever executing, and a canceled limit order that never filled produced no cash flow at all despite having been live in the book for some period.</p>
+<p><strong>Fixed-point and rounding conventions</strong> matter more than they might seem. Kalshi's documented order-book schema represents prices and fixed-point quantities as decimal strings; quantities must not be assumed to be whole integers. Its separate fee-rounding documentation describes rounding behavior accumulated across the fills of a single order rather than applied independently per unit. <a href="../../references/#kalshi_book">KALSHI_BOOK</a> <a href="../../references/#kalshi_rounding">KALSHI_ROUNDING</a> A classroom flat per-unit fee, as used in Chapters 1 and 3, is a simplification precisely because it ignores this kind of rounding-accumulator behavior; Chapter 6 returns to the fee-rounding documentation in more depth.</p>
+<h2 id="53-the-lmsr-cost-function-derived">5.3 The LMSR cost function, derived<a class="headerlink" href="#53-the-lmsr-cost-function-derived" title="Permanent link">&para;</a></h2>
+<p>The logarithmic market scoring rule is a mechanism for a specified automated market maker to always quote a price for each of <span class="arithmatex">\(n\)</span> mutually exclusive, exhaustive outcomes, parameterized by a single <strong>liquidity parameter</strong> <span class="arithmatex">\(B\)</span> (written with a capital letter throughout this book specifically to avoid confusion with the executable bid <span class="arithmatex">\(b\)</span>). Hanson's foundational treatment develops market scoring rules as a way to combine individual elicitation with group information aggregation, with the logarithmic form carrying particular conditional-probability preservation properties; this book did not independently inspect the full proof of those properties and presents the derivation below as an original, self-contained classroom construction rather than a reproduction of the source's proof. <a href="../../references/#hanson2007">HANSON2007</a></p>
+<p>Let <span class="arithmatex">\(q=(q_1,\dots,q_n)\)</span> denote the market maker's current cumulative position in each outcome (how many shares of each outcome have net been sold by the mechanism so far). Assume <span class="arithmatex">\(B&gt;0\)</span> and normalize each winning share's payout to one unit of account, so <span class="arithmatex">\(C\)</span> is a cost in that unit. Define the cost function</p>
+<div class="arithmatex">\[
+C(q)=B\,\log\!\left(\sum_{i=1}^n e^{q_i/B}\right).
+\]</div>
+<p>The price of outcome <span class="arithmatex">\(i\)</span> at state <span class="arithmatex">\(q\)</span> is the partial derivative of <span class="arithmatex">\(C\)</span> with respect to <span class="arithmatex">\(q_i\)</span>, which works out (by direct differentiation of the log-sum-exp expression) to the softmax function</p>
+<div class="arithmatex">\[
+\pi_i(q)=\frac{e^{q_i/B}}{\sum_{j=1}^n e^{q_j/B}}.
+\]</div>
+<p>These marginal prices are positive and sum to one by construction. That normalization is consistent with the mutually exclusive, exhaustive payout structure assumed here, but it cannot establish that the actual contracts have that structure. The designer still has to verify the outcome space; a softmax over incompatible contracts would normalize prices for the wrong payoff model.</p>
+<p>The cost of a trade moving the position from <span class="arithmatex">\(q\)</span> to <span class="arithmatex">\(q+\delta\)</span> is simply <span class="arithmatex">\(C(q+\delta)-C(q)\)</span>: the mechanism charges exactly the change in its own cost function, which is why <span class="arithmatex">\(C\)</span> is called a cost function rather than merely a pricing function.</p>
+<h2 id="54-why-the-cost-function-is-numerically-stable-and-why-that-matters">5.4 Why the cost function is numerically stable, and why that matters<a class="headerlink" href="#54-why-the-cost-function-is-numerically-stable-and-why-that-matters" title="Permanent link">&para;</a></h2>
+<p>A direct computation of <span class="arithmatex">\(\sum_i e^{q_i/B}\)</span> can overflow for large <span class="arithmatex">\(q_i/B\)</span>, since exponentials grow extremely fast. The standard remedy, used in the companion implementation, is to factor out the largest term before summing: writing <span class="arithmatex">\(q_{\max}=\max_i q_i\)</span>,</p>
+<div class="arithmatex">\[
+C(q)=q_{\max}+B\log\!\left(\sum_{i=1}^n e^{(q_i-q_{\max})/B}\right),
+\]</div>
+<p>which follows by factoring out <span class="arithmatex">\(e^{q_{\max}/B}\)</span> and using <span class="arithmatex">\(B\log(e^{q_{\max}/B}S)=q_{\max}+B\log S\)</span>. Each remaining exponent is nonpositive; at least one exponential is exactly one, and the sum lies between one and <span class="arithmatex">\(n\)</span>. This avoids overflow in the exponentials. It does not remove every floating-point limitation: extremely large inputs or subtracting two nearly equal large costs can still lose precision. The companion's large-position example checks a particular finite calculation, not arbitrary numerical magnitudes.</p>
+<h2 id="55-a-worked-numerical-case-buying-into-an-lmsr-market">5.5 A worked numerical case: buying into an LMSR market<a class="headerlink" href="#55-a-worked-numerical-case-buying-into-an-lmsr-market" title="Permanent link">&para;</a></h2>
+<p>Take a two-outcome LMSR market (YES/NO) with liquidity parameter <span class="arithmatex">\(B=10\)</span>, starting from the neutral state <span class="arithmatex">\(q=(0,0)\)</span>. Initial prices are <span class="arithmatex">\(\pi=(0.5,0.5)\)</span> by symmetry, matching the softmax of two equal values.</p>
+<p>A trader buys 10 YES shares, moving the position from <span class="arithmatex">\((0,0)\)</span> to <span class="arithmatex">\((10,0)\)</span>. Applying the cost function directly:</p>
+<div class="arithmatex">\[
+C(0,0)=10\log(e^0+e^0)=10\log 2\approx6.9315,
+\]</div>
+<div class="arithmatex">\[
+C(10,0)=10\log(e^{1}+e^{0})\approx10\log(2.71828+1)=10\log(3.71828)\approx13.1326.
+\]</div>
+<p>The trade cost is the difference, <span class="arithmatex">\(13.1326-6.9315\approx6.2011\)</span> dollars for 10 shares — noticeably more than the naive <span class="arithmatex">\(10\times0.5=5.00\)</span> that the <em>initial</em> price alone would suggest, because the mechanism's price rises continuously as the position moves toward YES. The post-trade price is <span class="arithmatex">\(\pi_{\text{YES}}=e^{1}/(e^{1}+e^{0})\approx0.7311\)</span>: after this single trade, buying the next marginal share of YES would cost roughly 73 cents, not 50.</p>
+<p>Now repeat the identical trade with a larger liquidity parameter, <span class="arithmatex">\(B=100\)</span>. The same computation gives <span class="arithmatex">\(C(0,0)=100\log2\approx69.3147\)</span> and <span class="arithmatex">\(C(10,0)=100\log(e^{0.1}+1)\approx74.4397\)</span>, so the cost of the same 10-share trade is only about <span class="arithmatex">\(5.1249\)</span> — much closer to the naive <span class="arithmatex">\(5.00\)</span> — and the post-trade price moves only to about <span class="arithmatex">\(0.5250\)</span>. This is the precise economic meaning of <span class="arithmatex">\(B\)</span>: it controls how much the mechanism's price moves in response to a given trade size, in exactly the same conceptual role that order-book depth plays in a CLOB. A larger <span class="arithmatex">\(B\)</span> means a "deeper," less price-sensitive market that can absorb larger trades with smaller price impact, at the cost of the operator being willing to accept a larger worst-case loss, which is exactly the quantity derived next.</p>
+<h2 id="56-the-bounded-loss-property-derived">5.6 The bounded-loss property, derived<a class="headerlink" href="#56-the-bounded-loss-property-derived" title="Permanent link">&para;</a></h2>
+<p>A classic and useful property of this cost function is that the market maker's worst-case loss, over all possible sequences of trades and all possible eventual winning outcomes, is bounded by <span class="arithmatex">\(B\log n\)</span>, independent of how much volume actually trades. Deriving this cleanly requires one elementary inequality about the log-sum-exp function: for any real vector <span class="arithmatex">\(x=(x_1,\dots,x_n)\)</span>,</p>
+<div class="arithmatex">\[
+\max_i x_i \;\leq\; \log\!\left(\sum_{i=1}^n e^{x_i}\right) \;\leq\; \max_i x_i + \log n.
+\]</div>
+<p>The left inequality holds because the sum of exponentials includes the single term <span class="arithmatex">\(e^{\max_i x_i}\)</span> plus other nonnegative terms, so the sum is at least <span class="arithmatex">\(e^{\max_i x_i}\)</span>, and taking logs preserves the inequality. The right inequality holds because every term in the sum satisfies <span class="arithmatex">\(e^{x_i}\leq e^{\max_i x_i}\)</span>, so the sum is at most <span class="arithmatex">\(n\,e^{\max_i x_i}\)</span>, and taking logs gives <span class="arithmatex">\(\log(\text{sum})\leq \max_i x_i+\log n\)</span>.</p>
+<p>Apply this with <span class="arithmatex">\(x_i=q_i/B\)</span>, and multiply through by <span class="arithmatex">\(B\)</span>:</p>
+<div class="arithmatex">\[
+\max_i q_i \;\leq\; C(q) \;\leq\; \max_i q_i + B\log n.
+\]</div>
+<p>Now consider the mechanism's loss if outcome <span class="arithmatex">\(k\)</span> is the one that eventually settles YES: every share of outcome <span class="arithmatex">\(k\)</span> that was sold by the mechanism must be paid one dollar, so the mechanism's total payout obligation is <span class="arithmatex">\(q_k\)</span> (the final cumulative position in the winning outcome), while the total cash the mechanism collected over all trades is <span class="arithmatex">\(C(q)-C(0)\)</span>, by repeated application of the cost-difference rule from Section 5.3 summed over every trade. The mechanism's loss is therefore</p>
+<div class="arithmatex">\[
+\text{loss}_k = q_k - \big(C(q)-C(0)\big).
+\]</div>
+<p>Because <span class="arithmatex">\(q_k\leq\max_i q_i\leq C(q)\)</span> (the left half of the bound above, applied to the final state), we have <span class="arithmatex">\(q_k - C(q)\leq0\)</span>, so <span class="arithmatex">\(\text{loss}_k\leq C(0)\)</span>. And <span class="arithmatex">\(C(0)=B\log(\sum_i e^0)=B\log n\)</span> exactly, since every <span class="arithmatex">\(q_i\)</span> starts at zero. Therefore</p>
+<div class="arithmatex">\[
+\text{loss}_k \;\leq\; B\log n \quad\text{for every possible winning outcome } k,
+\]</div>
+<p>with the bound approached as the winning outcome's position exceeds every losing position by an arbitrarily large amount. Increasing all positions equally does not approach the bound because only relative positions affect prices. For two outcomes and <span class="arithmatex">\(B=10\)</span>, the bound is <span class="arithmatex">\(10\log2\approx6.93\)</span> units of account. It bounds this cost-function mechanism's payout loss under its stated assumptions, not operational failures, changing payout rules, or an operator's unrelated liabilities. A larger <span class="arithmatex">\(B\)</span> buys deeper quoted liquidity at the cost of a larger possible subsidy; the bound is not a profit guarantee.</p>
+<h2 id="57-assumptions-counterexamples-and-failure-modes">5.7 Assumptions, counterexamples, and failure modes<a class="headerlink" href="#57-assumptions-counterexamples-and-failure-modes" title="Permanent link">&para;</a></h2>
+<p><em>Assumption: outcomes are genuinely mutually exclusive and exhaustive.</em> The softmax-sums-to-one structure in Section 5.3 depends on this being true by construction of the outcome space fed into the mechanism. If the underlying real-world outcomes are not actually exclusive (recall Chapter 1's categorical-contract caution), an LMSR built over a mis-specified outcome set produces prices summing to one over the wrong partition — a modeling error, not a mechanism failure.</p>
+<p><em>Assumption: the operator can absorb the bounded loss.</em> The <span class="arithmatex">\(B\log n\)</span> bound is an upper limit, not a guarantee the loss is small or affordable; larger <span class="arithmatex">\(B\)</span> directly increases the maximum possible loss, so choosing <span class="arithmatex">\(B\)</span> trades depth against worst-case subsidy cost rather than being a free parameter to maximize.</p>
+<p><em>Counterexample: splitting an order does not remove its LMSR impact.</em> With no intervening trades, splitting the same net purchase into pieces costs exactly the same as one purchase: <span class="arithmatex">\([C(q+\delta_1)-C(q)]+[C(q+\delta_1+\delta_2)-C(q+\delta_1)]=C(q+\delta_1+\delta_2)-C(q)\)</span>. The intermediate costs cancel. Waiting can change the result only if other trading changes the state (or additional fees or rules intervene); it does not mechanically make a path-independent cost function cheaper.</p>
+<p><em>Failure mode: treating LMSR as a universal description of live venues.</em> Neither Kalshi's documented order-book schema nor Polymarket's documented public book interface describes an LMSR cost function; both describe conventional order-book structures with independently posted bid and ask levels. <a href="../../references/#kalshi_book">KALSHI_BOOK</a> <a href="../../references/#polymarket_book">POLYMARKET_BOOK</a> Do not import LMSR's bounded-loss or truthful-elicitation properties into either venue's actual order book without separately verifying that the venue uses this mechanism.</p>
+<p><em>Failure mode: assuming LMSR generalizes beyond two outcomes without checking exclusivity.</em> The multi-outcome case requires the same exclusivity verification Chapter 1 demanded of any categorical contract; convex market-design work extends bounded-payoff mechanism ideas to combinatorial outcome spaces, but design feasibility is a different claim from a guarantee that any two real markets can be costlessly combined into one such structure. <a href="../../references/#abernethy2013">ABERNETHY2013</a></p>
+<h2 id="58-companion-example">5.8 Companion example<a class="headerlink" href="#58-companion-example" title="Permanent link">&para;</a></h2>
+<p>The companion script <a href="../../companion/examples/lmsr.py"><code>lmsr.py</code></a> computes exactly the quantities derived above — initial and post-trade marginal prices, the finite trade cost for buying into a two-outcome market, and a stability check on a large existing position — using the liquidity parameter <span class="arithmatex">\(B=10\)</span> from Section 5.5. It explicitly labels its own output as illustrating a stable, finite LMSR calculation rather than any real order book's bid. Run it from the companion project root (<code>book\companion</code>):</p>
+<p><strong>Command working directory:</strong> run this chapter's Python commands from <code>book\companion</code>. From the trading repository root, run <code>Set-Location book\companion</code> once first. The <code>.venv</code> belongs to that companion project; see <a href="../../companion/">companion setup</a>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">examples</span><span class="p">\</span><span class="n">lmsr</span><span class="p">.</span><span class="n">py</span>
+</code></pre></div>
+<p>Compare its reported initial and final marginal prices against Section 5.5's <span class="arithmatex">\((0.5,0.5)\)</span> and <span class="arithmatex">\(\approx(0.7311,0.2689)\)</span>, and its reported trade cost against the derived <span class="arithmatex">\(\approx6.2011\)</span>; these are the same worked example computed independently by code.</p>
+<h2 id="exercises">Exercises<a class="headerlink" href="#exercises" title="Permanent link">&para;</a></h2>
+<p><strong>Exercise 5.1.</strong> Using <span class="arithmatex">\(B=100\)</span> (Section 5.5's second case), compute the LMSR price after a much larger trade that moves the position to <span class="arithmatex">\(q=(50,0)\)</span>, and compare the price impact to the <span class="arithmatex">\(q=(10,0)\)</span> case.</p>
+<p><em>Solution sketch.</em> <span class="arithmatex">\(\pi_{\text{YES}}=e^{0.5}/(e^{0.5}+e^{0})\approx1.6487/2.6487\approx0.6225\)</span>. Compared to the price of about 0.525 after a 10-share trade at the same <span class="arithmatex">\(B\)</span>, a 50-share trade moves the price noticeably further, illustrating that price impact grows with trade size even at a fixed liquidity parameter, not just as <span class="arithmatex">\(B\)</span> shrinks.</p>
+<p><strong>Exercise 5.2.</strong> For a three-outcome LMSR market with <span class="arithmatex">\(B=5\)</span>, compute the worst-case bound on the operator's loss, and explain in one sentence why adding a fourth genuinely exclusive outcome to the same market, at the same <span class="arithmatex">\(B\)</span>, increases that bound.</p>
+<p><em>Solution sketch.</em> The bound is <span class="arithmatex">\(B\log n=5\log3\approx5.4931\)</span>. Adding a fourth outcome increases <span class="arithmatex">\(n\)</span> to 4, giving <span class="arithmatex">\(5\log4\approx6.9315\)</span>; the bound grows with <span class="arithmatex">\(\log n\)</span> because the initial cost <span class="arithmatex">\(C(0)=B\log n\)</span> (the cost of committing to quote prices for a wider exclusive partition before any trading occurs) itself grows with the number of outcomes being simultaneously covered.</p>
+<p><strong>Exercise 5.3.</strong> A backtest replays a historical order book by assuming a hypothetical resting limit order at the touch price always executes whenever a later trade crosses that price level. Explain, using the queue-priority concept from Section 5.2, why this assumption can overstate historical performance, and propose one concrete way to make the assumption more conservative.</p>
+<p><em>Solution sketch.</em> Without knowing the hypothetical order's actual arrival time relative to other resting orders at the same price, the backtest cannot know its true queue position; if many other orders were already resting ahead of it, the touch price could be crossed several times over by other participants' orders before the hypothetical order would actually reach the front of the queue and fill, so assuming an immediate fill overstates the number and speed of fills the strategy would have realized. A more conservative approach would require the touch price to be crossed by some minimum multiple of the hypothetical order's own size, or require a specified time delay past the first crossing, before assuming a fill, and would report both assumptions explicitly as replay simplifications rather than as measured executions.</p>
+<p><strong>Exercise 5.4.</strong> Explain why the statement "LMSR guarantees the market maker will lose at most <span class="arithmatex">\(B\log n\)</span>" is a statement about mechanism design, not a statement that any real prediction-market venue examined in this book is bounded-loss, and identify the specific documentation gap that prevents extending the claim to Kalshi or Polymarket.</p>
+<p><em>Solution sketch.</em> The <span class="arithmatex">\(B\log n\)</span> bound is a mathematical property of the specific cost function <span class="arithmatex">\(C(q)=B\log\sum e^{q_i/B}\)</span> derived in Section 5.6; it applies only to a mechanism that actually implements this cost function as its pricing rule. Neither Kalshi's inspected order-book documentation nor Polymarket's inspected order-book documentation describes such a cost function; both describe independently posted bid/ask levels from a central limit order book, so there is no basis in the inspected documentation for attributing an LMSR-style bounded-loss guarantee to either venue's actual market structure.</p>
+<h2 id="sources-and-further-reading">Sources and further reading<a class="headerlink" href="#sources-and-further-reading" title="Permanent link">&para;</a></h2>
+<p>The LMSR cost-function derivation, the numerical-stability shift, and the bounded-loss proof in this chapter were constructed independently as elementary algebra from the stated cost-function definition; they are not a reproduction of any source's own proof. Hanson's foundational paper and Abernethy, Chen, and Vaughan's convex-optimization extension are recorded as further reading for the general market-scoring and convex-mechanism-design literature that motivates this construction, and their full theorem statements were not independently inspected for this book. <a href="../../references/#hanson2007">HANSON2007</a> <a href="../../references/#abernethy2013">ABERNETHY2013</a> The real CLOB mechanics in Sections 5.1 and 5.2 are drawn from Kalshi's and Polymarket's official, currently inspected order-book documentation, which describes the retrieved schema at the time of access rather than a permanent specification. <a href="../../references/#kalshi_book">KALSHI_BOOK</a> <a href="../../references/#kalshi_rounding">KALSHI_ROUNDING</a> <a href="../../references/#polymarket_book">POLYMARKET_BOOK</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../04-market-information/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 4. What a market price can tell you">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                4. What a market price can tell you
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../06-rules-and-settlement/" class="md-footer__link md-footer__link--next" aria-label="Next: 6. Rules, venues, and settlement risk">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                6. Rules, venues, and settlement risk
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

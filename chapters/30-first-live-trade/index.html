@@ -1,0 +1,2396 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/chapters/30-first-live-trade/">
+      
+      
+        <link rel="prev" href="../29-quickstart-market-making/">
+      
+      
+        <link rel="next" href="../../notation/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>30. From paper evidence to a first live trade - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#30-from-paper-evidence-to-a-first-live-trade" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              30. From paper evidence to a first live trade
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-probability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-market-microstructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-statistical-baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-trees-and-ensembles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-evolving-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../19-evidence-after-search/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../22-bankroll-and-portfolios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../23-learning-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../25-research-hypotheses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../28-quickstart-consistency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#301-what-this-chapter-is-and-deliberately-is-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.1 What this chapter is, and deliberately is not
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#302-running-the-checklist-and-reading-its-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.2 Running the checklist and reading its output
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#303-the-canonical-accounting-this-whole-book-has-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.3 The canonical accounting this whole book has used
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#304-a-first-dollar-illustrative-sizing-exercise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.4 A first-dollar illustrative sizing exercise
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#305-working-through-each-guarded-manual-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.5 Working through each guarded manual check
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#306-why-the-evidence-gate-cannot-be-toggled-into-a-live-pass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.6 Why the evidence gate cannot be toggled into a live pass
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#307-there-is-no-paper-to-live-unlock-and-this-chapter-does-not-invent-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.7 There is no paper-to-live unlock, and this chapter does not invent one
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#308-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.8 Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#309-exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.9 Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="30.9 Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-recomputing-the-canonical-numbers-from-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: recomputing the canonical numbers from memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-a-first-dollar-target-at-a-different-price" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: a first-dollar target at a different price
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-why-research_review_required-is-not-a-green-light" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: why RESEARCH_REVIEW_REQUIRED is not a green light
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-a-maximum-loss-check-across-two-correlated-positions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: a maximum-loss check across two correlated positions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#closing-the-book" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Closing the book
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../companion/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#301-what-this-chapter-is-and-deliberately-is-not" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.1 What this chapter is, and deliberately is not
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#302-running-the-checklist-and-reading-its-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.2 Running the checklist and reading its output
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#303-the-canonical-accounting-this-whole-book-has-used" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.3 The canonical accounting this whole book has used
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#304-a-first-dollar-illustrative-sizing-exercise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.4 A first-dollar illustrative sizing exercise
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#305-working-through-each-guarded-manual-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.5 Working through each guarded manual check
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#306-why-the-evidence-gate-cannot-be-toggled-into-a-live-pass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.6 Why the evidence gate cannot be toggled into a live pass
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#307-there-is-no-paper-to-live-unlock-and-this-chapter-does-not-invent-one" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.7 There is no paper-to-live unlock, and this chapter does not invent one
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#308-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.8 Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#309-exercises-and-solution-sketches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        30.9 Exercises and solution sketches
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="30.9 Exercises and solution sketches">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exercise-1-recomputing-the-canonical-numbers-from-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 1: recomputing the canonical numbers from memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-2-a-first-dollar-target-at-a-different-price" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 2: a first-dollar target at a different price
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-3-why-research_review_required-is-not-a-green-light" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 3: why RESEARCH_REVIEW_REQUIRED is not a green light
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exercise-4-a-maximum-loss-check-across-two-correlated-positions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercise 4: a maximum-loss check across two correlated positions
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#closing-the-book" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Closing the book
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="30-from-paper-evidence-to-a-first-live-trade">30. From paper evidence to a first live trade<a class="headerlink" href="#30-from-paper-evidence-to-a-first-live-trade" title="Permanent link">&para;</a></h1>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>This is the book's final chapter, and it assumes you have worked through, or at least read, everything before it: the contract and probability foundations of Part I, the data and evaluation discipline of Part II, the modeling chapters of Part III, the execution, evidence, risk, and paper-operations chapters of Part IV, the research-hypothesis discipline of Chapter 25, and all four preceding quickstarts. You need the canonical accounting example from the <a href="../../notation/">notation registry</a>, the evidence-gate concept introduced in Chapter 26, and a clear memory of every <code>NO_TRADE</code> and every honestly reported loss in Chapters 27 through 29.</p>
+<h2 id="learning-objectives">Learning objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">&para;</a></h2>
+<p>By the end of this chapter you should be able to run the first-trade checklist script and correctly interpret its <code>DO_NOT_PROCEED_FROM_SYNTHETIC_EVIDENCE</code> status, reproduce the book's canonical cost, profit, and expected-value accounting from memory, work a first-dollar illustrative sizing exercise while keeping expected profit and realized profit conceptually separate, explain in detail what each item on the manual checklist actually requires a reader to do, and state precisely why no configuration of the educational companion's evidence flags can automatically authorize a live trade. This chapter does not introduce new theory. It concludes the book by turning everything already developed into one guarded, still-manual decision.</p>
+<h2 id="301-what-this-chapter-is-and-deliberately-is-not">30.1 What this chapter is, and deliberately is not<a class="headerlink" href="#301-what-this-chapter-is-and-deliberately-is-not" title="Permanent link">&para;</a></h2>
+<p>Every preceding quickstart ended in an honest <code>NO_TRADE</code>, a marked loss, or a conditional candidate that depended on assumptions the script could not itself verify. That pattern was not an accident of which examples happened to get written. It reflects the evidence supplied by the educational companion: every default script is synthetic, illustrative, or, in the NOAA case, a real but current-vintage forecasting exercise with no attached market, price, or fee. None of it, individually or combined, constitutes verified evidence that a specific real trade, on a specific real venue, at a specific real price, would have a positive expected value net of actual costs.</p>
+<p>This chapter therefore does not attempt to supply the missing piece with a cleverer model, a bigger dataset, or a new theoretical result. It instead does the only honest thing left to do: lay out, in concrete and checkable detail, what a reader would need to independently verify before placing a first real, funded, cash-settled trade, using the book's own canonical accounting to make the arithmetic of that decision precise. The book ends here, with a checklist and a decision left to a human, not with an appendix promising a shortcut around it.</p>
+<h2 id="302-running-the-checklist-and-reading-its-output">30.2 Running the checklist and reading its output<a class="headerlink" href="#302-running-the-checklist-and-reading-its-output" title="Permanent link">&para;</a></h2>
+<p>From the companion project root (<code>book\companion</code>), after the setup described in Chapter 26:</p>
+<p><strong>Command working directory:</strong> run this chapter's Python commands from <code>book\companion</code>. From the trading repository root, run <code>Set-Location book\companion</code> once first. The <code>.venv</code> belongs to that companion project; see <a href="../../companion/">companion setup</a>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">examples</span><span class="p">\</span><span class="n">first_trade_checklist</span><span class="p">.</span><span class="n">py</span>
+</code></pre></div>
+<p>Open <a href="../../companion/examples/first_trade_checklist.py"><code>examples/first_trade_checklist.py</code></a> while reading; its module docstring states that it cannot place a funded order. The following is an excerpt of the observed output, with some wrapper and explanatory fields omitted:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DO_NOT_PROCEED_FROM_SYNTHETIC_EVIDENCE"</span><span class="p">,</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nt">"evidence_gate"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"REJECT_LIVE_EDGE_INFERENCE"</span><span class="p">,</span><span class="w"> </span><span class="nt">"eligible_for_research_review"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">},</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nt">"invented_accounting_only"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">      </span><span class="nt">"cash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.90"</span><span class="p">,</span><span class="w"> </span><span class="nt">"reserved_cash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w"> </span><span class="nt">"available_cash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5.90"</span><span class="p">,</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">      </span><span class="nt">"inventory_units"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="nt">"open_cost_basis"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4.10"</span><span class="p">,</span><span class="w"> </span><span class="nt">"realized_profit"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="nt">"maximum_loss_if_this_binary_position_settles_NO"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4.10"</span><span class="p">,</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nt">"manual_checks_not_automatically_verified"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">      </span><span class="s2">"eligibility, jurisdiction and current venue terms independently checked"</span><span class="p">,</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">      </span><span class="s2">"exact contract rules, exceptional payouts and collateral understood"</span><span class="p">,</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">      </span><span class="s2">"real point-in-time evidence independently reviewed after strategy search"</span><span class="p">,</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">      </span><span class="s2">"current fees, rounding, executable depth and maximum affordable loss checked"</span><span class="p">,</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">      </span><span class="s2">"open inventory, reserved cash and correlated loss reviewed"</span><span class="p">,</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">      </span><span class="s2">"a written manual decision, rejection conditions and outcome journal prepared"</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="p">],</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="nt">"boundary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"no API keys, network requests, order submission, wallet signing or automatic promotion"</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">  </span><span class="p">}</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="p">}</span>
+</code></pre></div>
+<p><code>status</code> is the literal string <code>DO_NOT_PROCEED_FROM_SYNTHETIC_EVIDENCE</code>. This is not a placeholder waiting for a future software update; it is the correct and permanent answer for any run of this script against its own bundled fixtures, because those fixtures are, by construction, synthetic. <code>invented_accounting_only</code> reflects the same <code>canonical_position()</code> helper used throughout the companion: ten YES units bought at a 0.40 ask with the fixture's flat USD 0.01 fee, for an open cost basis of 4.10, leaving cash of 5.90 from an initial 10.00. <code>maximum_loss_if_this_binary_position_settles_NO</code> is exactly that cost basis, 4.10: if this position resolves NO, the entire 4.10 already paid is lost, and nothing further is owed beyond it, because this is a fully collateralized, long-only binary position with no borrowing.</p>
+<h2 id="303-the-canonical-accounting-this-whole-book-has-used">30.3 The canonical accounting this whole book has used<a class="headerlink" href="#303-the-canonical-accounting-this-whole-book-has-used" title="Permanent link">&para;</a></h2>
+<p>It is worth restating the book's one canonical worked example here, at the end, exactly as the <a href="../../notation/">notation registry</a> fixes it, because every risk and sizing decision in this final chapter reduces to the same four numbers. Buying 10 YES units at an ask of USD 0.40, with the book's invented flat USD 0.01 per-unit fee, costs</p>
+<div class="arithmatex">\[
+10 \times (0.40 + 0.01) = 4.10.
+\]</div>
+<p>Under ordinary binary settlement this position pays USD 10 if YES and USD 0 if NO, for a net profit of USD 5.90 or a net loss of USD 4.10. If a model assigns this contract a probability of 0.55, the <strong>modeled</strong> expected net profit is</p>
+<div class="arithmatex">\[
+10 \times (0.55 - 0.40 - 0.01) = 1.40.
+\]</div>
+<p>This 1.40 figure is a model-conditional expectation, computed under a forecast that might simply be wrong; it is not evidence that the position has a real edge, and it says nothing about what the very next resolution of this contract will actually produce. If the position is instead closed early by selling all ten units at a bid of USD 0.46, with a further USD 0.01-per-unit exit fee, the realized round-trip profit is</p>
+<div class="arithmatex">\[
+10 \times (0.46 - 0.40 - 0.01 - 0.01) = 0.40.
+\]</div>
+<p>Keep these four numbers, 4.10 cost, 5.90 or minus-4.10 at settlement, 1.40 modeled expected value at <span class="arithmatex">\(\hat p = 0.55\)</span>, and 0.40 realized on an early resale, distinct in your own head before reading further, because Section 30.5's checklist depends on a reader being able to keep exactly this kind of distinction straight under the pressure of an actual decision.</p>
+<h2 id="304-a-first-dollar-illustrative-sizing-exercise">30.4 A first-dollar illustrative sizing exercise<a class="headerlink" href="#304-a-first-dollar-illustrative-sizing-exercise" title="Permanent link">&para;</a></h2>
+<p>Here is a deliberately narrow, purely deterministic accounting exercise, separate from the modeled expected-value calculation above, and it is worth being precise about which question each one answers. Suppose a reader wants to know: at the same 0.40 ask and USD 0.01 per-unit fee, what is the smallest whole number of units that would produce <strong>at least USD 1.00 of net profit if the position resolves YES</strong>? This is a conditional, deterministic accounting question. It is not an expected-value calculation, and it requires no probability estimate at all.</p>
+<p>Per-unit cost is <span class="arithmatex">\(0.40+0.01=0.41\)</span>; per-unit profit if YES is <span class="arithmatex">\(1.00-0.41=0.59\)</span>. Solving <span class="arithmatex">\(Q \times 0.59 \geq 1.00\)</span> gives <span class="arithmatex">\(Q \geq 1.6949\ldots\)</span>, so the smallest whole unit quantity is <span class="arithmatex">\(Q=2\)</span>. At <span class="arithmatex">\(Q=2\)</span>, cost is <span class="arithmatex">\(2\times0.41=0.82\)</span>, well within the 5.90 of available cash left in the canonical position's broker after its first ten-unit fill, and the planned profit <strong>if YES</strong> is <span class="arithmatex">\(2\times0.59=1.18\)</span>. The maximum loss on this same two-unit lot, if it instead resolves NO, is the full 0.82 cost basis.</p>
+<p>State plainly what this exercise does and does not establish. It answers "how many units, at this price and fee, would be needed to reach a round number of profit <em>conditional on winning</em>." It does <strong>not</strong> answer "should I expect to win," which requires an actual probability estimate and produces the different, expected-value quantity computed in Section 30.3. It also does not promise that USD 1.18 will ever be realized: this is a target computed under a hypothetical favorable outcome, not a guarantee, and a binary contract that resolves NO instead loses the full 0.82, regardless of how carefully the quantity was chosen to hit a round profit target on the other branch. Confusing this deterministic "if YES" accounting with either a promised or an expected outcome is exactly the kind of error this book has repeatedly warned against, and it is worth naming explicitly here, in the chapter where a reader is most likely to be tempted to skip past the distinction under real time pressure.</p>
+<h2 id="305-working-through-each-guarded-manual-check">30.5 Working through each guarded manual check<a class="headerlink" href="#305-working-through-each-guarded-manual-check" title="Permanent link">&para;</a></h2>
+<p>The checklist script's six items are deliberately terse in its own JSON output. Here is what each one actually requires a reader to do, in detail, not merely to acknowledge.</p>
+<p><strong>Eligibility, jurisdiction, and current venue terms independently checked.</strong> Visit the venue's own current terms and eligibility pages yourself, at the time you are actually trading, rather than relying on this book's research notes, which are dated to one audit day and explicitly could not establish a complete eligibility or reuse-permission picture. The inspected Polymarket terms response, for example, displayed a geographic/product restriction notice without exposing its complete operative terms. <a href="../../references/#polymarket_terms">POLYMARKET_TERMS</a> Never attempt a VPN, IP masking, or any other bypass of a displayed restriction; an unclear terms page is a reason to stop, not a problem to route around.</p>
+<p><strong>Exact contract rules, exceptional payouts, and collateral understood.</strong> Read the specific contract's own rules document, not a general description of "how this kind of market usually works." Identify whether an exceptional settlement, dispute process, or partial payout is possible, and in what collateral; Polymarket's documented dispute and 50/50 payout process, and its separate pUSD-versus-USDC collateral distinction, are concrete examples of detail a short title cannot convey. <a href="../../references/#polymarket_resolution">POLYMARKET_RESOLUTION</a> <a href="../../references/#polymarket_collateral">POLYMARKET_COLLATERAL</a></p>
+<p><strong>Real point-in-time evidence independently reviewed after strategy search.</strong> Any forecasting claim behind a real trade needs evaluation on data genuinely available at decision time, with every trial and adjustment logged, in the sense of Chapter 19, not merely "backtested well once it looked good." Bailey, Borwein, Lopez de Prado, and Zhu's backtest-overfitting framework is the relevant qualified reminder that repeated holdout inspection during research is itself a mechanism for producing an impressive but unreliable result. <a href="../../references/#bailey2017">BAILEY2017</a></p>
+<p><strong>Current fees, rounding, executable depth, and maximum affordable loss checked.</strong> Re-verify the venue's actual, currently effective fee schedule immediately before trading, since documented fee tables and rounding rules are explicitly time-varying. <a href="../../references/#kalshi_rounding">KALSHI_ROUNDING</a> <a href="../../references/#polymarket_fees">POLYMARKET_FEES</a> Confirm executable depth at the price you intend to pay, not a stale quote, and compute the maximum possible loss using the same cost-basis arithmetic as Section 30.3 before doing anything else.</p>
+<p><strong>Open inventory, reserved cash, and correlated loss reviewed.</strong> Account for existing positions' combined loss under a joint adverse scenario, not each in isolation; Chapter 22's bankroll discussion and this book's <code>scenario_stress</code> helper both exist because individually small positions can produce an unacceptable combined loss under correlated events.</p>
+<p><strong>A written manual decision, rejection conditions and outcome journal prepared.</strong> Before placing any order, write down why you believe the trade is justified, the conditions under which you would consider yourself wrong and exit, and a place to honestly record the eventual outcome. This is not a bureaucratic formality; it is the defense against rationalizing a bad decision, or forgetting how many similar decisions were actually made and how they turned out.</p>
+<h2 id="306-why-the-evidence-gate-cannot-be-toggled-into-a-live-pass">30.6 Why the evidence gate cannot be toggled into a live pass<a class="headerlink" href="#306-why-the-evidence-gate-cannot-be-toggled-into-a-live-pass" title="Permanent link">&para;</a></h2>
+<p>Read <code>prediction_market_lab.evidence.assess_evidence</code> directly. It accepts six explicit boolean fields, <code>point_in_time_verified</code>, <code>execution_history_verified</code>, <code>costs_verified</code>, <code>untouched_evaluation</code>, <code>dependence_and_search_accounted_for</code>, and <code>uncertainty_supports_positive_net_result</code>, plus a <code>synthetic</code> flag and a nonempty <code>provenance</code> tuple, and it raises <code>ValueError</code> outright if any of these is not a genuine boolean. Suppose, hypothetically, a reader constructed an <code>Evidence</code> object with <code>synthetic=False</code>, real provenance strings, and every one of those six booleans set to <code>True</code>, representing a claim that every one of these six conditions had actually been satisfied by real, independently reviewed work. Even in that best possible case, <code>assess_evidence</code> does not return anything resembling a "cleared to trade live" status. It returns <code>RESEARCH_REVIEW_REQUIRED</code>, with the explicit accompanying reason <code>"declarations require independent audit; no automatic live promotion"</code>.</p>
+<p>There is no flag that converts a paper decision into a funded one. Complete declarations can request independent research review, not perform that review or authorize an order. <code>synthetic_evidence()</code> sets <code>synthetic=True</code> and <code>point_in_time_verified=True</code> for the fixture's explicitly constructed teaching clocks; its remaining five verification flags are false. This does not certify real historical availability: the separate synthetic flag itself blocks empirical live-edge inference. Every quickstart therefore returns <code>REJECT_LIVE_EDGE_INFERENCE</code>, describing its actual evidence rather than imposing an arbitrary penalty.</p>
+<h2 id="307-there-is-no-paper-to-live-unlock-and-this-chapter-does-not-invent-one">30.7 There is no paper-to-live unlock, and this chapter does not invent one<a class="headerlink" href="#307-there-is-no-paper-to-live-unlock-and-this-chapter-does-not-invent-one" title="Permanent link">&para;</a></h2>
+<p>Nothing in the book's educational companion stores an API key, signs a transaction, submits a funded order, or contains a hidden or documented switch that promotes a paper decision, however favorable, into a live one. This boundary applies to <code>book\companion</code>, not to separate trading-system code elsewhere in the repository. The <code>market_data</code> module, documented in <a href="../../companion/data/#optional-public-venue-snapshots"><code>data/README.md</code></a> and the <a href="../../companion/examples/">examples README</a>, performs only optional, explicitly acknowledged (<code>--acknowledge-terms</code>) read-only public metadata and order-book snapshot requests against four allowlisted endpoints; it has no coupling to <code>PaperBroker</code>, no order-submission capability, and no credential handling, and it is neither a live broker nor a historical archive. No default example calls it, the companion ships no acquired venue payload, and its output is a separate, locally gitignored file a reader must explicitly request. A separately documented mock-funds demo and a documented live/historical data split at one venue are likewise not a claim of live-market execution fidelity or a complete historical order-book archive; treat any paper, demo, or historical-replay result as rehearsal, not proof. <a href="../../references/#kalshi_demo">KALSHI_DEMO</a> <a href="../../references/#kalshi_history">KALSHI_HISTORY</a> A first real trade, if a reader independently decides to make one after completing every check in Section 30.5, happens entirely outside the educational companion, on a venue's own interface, under its own account, terms, and current operative rules. This book supplies the accounting discipline, the failure vocabulary, and the checklist; it does not, and by design cannot, supply the trade itself.</p>
+<h2 id="308-troubleshooting">30.8 Troubleshooting<a class="headerlink" href="#308-troubleshooting" title="Permanent link">&para;</a></h2>
+<p>If you find yourself editing <code>evidence.py</code> or the checklist script to force a different status, stop: that would not create real verified evidence, only relabel the exact same synthetic fixtures this chapter has already accounted for. If you are unsure whether a real check genuinely satisfies one of Section 30.5's six items, hold the corresponding flag at <code>False</code> rather than rounding it up; an explicit boolean should describe only what has actually been verified. If your written decision record from Section 30.5's sixth check feels uncomfortable to write honestly, that discomfort is informative and should not be resolved by skipping the exercise.</p>
+<h2 id="309-exercises-and-solution-sketches">30.9 Exercises and solution sketches<a class="headerlink" href="#309-exercises-and-solution-sketches" title="Permanent link">&para;</a></h2>
+<h3 id="exercise-1-recomputing-the-canonical-numbers-from-memory">Exercise 1: recomputing the canonical numbers from memory<a class="headerlink" href="#exercise-1-recomputing-the-canonical-numbers-from-memory" title="Permanent link">&para;</a></h3>
+<p>Without looking back at Section 30.3, write down the cost, the two settlement outcomes, the modeled expected profit at <span class="arithmatex">\(\hat p = 0.55\)</span>, and the realized resale profit for the book's canonical ten-unit example, then check your answer.</p>
+<p><strong>Solution sketch.</strong> Cost is <span class="arithmatex">\(10\times(0.40+0.01)=4.10\)</span>; settlement outcomes are <span class="arithmatex">\(+5.90\)</span> on YES and <span class="arithmatex">\(-4.10\)</span> on NO; modeled expected profit at <span class="arithmatex">\(\hat p=0.55\)</span> is <span class="arithmatex">\(10\times(0.55-0.41)=1.40\)</span>; realized resale profit at a bid of 0.46 with a further 0.01 exit fee is <span class="arithmatex">\(10\times(0.46-0.40-0.01-0.01)=0.40\)</span>.</p>
+<h3 id="exercise-2-a-first-dollar-target-at-a-different-price">Exercise 2: a first-dollar target at a different price<a class="headerlink" href="#exercise-2-a-first-dollar-target-at-a-different-price" title="Permanent link">&para;</a></h3>
+<p>Using the same USD 0.01 per-unit fee, find the smallest whole-unit quantity that produces at least USD 2.00 of profit if the position resolves YES, at an ask of 0.55 instead of 0.40.</p>
+<p><strong>Solution sketch.</strong> Per-unit cost is <span class="arithmatex">\(0.55+0.01=0.56\)</span>; per-unit profit if YES is <span class="arithmatex">\(1.00-0.56=0.44\)</span>. Solving <span class="arithmatex">\(Q\times0.44\geq2.00\)</span> gives <span class="arithmatex">\(Q\geq4.545\ldots\)</span>, so the smallest whole quantity is <span class="arithmatex">\(Q=5\)</span>, costing <span class="arithmatex">\(5\times0.56=2.80\)</span> and producing a planned if-YES profit of <span class="arithmatex">\(5\times0.44=2.20\)</span>, with a maximum loss of 2.80 if the position instead resolves NO.</p>
+<h3 id="exercise-3-why-research_review_required-is-not-a-green-light">Exercise 3: why RESEARCH_REVIEW_REQUIRED is not a green light<a class="headerlink" href="#exercise-3-why-research_review_required-is-not-a-green-light" title="Permanent link">&para;</a></h3>
+<p>A reader argues that since <code>RESEARCH_REVIEW_REQUIRED</code> is a materially different, less severe status than <code>REJECT_LIVE_EDGE_INFERENCE</code>, reaching it should be treated as sufficient grounds to place a live trade. Explain what is wrong with this argument.</p>
+<p><strong>Solution sketch.</strong> <code>RESEARCH_REVIEW_REQUIRED</code> means only that the declared evidence conditions, if honestly true, would justify independent human research review; its own accompanying reason states explicitly that it requires independent audit and grants no automatic live promotion. It is a description of what evidence would be worth someone's further scrutiny, not a verdict that the underlying claims have actually been audited, or that they are correct, or that the resulting trading decision is safe. Treating it as a green light substitutes a code path's internal label for the actual human review that label is asking for.</p>
+<h3 id="exercise-4-a-maximum-loss-check-across-two-correlated-positions">Exercise 4: a maximum-loss check across two correlated positions<a class="headerlink" href="#exercise-4-a-maximum-loss-check-across-two-correlated-positions" title="Permanent link">&para;</a></h3>
+<p>A reader already holds the canonical ten-unit position from Section 30.2, with a maximum loss of 4.10, and is considering the two-unit position from Section 30.4, with a maximum loss of 0.82, where both contracts' resolutions are known to be strongly positively correlated. State the appropriate combined maximum-loss figure to use when deciding whether this fits an affordable-loss limit, and explain why simply adding the two average losses would understate the relevant risk.</p>
+<p><strong>Solution sketch.</strong> Under strong positive correlation, the appropriate planning figure is the sum of both positions' maximum losses under the shared adverse scenario in which both resolve NO together, <span class="arithmatex">\(4.10+0.82=4.92\)</span>, not some smaller blended or averaged figure; positive correlation means the bad outcomes tend to occur together rather than offsetting one another, so the relevant risk-budget comparison is against this joint worst case, exactly the discipline <code>scenario_stress</code> and Chapter 22's bankroll material both insist on.</p>
+<h2 id="closing-the-book">Closing the book<a class="headerlink" href="#closing-the-book" title="Permanent link">&para;</a></h2>
+<p>This book began by insisting that an event contract is not a stock, that a probability is not an oracle, and that a favorable-looking number requires evidence before it earns trust. Twenty-nine chapters and four prior practical quickstarts later, ending in this fifth and final one, that discipline has not loosened; if anything, this closing chapter has tightened it, by refusing to let even a fully truthful set of evidence declarations translate into an automatic live-trading permission. Every default example in the educational companion is synthetic, illustrative, and offline for a reason: so a reader can build every habit this book teaches, calibration discipline, cost-aware decision screens, honest no-trade outcomes, and risk budgets that bind even against a positive expected value, entirely without financial risk, before ever bringing a genuinely real dollar into contact with a genuinely real market. When that moment eventually comes, if it does, it belongs to the reader, working through Section 30.5's checks with their own current, independently verified information, not to any script in this book.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../29-quickstart-market-making/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 29. Run a cautious market-making experiment">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                29. Run a cautious market-making experiment
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../notation/" class="md-footer__link md-footer__link--next" aria-label="Next: Notation">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Notation
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

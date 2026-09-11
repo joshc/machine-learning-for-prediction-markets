@@ -1,0 +1,80 @@
+{
+  "protocol_id": "noaa-monthly-increase-v1",
+  "protocol_version": 1,
+  "predeclared_at_utc": "2026-09-10T21:45:25Z",
+  "predeclaration_scope": "Written before downloading this study's observations or evaluating either model; not an externally registered protocol.",
+  "question": "Does a target-calendar-month seasonal rate outperform an expanding overall rate for a recorded monthly CO2 increase?",
+  "source_url": "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt",
+  "selected_months": {
+    "start": "1975-01",
+    "end": "2025-12",
+    "expected_calendar_rows": 612
+  },
+  "evaluation_months": {
+    "start": "2015-01",
+    "end": "2025-12",
+    "expected_calendar_months": 132
+  },
+  "training": {
+    "scheme": "expanding; includes evaluation-period labels only after their hypothetical availability",
+    "initial_history": "1975-01 through 2014-12 source records; January 1975 has no in-extract predecessor",
+    "minimum_admitted_labels": 36,
+    "label_lag_months": 2,
+    "availability": "A label with target month s is admitted at 00:00:00 UTC on the first day of s+2. Forecast month t at its start uses labels with target months no later than t-2, never t-1 or t.",
+    "clock_status": "Hypothetical retrospective index convention, not verified historical publication or local observation time."
+  },
+  "target": {
+    "definition": "YES iff the source average for target month is strictly greater than the immediately preceding calendar month's source average.",
+    "ties": "NO",
+    "required_inputs": "Two consecutive valid recorded months; never shift across a gap or interpolate.",
+    "invalid_record_rules": [
+      "average <= 0 or deseasonalized <= 0: missing/nonpositive concentration",
+      "ndays <= 0: flagged or no contributing observation days",
+      "sdev < 0 or uncertainty < 0: interpolation/unavailable-information source flag"
+    ],
+    "missing_predecessor": "Exclude event; record reason."
+  },
+  "features": [
+    "Target calendar month known at forecast time",
+    "Previously admitted binary labels only"
+  ],
+  "forbidden_features": [
+    "Target month's average",
+    "Current or previous month's CO2 level as predictor",
+    "Deseasonalized values",
+    "Unadmitted labels",
+    "Post-cutoff fitted transformations"
+  ],
+  "models": {
+    "overall": "Beta(1,1) posterior predictive: (admitted YES labels + 1)/(admitted labels + 2).",
+    "seasonal": "Separate target-month Beta(1,1) posterior predictive: (admitted YES labels for this calendar month + 1)/(admitted labels for this calendar month + 2). No pooling, tuning, or model selection."
+  },
+  "scoring": {
+    "unit": "One equally weighted usable target calendar month.",
+    "brier": "Single YES squared error, averaged over the cohort.",
+    "log_loss": "Natural logarithms, no clipping; a wrong probability-zero forecast has infinite loss. Beta smoothing yields strictly interior probabilities here.",
+    "paired_difference": "Seasonal minus overall, so negative favors seasonal.",
+    "calibration_bins": 5,
+    "inference": "Descriptive only. No p-value or confidence interval; monthly events are dependent and span only 11 evaluation years."
+  },
+  "sensitivity": {
+    "id": "exclude-alternate-location",
+    "affected_record_months_start": "2022-12",
+    "affected_record_months_end": "2023-07",
+    "rule": "Conservatively exclude any event whose target or immediately preceding source month is within the full affected months. Remove those events from both training and evaluation, refit expanding rates with the same clock, and score both models on the same reduced cohort.",
+    "comparison": "Also score the original primary forecasts on the sensitivity cohort to distinguish cohort removal from refitting. This is a predeclared diagnostic, not another selected model."
+  },
+  "freeze": {
+    "default": "Offline recomputation and exact verification against the one frozen evaluation. Never download or overwrite results by default.",
+    "acquisition": "Explicit --refresh-data only. Replacement of an existing extract requires --replace-data; preserve protocol version.",
+    "evaluation": "Explicit --freeze-results for initial persistence; replacing a frozen run also requires --replace-results.",
+    "no_fallback": "Missing, changed, malformed, or insufficient data is an explicit error; never synthesize observations."
+  },
+  "interpretation": [
+    "Real NOAA observational data, final/current vintage at actual acquisition time; historical revisions and center-of-month correction remain.",
+    "Original normalization, targets, and models are not official NOAA products or NOAA-endorsed.",
+    "No historical prediction-market contract, prices, fees, fills, queues, or executable-profit evidence.",
+    "Not a real prediction-market backtest and not passing evidence for a first live trade.",
+    "No tuning, strategy search, or favorable-direction requirement on the fixed evaluation period."
+  ]
+}

@@ -1,0 +1,2290 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Probabilities, Evidence, and Execution">
+      
+      
+      
+        <link rel="canonical" href="https://joshc.github.io/machine-learning-for-prediction-markets/chapters/19-evidence-after-search/">
+      
+      
+        <link rel="prev" href="../18-execution-aware-backtests/">
+      
+      
+        <link rel="next" href="../20-cross-market-logic/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>19. Evidence after strategy search - Machine Learning for Prediction Markets</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#19-evidence-after-strategy-search" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-header__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Machine Learning for Prediction Markets
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              19. Evidence after strategy search
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Machine Learning for Prediction Markets" class="md-nav__button md-logo" aria-label="Machine Learning for Prediction Markets" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Machine Learning for Prediction Markets
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/joshc/trading" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    joshc/trading
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part I: Contracts, beliefs, and market mechanics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01-event-contracts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Event contracts are not stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-probability/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Probability as disciplined uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../03-decisions-and-costs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. From beliefs to decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04-market-information/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. What a market price can tell you
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05-market-microstructure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Order books and automated market makers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../06-rules-and-settlement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. Rules, venues, and settlement risk
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part II: Data and credible forecasting evidence
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part II: Data and credible forecasting evidence
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../07-research-datasets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. Designing the research dataset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../08-point-in-time-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. Building a point-in-time pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../09-exploration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Exploration without fooling yourself
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10-forecast-evaluation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Evaluating probability forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part III: Learning probabilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part III: Learning probabilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../11-statistical-baselines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Transparent statistical baselines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../12-trees-and-ensembles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Trees and nonlinear ensembles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../13-evolving-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Forecasts that evolve with time
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../14-text-and-language-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Text, news, and language models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../15-neural-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Neural and representation models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../16-combining-forecasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. Combining and maintaining forecasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part IV: Turning forecasts into defensible trading research
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../17-forecast-to-order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. The forecast-to-order decision
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../18-execution-aware-backtests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. A backtest that respects execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Evidence after strategy search
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#191-a-favorable-backtest-result-is-a-claim-not-a-finding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.1 A favorable backtest result is a claim, not a finding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#192-walk-forward-evaluation-needs-both-time-order-and-event-group-independence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.2 Walk-forward evaluation needs both time order and event-group independence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#193-untouched-outcome-availability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.3 Untouched outcome availability
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#194-logging-every-trial-not-only-the-winner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.4 Logging every trial, not only the winner
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#195-whites-reality-check-and-the-false-discovery-rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.5 White's reality check and the false discovery rate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#196-dependent-data-block-bootstrap-and-cluster-robust-assumptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.6 Dependent data: block bootstrap and cluster-robust assumptions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#197-sequential-monitoring-is-not-repeated-fixed-threshold-peeking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.7 Sequential monitoring is not repeated fixed-threshold peeking
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#198-power-effect-size-and-the-gap-between-a-point-estimate-and-a-guaranteed-edge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.8 Power, effect size, and the gap between a point estimate and a guaranteed edge
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#199-controlling-for-costs-slippage-fill-sensitivity-and-negative-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.9 Controlling for costs, slippage, fill sensitivity, and negative controls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#companion-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Companion example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../20-cross-market-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Cross-market logic and apparent arbitrage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../21-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Market making and adverse selection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../22-bankroll-and-portfolios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Bankroll, portfolios, and survival
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../23-learning-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. Learning execution policies in simulation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../24-paper-operations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Operating a paper-trading system
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part V: A research agenda, not promised edges
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part V: A research agenda, not promised edges
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../25-research-hypotheses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Prediction-market-specific research hypotheses
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Part VI: Practical quick starts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Part VI: Practical quick starts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../26-quickstart-pattern/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Investigate your first simple pattern
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../27-quickstart-event/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    27. Build an event-driven forecasting workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../28-quickstart-consistency/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    28. Scan for inconsistent contract prices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../29-quickstart-market-making/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    29. Run a cautious market-making experiment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../30-first-live-trade/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    30. From paper evidence to a first live trade
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+          
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../companion/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reader resources
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_8" id="__nav_8_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reader resources
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../notation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../solutions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exercise navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning objectives
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#191-a-favorable-backtest-result-is-a-claim-not-a-finding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.1 A favorable backtest result is a claim, not a finding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#192-walk-forward-evaluation-needs-both-time-order-and-event-group-independence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.2 Walk-forward evaluation needs both time order and event-group independence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#193-untouched-outcome-availability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.3 Untouched outcome availability
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#194-logging-every-trial-not-only-the-winner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.4 Logging every trial, not only the winner
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#195-whites-reality-check-and-the-false-discovery-rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.5 White's reality check and the false discovery rate
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#196-dependent-data-block-bootstrap-and-cluster-robust-assumptions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.6 Dependent data: block bootstrap and cluster-robust assumptions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#197-sequential-monitoring-is-not-repeated-fixed-threshold-peeking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.7 Sequential monitoring is not repeated fixed-threshold peeking
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#198-power-effect-size-and-the-gap-between-a-point-estimate-and-a-guaranteed-edge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.8 Power, effect size, and the gap between a point estimate and a guaranteed edge
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#199-controlling-for-costs-slippage-fill-sensitivity-and-negative-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.9 Controlling for costs, slippage, fill sensitivity, and negative controls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#companion-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Companion example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="19-evidence-after-strategy-search">19. Evidence after strategy search<a class="headerlink" href="#19-evidence-after-strategy-search" title="Permanent link">&para;</a></h1>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>You should be comfortable with the exploration and leakage material from the data-pipeline chapters, the forecast-evaluation chapter's treatment of proper scoring rules and calibration, and the execution-aware backtest from Chapter 18. You should already know why a chronological split of rows is not automatically an independence guarantee, and what a dependence group is.</p>
+<h2 id="learning-objectives">Learning objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">&para;</a></h2>
+<p>By the end of this chapter you should be able to: build a walk-forward evaluation that respects both time order and event-group independence at once; explain what "untouched" outcome availability actually requires of an evaluation protocol; explain why logging every trial searched, not only the best one, is necessary context for interpreting a result; state what White's reality check, Bailey's backtest-overfitting framework, and the Benjamini-Hochberg false discovery rate procedure each qualify and do not qualify; describe the assumptions behind block-bootstrap and cluster-robust dependence methods; explain why sequential monitoring requires different machinery than a fixed-interval peek at a test statistic; distinguish a favorable point estimate from a demonstrated positive effect once uncertainty and effect size are considered; and list concrete controls, including negative controls, for costs, slippage, and fill sensitivity.</p>
+<h2 id="191-a-favorable-backtest-result-is-a-claim-not-a-finding">19.1 A favorable backtest result is a claim, not a finding<a class="headerlink" href="#191-a-favorable-backtest-result-is-a-claim-not-a-finding" title="Permanent link">&para;</a></h2>
+<p>Suppose a strategy search over many candidate rules, thresholds, and features produces one configuration whose simulated net profit, after the fees and depth discipline of Chapter 18, looks attractive. That single favorable number is a claim requiring evidence, not a finding that stands on its own. The central problem is not that the arithmetic is wrong; the arithmetic can be entirely correct and the conclusion still unsupported, because the process that produced the winning configuration searched many candidates, and search itself changes what a given point estimate means.</p>
+<p>This is easiest to see with a simulation that contains no real signal at all. Draw 20 independent standard-normal numbers, meant to represent 20 unrelated strategy variants' scaled performance under a null hypothesis of no true edge, and report only the best of the 20. Running this simulation 200,000 times gives an average best-of-20 value of approximately 1.87, compared with an average of essentially 0.00 for any single draw considered alone, and approximately 1.16 for a best-of-5 comparison under the same null. Nothing in this simulation has any actual predictive skill; the elevated average is a pure artifact of reporting only the maximum of several noisy draws. A single favorable backtest number, without a record of how many configurations were tried, is exactly analogous: it does not reveal whether it is a best-of-1, best-of-20, or best-of-thousands draw from an unknown search.</p>
+<h2 id="192-walk-forward-evaluation-needs-both-time-order-and-event-group-independence">19.2 Walk-forward evaluation needs both time order and event-group independence<a class="headerlink" href="#192-walk-forward-evaluation-needs-both-time-order-and-event-group-independence" title="Permanent link">&para;</a></h2>
+<p>A walk-forward evaluation fits a model using only information available at a chronological cutoff, then evaluates it on later data, advancing the cutoff and repeating. This controls one important failure mode, using future information to fit a model, but it does not by itself control a second, equally damaging one: two observations that share the same underlying event, or that are otherwise statistically dependent, being split across the training and evaluation cohorts.</p>
+<p>The companion's <code>grouped_chronological_split</code> function enforces both constraints simultaneously. It requires strictly increasing cutoffs for a train, validation, and test cohort; it purges any dependence group whose observations straddle a cutoff boundary entirely out of the assigned cohorts, rather than assigning part of the group to one cohort and part to another; and it separately verifies that no event identifier is assigned inconsistent group identifiers or outcome labels across the data. Two record-level checks make this concrete: an event whose recorded group identifier differs across two of its own rows raises "one event cannot be split across dependence groups," and an event whose recorded binary outcome differs across two of its own rows raises "one event has inconsistent binary labels." Both are explicit failures rather than a silent average or a first-seen-wins resolution, because either condition indicates a data problem serious enough to investigate before any split is trusted.</p>
+<p>A chronological split alone, ignoring event grouping, could place one snapshot of a not-yet-resolved event in the training cohort and a later snapshot of the same event, sharing the same eventual outcome, in the evaluation cohort. A model evaluated that way could appear to generalize well while actually only recognizing an event it has effectively already seen resolve. Event grouping and time order are joint requirements: satisfying one does not substitute for the other.</p>
+<h2 id="193-untouched-outcome-availability">19.3 Untouched outcome availability<a class="headerlink" href="#193-untouched-outcome-availability" title="Permanent link">&para;</a></h2>
+<p>"Held out" only means something if the evaluation cohort's outcomes were genuinely unavailable to every decision that shaped the reported model or strategy, not merely unavailable to the final fitting step. If a researcher repeatedly inspects test-cohort scores while iterating on features, thresholds, or architectures, and then reports the best-scoring configuration, the test cohort has been used for model selection in every meaningful sense, even though no single fitting call literally trained on its rows.</p>
+<p>A genuinely untouched evaluation requires a predeclared protocol: which cohort is the final evaluation set, what metric will be reported, and how many times it will be inspected, decided before any of those inspections happen. Bailey, Borwein, Lopez de Prado, and Zhu's framework for the probability of backtest overfitting is directly about this problem; their institutional abstract proposes a combinatorially symmetric cross-validation procedure intended to estimate how likely a reported strategy selection is to have been chosen by overfitting rather than genuine skill, and it explicitly frames repeated inspection of a holdout during investment research as the mechanism that undermines an otherwise standard train/test separation. <a href="../../references/#bailey2017">BAILEY2017</a> Their specific combinatorial procedure is not reproduced or independently verified here, and its applicability to sparse, dependent event-contract labels, as opposed to the continuous return series their framework more naturally targets, would need separate scrutiny; the qualitative warning about repeated holdout inspection still applies regardless of which specific test procedure is eventually used.</p>
+<h2 id="194-logging-every-trial-not-only-the-winner">19.4 Logging every trial, not only the winner<a class="headerlink" href="#194-logging-every-trial-not-only-the-winner" title="Permanent link">&para;</a></h2>
+<p>The multiplicity simulation in Section 19.1 depends entirely on knowing how many candidates were drawn; the same is true for a real strategy search. A complete research log records every configuration actually evaluated, including its features, thresholds, evaluation window, and resulting metric, whether or not it was eventually reported. Without that log, a reader cannot distinguish a genuinely rare, striking result from the expected best-of-many artifact illustrated above, and neither can the researcher, months later, when memory of exactly how many variants were quietly tried has faded.</p>
+<p>This requirement extends beyond a final list of models formally fit. Informally adjusting a feature definition, a training window's start date, an outcome threshold, or which markets are included, each time after glancing at how the resulting score looks, is still a form of search, and each such adjustment belongs in the log. The book's glossary is explicit that this broader informal search, not just a final candidate-model list, is what "multiple testing" needs to account for.</p>
+<h2 id="195-whites-reality-check-and-the-false-discovery-rate">19.5 White's reality check and the false discovery rate<a class="headerlink" href="#195-whites-reality-check-and-the-false-discovery-rate" title="Permanent link">&para;</a></h2>
+<p>Two different statistical qualifications, though sometimes discussed together, aim at different questions. White's reality check addresses whether the <strong>single best</strong> result from a search of many candidate rules could plausibly have arisen by chance, given the whole set of rules considered. Its published construction, with the relevant abstract, introduction, and Section 2a-2b now directly inspected, tests the best of several candidates' expected performance against a stated benchmark using a least-favorable-null construction, and it handles dependence in the underlying data using common random-length bootstrap blocks, the same style of block resampling covered further in Section 19.6. <a href="../../references/#white2000">WHITE2000</a> Its stated setup assumes stationary, strong-mixing observations, point-in-time predictors, and further asymptotic regularity conditions; the Appendix's full assumptions and proofs were not independently audited here. The qualification that matters most for this book stands regardless of that audit: a reality-check-style test can tell you whether a found best result still beats a benchmark once multiplicity is accounted for, but it cannot recover an undisclosed set of tried rules, repair a leakage problem in the underlying data, or validate a simulator's fictitious fills and missing costs.</p>
+<p>The Benjamini-Hochberg false discovery rate procedure instead addresses a <strong>list</strong> of candidates, each with its own test statistic, and controls the expected proportion of falsely "significant" results among those declared significant, rather than the chance of any single false result at all. Concretely: take an invented list of 10 p-values from 10 strategy-variant comparisons, sorted from smallest to largest, <span class="arithmatex">\(0.001, 0.004, 0.012, 0.020, 0.045, 0.060, 0.090, 0.140, 0.310, 0.620\)</span>, and a target false discovery rate of <span class="arithmatex">\(\alpha = 0.10\)</span>. The procedure compares each sorted p-value at rank <span class="arithmatex">\(k\)</span> (out of <span class="arithmatex">\(n = 10\)</span>) to the threshold <span class="arithmatex">\(\alpha k / n\)</span>, and finds the <strong>largest</strong> rank at which the p-value is still at or below its own threshold. Computing this directly gives thresholds of <span class="arithmatex">\(0.010, 0.020, 0.030, 0.040, 0.050, 0.060, 0.070, 0.080, 0.090, 0.100\)</span> at ranks 1 through 10; the sorted p-values satisfy <span class="arithmatex">\(p_{(k)} \leq \alpha k / n\)</span> through rank 6 (0.060 exactly equals its threshold) but fail at rank 7 (0.090 exceeds 0.070). The procedure therefore rejects the 6 hypotheses with the smallest p-values.</p>
+<p>This is an independently computed arithmetic illustration using invented p-values, not a report of any actual strategy search. The published Benjamini-Hochberg abstract states the false discovery rate objective and a control guarantee specifically for independent test statistics; it does not, by itself, license an unqualified extension to strategy trials whose underlying event outcomes share dependence, which is common when several candidate strategies trade overlapping or related event contracts. <a href="../../references/#benjamini1995">BENJAMINI1995</a></p>
+<h2 id="196-dependent-data-block-bootstrap-and-cluster-robust-assumptions">19.6 Dependent data: block bootstrap and cluster-robust assumptions<a class="headerlink" href="#196-dependent-data-block-bootstrap-and-cluster-robust-assumptions" title="Permanent link">&para;</a></h2>
+<p>Most resampling and inference machinery taught in an introductory statistics course assumes independent observations. Event-contract data routinely violates that assumption: repeated snapshots of the same not-yet-resolved event, several contracts tied to the same underlying process, or strategies that trade through the same market regime all induce dependence that an ordinary independent bootstrap would understate.</p>
+<p>The inspected Politis-Romano publisher abstract describes random geometric blocks and asymptotic inference for weakly dependent stationary observations. <a href="../../references/#politis1994">POLITIS1994</a> Neither its full proofs nor a suitable block length for this book's event data was audited. Do not extend that scope to arbitrary dependence or nonstationarity.</p>
+<p>Cluster-robust regression variance estimates allow within-group dependence while requiring independent or appropriately weakly dependent groups, suitable moment/design conditions, and enough informative clusters for the approximation used. Five election clusters do not become a reliable large-cluster sample merely because they contain hundreds of rows. Both methods require a defensible sampling and dependence unit; a convenient database key is not sufficient.</p>
+<h2 id="197-sequential-monitoring-is-not-repeated-fixed-threshold-peeking">19.7 Sequential monitoring is not repeated fixed-threshold peeking<a class="headerlink" href="#197-sequential-monitoring-is-not-repeated-fixed-threshold-peeking" title="Permanent link">&para;</a></h2>
+<p>A researcher who checks a running backtest's statistical significance after every new week of simulated data, stopping and reporting as soon as a conventional fixed threshold such as a two-sided 95 percent test is crossed, is running a fundamentally different procedure from one that commits in advance to a single look at a predetermined endpoint, even if both use the identical textbook formula at each individual check.</p>
+<p>An explicit simulation shows the mechanism. Generate a 200,000-by-20 array of independent standard-normal increments with NumPy's <code>default_rng(20260910)</code>. At look <span class="arithmatex">\(k\)</span>, use <span class="arithmatex">\(Z_k=(X_1+\cdots+X_k)/\sqrt{k}\)</span>, and reject if <span class="arithmatex">\(|Z_k|&gt;1.96\)</span>. Each individual look has the usual standard-normal null distribution, but the looks within a path are dependent. Rejecting if <strong>any</strong> of the 20 looks crosses gives 24.8105 percent false positives in this simulation; using only the twentieth look gives 5.032 percent. The difference comes entirely from the stopping rule. These are reproducible simulated proportions, not estimates from trading data.</p>
+<p>Correctly accounting for repeated looks requires machinery designed for that purpose. Howard, Ramdas, McAuliffe, and Sekhon's time-uniform confidence sequences are built around exactly this problem, using a filtration and an exponential-supermartingale construction to produce a bound that holds simultaneously across every stopping time an analyst might choose, rather than only at one predetermined look. <a href="../../references/#howard2021">HOWARD2021</a> The important qualification is that "time-uniform" describes coverage across looks under the method's own stated model, not a general license to ignore other sources of error; it does not, by itself, repair a leakage problem in the underlying data, and it does not turn genuinely dependent, repeated observations of the same event into independent draws. A researcher who wants to monitor a live paper strategy continuously, rather than at one predeclared endpoint, should use a construction designed for repeated looks, and should still separately confirm that its independence and boundedness assumptions are plausible for the specific data being monitored.</p>
+<h2 id="198-power-effect-size-and-the-gap-between-a-point-estimate-and-a-guaranteed-edge">19.8 Power, effect size, and the gap between a point estimate and a guaranteed edge<a class="headerlink" href="#198-power-effect-size-and-the-gap-between-a-point-estimate-and-a-guaranteed-edge" title="Permanent link">&para;</a></h2>
+<p>A statistically distinguishable result and a practically meaningful one are different questions, and both are different again from a guaranteed future edge. Statistical power is the probability that a testing procedure detects a real effect of a given size, given the actual sample size and its dependence structure; with the small number of independent events that many prediction-market questions realistically provide, power to detect a modest true edge can be low, meaning that even a genuine, economically relevant effect could easily fail to produce a "significant" result, and conversely that an apparently large point estimate from a small, dependent sample carries wide uncertainty.</p>
+<p>None of the tools in this chapter converts a favorable point estimate into a promise about future performance. A confidence interval, correctly constructed for the actual dependence structure and correctly adjusted for the actual number of configurations searched, describes a range of plausible values under the stated model; it is not evidence that the true value sits at the interval's most favorable end, and it says nothing at all about a differently structured future sample. "Statistically supported edge" in this book's usage requires a specified estimand, an accounting of dependence, a defensible correction for search, and uncertainty quantification that is still favorable after all of that; a single attractive number, however it was produced, does not meet that bar on its own, and it is never established by one favorable outcome for one trade.</p>
+<h2 id="199-controlling-for-costs-slippage-fill-sensitivity-and-negative-controls">19.9 Controlling for costs, slippage, fill sensitivity, and negative controls<a class="headerlink" href="#199-controlling-for-costs-slippage-fill-sensitivity-and-negative-controls" title="Permanent link">&para;</a></h2>
+<p>A strategy evaluation that changes its assumed costs, fill model, or slippage convention only after seeing an unfavorable result is itself a form of undisclosed search. The execution assumptions from Chapter 18, correct executable-side prices, correctly rounded fees, finite depth, and no inferred fills from mere quote touches, should be fixed in advance and applied identically whether the resulting number looks good or bad. A useful robustness check varies these assumptions deliberately and reports the resulting range: for instance, recomputing the same strategy's simulated result under a moderately worse assumed fill price, or under a higher assumed fee, to see whether a reported edge survives plausible execution friction or evaporates well within it.</p>
+<p>A <strong>negative control</strong> applies the search and reporting procedure to data constructed to lack the signal being claimed. The normal-draw experiment is one such control. Relabeling actual data requires a justified null randomization: shuffling rows independently can destroy shared-event structure, calendar effects, and other dependence that the control must preserve. If comparable favorable results often emerge under an appropriate null, the original point estimate is less persuasive; that comparison does not prove how much of any one realized result was luck. Report the control's construction and limitations, not merely that "labels were shuffled."</p>
+<h2 id="companion-example">Companion example<a class="headerlink" href="#companion-example" title="Permanent link">&para;</a></h2>
+<p>Run:</p>
+<p><strong>Command working directory:</strong> run this chapter's Python commands from <code>book\companion</code>. From the trading repository root, run <code>Set-Location book\companion</code> once first. The <code>.venv</code> belongs to that companion project; see <a href="../../companion/">companion setup</a>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">.\.</span><span class="n">venv</span><span class="p">\</span><span class="n">Scripts</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">exe</span> <span class="n">examples</span><span class="p">\</span><span class="n">forecast_models</span><span class="p">.</span><span class="n">py</span>
+</code></pre></div>
+<p>The script fits preset logistic and boosted models, a validation-fitted isotonic map, and a fixed equal blend. It records training and calibration event IDs <strong>and dependence-group IDs</strong>, and <code>evaluate_forecaster</code> refuses either kind of overlap. That guard complements, rather than replaces, a correct split and research-history audit. On 45 test events, logistic Brier is 0.198372 and raw boosting 0.220607, against reference 0.249699; calibrated boosting is worse at 0.2672. Small-sample calibration noise is a plausible explanation, not a cause identified by those scores alone. Reporting the deterioration is part of the evidentiary discipline, not a failure to hide. See the <a href="../../companion/examples/forecast_models.py">example</a> and <a href="../../companion/examples/">output guide</a>.</p>
+<p>The script also reports two rescored snapshots of one event side by side under the label "same_event_updates_not_independent_trials," illustrating Section 19.2's warning that repeated observations of one event are not separate independent trials even at different timestamps. This is a single frozen logistic model, fitted once, rescored at two invented decision times for the same event; it is explicitly <strong>not</strong> a fitted sequence model that learns how a forecast evolves through an event's life, and its near-identical scores at the two horizons (0.258916 and 0.258227) are not a validated early-horizon calibration claim. Its <code>evidence_gate</code> field, from the companion's <code>synthetic_evidence</code> check, reports <code>REJECT_LIVE_EDGE_INFERENCE</code> for this synthetic run, listing untouched-evaluation, dependence-and-search, and uncertainty-support failures by name; this is real, deterministic output, and it is the correct verdict for a synthetic teaching fixture, not evidence against some future well-controlled real-data study.</p>
+<h2 id="exercises">Exercises<a class="headerlink" href="#exercises" title="Permanent link">&para;</a></h2>
+<p><strong>Exercise 19.1.</strong> A researcher reports that the best of 30 informally tried trading rules achieved a favorable simulated result and does not report the other 29. Using the multiplicity simulation logic from Section 19.1 (best-of-5 averaged about 1.16 standard deviations above zero, best-of-20 about 1.87), explain qualitatively why the reported number likely overstates the rule's true expected performance, without assuming the specific magnitude for 30 draws.</p>
+<p><em>Solution.</em> The simulation shows that the expected value of the maximum of several independent null draws increases with the number of draws even though no individual draw has any real effect. Reporting only the maximum of 30 informally tried rules, without disclosing the other 29, presents a best-of-many statistic as if it were a single a priori prediction; some of the apparent favorable performance is very likely an artifact of having chosen the best result out of many attempts rather than evidence of a genuinely superior rule.</p>
+<p><strong>Exercise 19.2.</strong> Two snapshots of the same not-yet-resolved event, taken 9 hours apart, are assigned to the training and test cohorts respectively by a naive chronological split that ignores event identifiers. Explain what specifically goes wrong, and what <code>grouped_chronological_split</code>-style logic would do differently.</p>
+<p><em>Solution.</em> Both snapshots share the same eventual outcome label; placing one in training and the other in test lets the fitted model, or the evaluator inspecting the split, benefit from information tied to an outcome the test snapshot is supposed to independently confirm. A grouped chronological split instead requires every observation belonging to one event's dependence group to fall entirely within a single cohort; if the two snapshots' decision times straddle a cutoff so that no single cohort can hold both while respecting label availability, the entire group is excluded from all cohorts rather than split across them.</p>
+<p><strong>Exercise 19.3.</strong> Using the sorted p-values <span class="arithmatex">\(0.005, 0.010, 0.021, 0.050, 0.200\)</span> from 5 hypothesis tests and a target false discovery rate of <span class="arithmatex">\(\alpha = 0.10\)</span>, apply the Benjamini-Hochberg procedure and state which hypotheses are rejected.</p>
+<p><em>Solution.</em> With <span class="arithmatex">\(n = 5\)</span>, the thresholds at ranks 1 through 5 are <span class="arithmatex">\(0.02, 0.04, 0.06, 0.08, 0.10\)</span>. Comparing: rank 1, <span class="arithmatex">\(0.005 \leq 0.02\)</span>, true; rank 2, <span class="arithmatex">\(0.010 \leq 0.04\)</span>, true; rank 3, <span class="arithmatex">\(0.021 \leq 0.06\)</span>, true; rank 4, <span class="arithmatex">\(0.050 \leq 0.08\)</span>, true; rank 5, <span class="arithmatex">\(0.200 \leq 0.10\)</span>, false. The largest rank satisfying the comparison is 4, so the 4 hypotheses with the 4 smallest p-values are rejected, and the hypothesis with <span class="arithmatex">\(p = 0.200\)</span> is not.</p>
+<p><strong>Exercise 19.4.</strong> A researcher runs a stationary-bootstrap confidence interval on a series of weekly strategy returns and reports it as proof of a positive expected edge. List two specific unstated assumptions this claim would need to defend before it could be trusted, drawing on Section 19.6.</p>
+<p><em>Solution.</em> First, the bootstrap's implicit or explicit block length must be justified as appropriate for the actual dependence length in the data; an arbitrarily chosen block length is not automatically correct. Second, the underlying series must be defensibly treated as covered by whatever stationarity-like condition the procedure assumes; a series with structural breaks, regime changes, or a small number of effectively independent events dressed up as many weekly observations would violate that assumption even if the mechanical bootstrap code runs without error.</p>
+<p><strong>Exercise 19.5.</strong> Explain why an analyst who monitors a live paper-trading result every day using a fixed 95 percent significance threshold, stopping and declaring success the first day the threshold is crossed, is more likely to see a false positive than the simulation in Section 19.7 suggests for exactly 20 looks, if the analyst actually monitors for 200 days instead of 20.</p>
+<p><em>Solution.</em> The simulation shows that allowing the stopping rule to depend on the maximum of several interim looks against a fixed threshold inflates the false-positive rate above the nominal single-look rate, and that inflation grows with the number of looks; 200 daily looks provide far more opportunities for the running statistic to cross the fixed threshold by chance at least once than 20 looks do, so the resulting false-positive rate would be even higher than the approximately 24.8 percent observed for 20 looks in the reported simulation.</p>
+<p><strong>Exercise 19.6.</strong> The companion's <code>forecast_models.py</code> script reports an observed Brier score of 0.220607 for a raw boosted model and 0.2672 for the same model after isotonic recalibration fitted on a 44-event validation cohort, on the same 45-event held-out test cohort. Explain why this is a legitimate, reportable result rather than a failure to be hidden, and state one plausible reason calibration underperformed here.</p>
+<p><em>Solution.</em> A negative or inconclusive result is exactly as legitimate an output of an evaluation as a favorable one; suppressing it would itself be a form of undisclosed search, selectively reporting only the comparison that looks better. One plausible reason calibration underperformed is sample size: an isotonic calibrator fit on only 44 validation events has to estimate a flexible, nonparametric monotone mapping from very little data, and with so few points its estimated correction can easily add more variance to the resulting probabilities on a fresh 45-event test cohort than the systematic miscalibration it was meant to fix; this is a plausible explanation for this specific synthetic sample, not a general claim that calibration is unhelpful.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../18-execution-aware-backtests/" class="md-footer__link md-footer__link--prev" aria-label="Previous: 18. A backtest that respects execution">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                18. A backtest that respects execution
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../20-cross-market-logic/" class="md-footer__link md-footer__link--next" aria-label="Next: 20. Cross-market logic and apparent arbitrage">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                20. Cross-market logic and apparent arbitrage
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "navigation.footer", "navigation.indexes", "navigation.sections", "navigation.top", "search.highlight", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

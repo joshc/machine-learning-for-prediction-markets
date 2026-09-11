@@ -1,0 +1,21 @@
+{
+  "dataset": "recurring_events.csv",
+  "classification": "entirely synthetic, original teaching fixture",
+  "generator": "prediction_market_lab.data.write_recurring",
+  "seed": 20260910,
+  "events": 180,
+  "rows_per_event": 2,
+  "python_version_used": "3.12.6",
+  "timestamp_origin": "invented 2025-01-01T00:00:00+00:00 calendar",
+  "acquisition": "none: no exchange, news publisher, paid API or real user data",
+  "rights": "original generated values and original template text; no third-party dataset reproduced",
+  "label_process": "one Bernoulli draw per event from logistic(0.9 * uniform(-1.5, 1.5))",
+  "feature_process": "latent signal plus seeded Gaussian noise; invented market probability adds further noise",
+  "text_process": "original fixed bulletin template categorizes the observed signal, never the outcome",
+  "limitations": [
+    "invented market probabilities are not observed exchange quotes",
+    "two snapshots of one event share one outcome and are not independent labels",
+    "no historical order books, trades, executable returns or empirical strategy evidence",
+    "exceptional payouts are demonstrated separately and never encoded as fractional binary labels"
+  ]
+}
